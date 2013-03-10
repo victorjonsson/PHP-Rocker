@@ -22,7 +22,10 @@ things like routing and data storage.
 
 ## Installation
 
-**1) Download and unzip** rocker.zip in your web folder. Running the following command in the terminal will download the
+Here you can see [a screencast](http://www.screenr.com/6ct7) going through the install procedure and how to manage
+your Rocker server remotely using the console.
+
+**1) Download and unzip** Rocker into your web folder. Running the following command in the terminal will download the
 latest version of PHP-Rocker and unzip it to a directory named rocker.
 
 ```
@@ -70,7 +73,7 @@ Lorem te ipusm del tara
 At the moment PHP-Rocker only supports Basic authentication and RC4 encrypted authentication. You should always run your web services
 on a SSL cert when handling business/user data, especially if you're using basic authentication. The RC4 encrypted authentication
 works basically the same as basic authentication except that the user credentials is encrypted on the client and decrypted on the
-server using a shared secret. If wanting to run RC4 encrypted requests you'll need to modify parameter `application.auth` in config.php.
+server using a shared secret. If wanting to run RC4 encrypted requests you'll need to modify the parameter `application.auth` in config.php.
 
 ```
 'application.auth' => array(

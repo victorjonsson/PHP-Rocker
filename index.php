@@ -21,13 +21,17 @@ $server = new \Rocker\Server($config);
 // Welcome page
 $server->get('/', function() use($config, $server) {
 
-    $db = \Rocker\Object\DB::instance($config['application.db']);
-    $uf = new \Rocker\Object\User\UserFactory($db);
+    $apiURL = $server->request()->getHost() .
+                $server->request()->getPath() .
+                trim($config['application.path'],'/').
+                '/operations';
 
-    var_dump($uf->metaSearch(array(
-                'aa' => 'bb',
-                array('AND' => array('country'=>array('Sweden','France')))
-            ))->getObjects());
+    printf('<h1>Rocker Rest Server v%s</h1>
+            <p>Take a look at available operations at <a href="http://%s">http://%s</a></p>',
+            \Rocker\Server::VERSION,
+            $apiURL,
+            $apiURL
+        );
 
 });
 
