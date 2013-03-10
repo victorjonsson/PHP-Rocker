@@ -28,7 +28,8 @@ API and let other projects take care of things like routing and data storage.
 ## System requirements
 
 - PHP v >= 5.3.2
-- MySQL (the database layer supports many other databases as well but Rocker is so fahr)
+- MySQL (the database layer supports many other databases as well but Rocker is so far only tested with MySQL)
+- Web server (apache/nginx)
 
 
 ## Installation
@@ -51,12 +52,12 @@ you haven't already done so).
 $ composer install
 ```
 
-**3) Edit config.php**. There's a lot of things you can configure if you want to. But the database parameters is the only one
-you must edit.
+**3) Edit config.php**. There's a lot of things you can configure if you want to but the database parameters is
+the only ones you probably must edit.
 
 
 **4) Run install.php** in your console which will setup the database tables and create an admin user. You will be
-prompted about what credentials you want to give the admin user
+prompted about what credentials you want to give the admin user.
 
 ```
 $ php -f install.php
