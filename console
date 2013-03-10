@@ -1,0 +1,67 @@
+#!/usr/bin/env php
+<?php
+/**
+ * PHP Rocker - Console
+ * ---------------------------------
+ * Console program for managing remote servers running
+ * on Rocker. Symlink this file to your /bin/ directory
+ *
+ * @package Rocker
+ * @author Victor Jonsson (http://victorjonsson.se)
+ * @license MIT
+ */
+
+// Check that we're running a console
+if( isset($_SERVER['REMOTE_ADDR']) )
+    die('cli only....');
+elseif( empty($_SERVER['HOME']) )
+    die('home path missing...');
+elseif( !is_writable($_SERVER['HOME']) )
+    die('Your home directory has to be writeable...');
+
+
+// Load cli utilities and vendors
+require __DIR__.'/vendor/autoload.php';
+require __DIR__.'/vendor/jlogsdon/cli/lib/cli/cli.php';
+\cli\register_autoload();
+
+// Setup error handler
+\Rocker\Utils\ErrorHandler::init(array('mode'=>'production'));
+
+// Shorthand for \cli\line()
+function _($str) { \cli\line($str); }
+
+// Parse flags and args
+list($flags, $args, $method) = \Rocker\Console\Utils::parseInput($argv);
+$methodClass = $method ? 'Rocker\\Console\\Method\\'.ucfirst($method) : false;
+
+if( $methodClass ) {
+    /* @var \Rocker\Console\Method\ConsoleMethodInterface $method */
+    $method = new $methodClass();
+    if( in_array('-h', $flags) || in_array('-help', $flags) || in_array('help', $flags)) {
+        $method->help();
+        \cli\line('');
+    } else {
+        try {
+            $method->call($args, $flags);
+        } catch(\InvalidArgumentException $e) {
+            \cli\line('%rInvalid argument ('.$e->getMessage().')%n');
+        }
+    }
+}
+else {
+    _('PHP Rocker (client v'.\Rocker\Server::VERSION.')');
+    $methodClassPath = __DIR__.'/libs/Rocker/Console/Method/';
+    /* @var SplFileInfo $f */
+    foreach(new FilesystemIterator($methodClassPath) as $f) {
+        $class = '\\Rocker\\Console\\Method\\'.pathinfo($f->getFilename(), PATHINFO_FILENAME);
+        if( strpos($class, 'Interface') === false) {
+            try {
+                $obj = new $class();
+                \cli\line('');
+                $obj->help();
+            } catch(\Exception $e) {}
+        }
+    }
+    \cli\line('');
+}

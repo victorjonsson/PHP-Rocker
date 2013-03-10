@@ -1,0 +1,6 @@
+*.DS_Store
+test.php
+node_modules*
+idea*
+vendor*
+composer.lock
