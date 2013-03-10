@@ -1,10 +1,21 @@
 # PHP Rocker
 
 Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart from many
-of the others is that Rocker is a bundle of Slim and an awesome [database facade](https://github.com/fridge-project/dbal). Not trying to write everything
-from scratch makes it possible to focus on what's important when writing a RESTful API and let other projects take care of
-things like routing and data storage.
+of the others is that Rocker is a bundle of Slim and an awesome [database facade](https://github.com/fridge-project/dbal). 
+Not trying to write everything from scratch makes it possible to focus on what's important when writing a RESTful 
+API and let other projects take care of things like routing and data storage.
 
+#### Features
+
+- User management 
+- CRUD operations (use the template classes in Rocker framework to extend the API with your own objects)
+- EAV data model
+- Built in object cache (supporting both APC and file based caching)
+- Interface based (easy to extend and customize)
+- Administer your remote Rocker server from the console
+
+
+#### Read more
 - [System requirements](#system-requirements)
 - [Installation](#installation)
 - [API reference](#api-reference)
@@ -17,7 +28,7 @@ things like routing and data storage.
 ## System requirements
 
 - PHP v >= 5.3.2
-- MySQL (or postgreSQL, MsSQL)
+- MySQL (the database layer supports many other databases as well but Rocker is so fahr)
 
 
 ## Installation
