@@ -1,9 +1,10 @@
 # PHP Rocker
 
-Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart from many
-of the others is that Rocker is a bundle of Slim and an awesome [database facade](https://github.com/fridge-project/dbal). 
-Not trying to write everything from scratch makes it possible to focus on what's important when writing a RESTful 
-API and let other projects take care of things like routing and data storage.
+Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart 
+from many of the others is that Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
+[database facade](https://github.com/fridge-project/dbal). Not trying to write everything from scratch makes it
+possible for you to focus on what's important when writing your RESTful API and let other projects 
+take care of things like routing and data storage.
 
 #### Features
 
@@ -67,13 +68,164 @@ $ php -f install.php
 
 ## API reference
 
-Lorem te ipsum...
+**Get version of Rocker**
 
+```
+$ curl http://website.com/api/system/version
+
+{
+    "version" : "0.9.1"
+}
+```
+
+**List available operations**
+
+```
+$ curl http://website.com/api/operations
+
+{
+    "operations" : {
+        "methods":"GET,HEAD",
+        "class":"\\Rocker\\API\\ListOperations"
+    },
+    "system/version" : {
+        "methods":"GET,HEAD",
+        "class" : "\\Rocker\\API\\Version"
+    }
+    ...
+}
+```
+
+**Clear object cache** on remote server
+
+```
+$ curl -u 'admin.user@website.com' -X POST http://website.com/api/clear/cache
+
+HTTP/1.1 204 No Content
+Date: Tue, 12 Mar 2013 06:18:59 GMT
+...
+```
+
+**Try to authenticate**, will return information about the authenticated user on success
+
+```
+$ curl -u 'admin.user@website.com' http://website.com/api/auth
+
+{
+    "id" : 1,
+    "email" : "admin.user@website.com",
+    "nick" : "Admin",
+    "meta" : {
+        "admin" : 1
+    }
+}
+```
+
+**Create a new user**. The parameters email, nick and password is mandatory. The meta parameter should be of type array. 
+Setting a meta value to `true` or `false` will turn the value into corresponding boolean value.
+
+```
+$ curl -X POST http://website.com/api/user -d 'email=some.user@website.com&nick=Nicky&password=secretstuff&meta[country]=Germany'
+
+HTTP/1.1 201 Created
+Date: Tue, 12 Mar 2013 06:27:44 GMT
+...
+
+{
+    "id" : 3,
+    "email" : "some.user@website.com",
+    "nick" : "Nicky",
+    "meta" : {
+        "country" : "Germany"
+    }
+}
+```
+
+**Update user data**. Any of the parameters email, nick, password and meta can be given. Meta should be of type array. 
+Setting a meta value to `null` will remove the meta data. Setting a meta value to `true` or `false` will turn the 
+value into corresponding boolean value. To update a user the client has to authenticate as the user in question or as 
+a user that has admin privileges.
+
+```
+$ curl -X POST http://website.com/api/user/some.user@website.com -d 'nick=Johnny&meta[country]=Norway&meta[adult]=true'
+
+{
+    "id" : 3,
+    "email" : "some.user@website.com",
+    "nick" : "Johnny",
+    "meta" : {
+        "country" : "Norway",
+        "adult" : true
+    }
+}
+```
+
+**Delete a user**. To delete a user the client has to authenticate as the user in question or as a user that has admin 
+privileges. To remove a user that has admin privileges you first have to remove the admin privileges (operation below).
+
+```
+$ curl -X DELETE http://website.com/api/user/some.user@website.com 
+
+HTTP/1.1 204 No Content
+Date: Tue, 12 Mar 2013 06:18:59 GMT
+...
+```
+
+**Add or remove admin privileges**. The client has to authenticate as a user that has admin privileges to manage privileges
+for other users. An admin user can how ever not remove admin privileges from him self.
+
+```
+$ curl -X POST http://website.com/api/admin -d 'user=3&admin=1'
+
+HTTP/1.1 204 No Content
+Date: Tue, 12 Mar 2013 06:18:59 GMT
+...
+```
+
+**Search for users**. Query string examples (parameters needs to be url encoded):
+
+Search for users that has a nick containing John and that comes from France
+
+```
+?q[nick]=*john*&q[country]=France
+```
+
+Search for users that has a nick containing John and that comes from either France or Norway
+
+```
+?q[nick]=*john*&q[country]=France|Norway
+```
+
+Search for users that has a nick containing John and that comes from either France or Norway and that has 
+a hobby interest containing the word Hockey or Soccer
+
+```
+?q[nick]=*john*&q[country]=France|Norway&q[interests]=*hockey*|*soccer*
+```
+
+You can also add the parameters `offset` and `limit`
+
+```
+$ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&offset=50&limit=100
+
+{
+    "matching" : 234,
+    "objects" : [
+        {...},
+        ...
+    ]
+}
+```
 
 ## Manage remote servers via command line
 
 First of move the console program to your bin directory so that you can access it from anywhere on your computer.
+
 `$ sudo ln -s /path/to/your/rocker/installation/console /bin/rocker`
+
+Having done that you add your server (you will be prompted for server address and user credentials)
+
+`$ rocker server`
 
 
 ## Extending the API with more operations
