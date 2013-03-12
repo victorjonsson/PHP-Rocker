@@ -159,7 +159,7 @@ $ curl -X POST http://website.com/api/user/some.user@website.com -d 'nick=Johnny
 }
 ```
 
-**Delete a user**. To update a user the client has to authenticate as the user in question or as a user that has admin 
+**Delete a user**. To delete a user the client has to authenticate as the user in question or as a user that has admin 
 privileges. To remove a user that has admin privileges you first have to remove the admin privileges (operation below).
 
 ```
