@@ -209,7 +209,7 @@ You can also add the parameters `offset` and `limit`
 $ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&offset=50&limit=100
 
 {
-    "matching" : 2034,
+    "matching" : 234,
     "objects" : [
         {...},
         ...
@@ -220,7 +220,12 @@ $ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&offs
 ## Manage remote servers via command line
 
 First of move the console program to your bin directory so that you can access it from anywhere on your computer.
+
 `$ sudo ln -s /path/to/your/rocker/installation/console /bin/rocker`
+
+Having done that you add your server (you will be prompted for server address and user credentials)
+
+`$ rocker server`
 
 
 ## Extending the API with more operations
