@@ -120,6 +120,44 @@ $ curl -u 'admin.user@website.com' http://website.com/api/auth
 }
 ```
 
+Create a new user. The parameters email, nick and password is mandatory. The meta parameter should be of type array. 
+Setting a meta value to `true` or `false` will turn the value into corresponding boolean value.
+
+```
+$ curl -X POST http://website.com/api/user -d 'email=some.user@website.com&nick=Nicky&password=secretstuff&meta[country]=Germany'
+
+HTTP/1.1 201 Created
+Date: Tue, 12 Mar 2013 06:27:44 GMT
+...
+
+{
+    "id" : 3,
+    "email" : "some.user@website.com",
+    "nick" : "Nicky",
+    "meta" : {
+        "country" : "Germany"
+    }
+}
+```
+
+Update user data. Any of the parameters email, nick, password and meta can be given. Meta should be of type array. 
+Setting a meta value to `null` will remove the meta data. Setting a meta value to `true` or `false` will turn the 
+value into corresponding boolean value.
+
+```
+$ curl -X POST http://website.com/api/user/some.user@website.com -d 'nick=Johnny&meta[country]=Norway&meta[adult]=true'
+
+{
+    "id" : 3,
+    "email" : "some.user@website.com",
+    "nick" : "Johnny",
+    "meta" : {
+        "country" : "Norway",
+        "adult" : true
+    }
+}
+```
+
 ## Manage remote servers via command line
 
 First of move the console program to your bin directory so that you can access it from anywhere on your computer.
