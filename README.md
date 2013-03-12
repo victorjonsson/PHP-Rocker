@@ -67,8 +67,58 @@ $ php -f install.php
 
 ## API reference
 
-Lorem te ipsum...
+Get version of Rocker
+```
+$ curl http://website.com/api/system/version
 
+{
+    "version" : "0.9.1"
+}
+```
+
+
+List available operations
+
+```
+$ curl http://website.com/api/operations
+
+{
+    "operations" : {
+        "methods":"GET,HEAD",
+        "class":"\\Rocker\\API\\ListOperations"
+    },
+    "system/version" : {
+        "methods":"GET,HEAD",
+        "class" : "\\Rocker\\API\\Version"
+    }
+    ...
+}
+```
+
+Clear object cache on remote server
+
+```
+$ curl -u 'admin.user@website.com' -X POST http://website.com/api/clear/cache
+
+HTTP/1.1 204 No Content
+Date: Tue, 12 Mar 2013 06:18:59 GMT
+...
+```
+
+Try to authenticate, will return information about the authenticated user on success
+
+```
+$ curl -u 'admin.user@website.com' http://website.com/api/auth
+
+{
+    "id" : 1,
+    "email" : "admin.user@website.com",
+    "nick" : "Admin",
+    "meta" : {
+        "admin" : 1
+    }
+}
+```
 
 ## Manage remote servers via command line
 
