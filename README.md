@@ -159,7 +159,8 @@ $ curl -X POST http://website.com/api/user/some.user@website.com -d 'nick=Johnny
 }
 ```
 
-**Delete a user**. To update a user the client has to authenticate as the user in question or as a user that has admin privileges.
+**Delete a user**. To update a user the client has to authenticate as the user in question or as a user that has admin 
+privileges. To remove a user that has admin privileges you first have to remove the admin privileges (operation below).
 
 ```
 $ curl -X DELETE http://website.com/api/user/some.user@website.com 
@@ -178,6 +179,41 @@ $ curl -X POST http://website.com/api/admin -d 'user=3&admin=1'
 HTTP/1.1 204 No Content
 Date: Tue, 12 Mar 2013 06:18:59 GMT
 ...
+```
+
+**Search for users**. Query string examples (parameters needs to be url encoded):
+
+Search for users that has a nick containing John and that comes from France
+
+```
+?q[nick]=*john*&q[country]=France
+```
+
+Search for users that has a nick containing John and that comes from either France or Norway
+
+```
+?q[nick]=*john*&q[country]=France|Norway
+```
+
+Search for users that has a nick containing John and that comes from either France or Norway and that has 
+a hobby interest containing the word Hockey or Soccer
+
+```
+?q[nick]=*john*&q[country]=France|Norway&q[interests]=*hockey*|*soccer*
+```
+
+You can also add the parameters `offset` and `limit`
+
+```
+$ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&offset=50&limit=100
+
+{
+    "matching" : 2034,
+    "objects" : [
+        {...},
+        ...
+    ]
+}
 ```
 
 ## Manage remote servers via command line
