@@ -33,13 +33,17 @@ class UserOperation extends AbstractObjectOperation {
     {
         $userFactory = new UserFactory($db, $cache);
         $method = $this->request->getMethod();
-        $requestedUser = $this->requestedObject() ? $userFactory->load( $this->requestedObject() ) : null;
+        $requestedUser = $this->requestedObject() ? $userFactory->load( $this->requestedObject() ) : false;
 
         if( ($method == 'POST' || $method == 'DELETE') &&
             $requestedUser &&
             !$this->user->isAdmin() &&
-            $this->user->getId() != $requestedUser->getId() ) {
+            !$this->user->isEqual($requestedUser) ) {
             return new OperationResponse(401, array('error'=>'Only admins can edit/remove other users'));
+        }
+
+        if( $method == 'DELETE' && $requestedUser && $requestedUser->isAdmin() ) {
+            return new OperationResponse(403, array('error'=>'A user with admin privileges can not be removed. You have to remove admin privileges first (/api/admin)'));
         }
 
         return parent::exec($app, $db, $cache);

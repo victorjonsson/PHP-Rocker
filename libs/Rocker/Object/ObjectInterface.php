@@ -3,7 +3,7 @@ namespace Rocker\Object;
 
 
 /**
- * Interface for a generic object
+ * Interface for a object of some kind
  *
  * @package Rocker\Object
  * @author Victor Jonsson (http://victorjonsson.se)
@@ -30,4 +30,16 @@ interface ObjectInterface extends MetaInterface {
      * @return array
      */
     public function toArray();
+
+    /**
+     * Tells whether or not this object is considered the same as the given object
+     * @param ObjectInterface $obj
+     * @return bool
+     */
+    public function isEqual(ObjectInterface $obj);
+
+    /**
+     * @return string
+     */
+    public function type();
 }

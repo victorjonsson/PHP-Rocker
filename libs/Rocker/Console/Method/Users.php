@@ -1,14 +1,25 @@
 <?php
 namespace Rocker\Console\Method;
 
-
 use Rocker\Console\Utils;
 use Rocker\Object\DuplicationException;
 use Rocker\Object\User\UserFactory;
 
+
+/**
+ * Console method used to manage users on a remote server
+ *
+ * @package Rocker\Console\Method
+ * @author Victor Jonsson (http://victorjonsson.se)
+ * @license GPL2 (http://www.gnu.org/licenses/gpl-2.0.html)
+ */
 class Users {
 
-    public function help() {
+    /**
+     * Output help info
+     */
+    public function help()
+    {
         $_ = function($str) { \cli\line($str); };
         $_('%_Method - users%n');
         $_('---------------------------------');
@@ -33,8 +44,12 @@ class Users {
         $_("  $ rocker users -u 1093");
     }
 
-    public function call($args, $flags) {
-
+    /**
+     * @param array $args
+     * @param array $flags
+     */
+    public function call($args, $flags)
+    {
         $client = Server::loadClient($args);
 
         if( !$client )
@@ -152,7 +167,12 @@ class Users {
 
     }
 
-    public static function displayUser($user) {
+    /**
+     * Output user info in console
+     * @param \stdClass $user
+     */
+    public static function displayUser($user)
+    {
         \cli\line('%_'.$user->nick.'%n '.$user->email.' (#'.$user->id.')');
         if( isset($user->meta) ) {
             $data = array();

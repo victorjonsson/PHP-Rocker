@@ -80,7 +80,7 @@ interface ClientInterface {
     public function createUser($nick, $email, $pass, array $meta);
 
     /**
-     * Empty values to not update a property
+     * Empty values will not update a property
      * @param string|int $user Either e-mail or user ID
      * @param $nick
      * @param $email

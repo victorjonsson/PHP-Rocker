@@ -36,12 +36,13 @@ class AdminPrivilegeOperation extends AbstractOperation {
             $response->setStatus(400);
             $response->setBody(array('error' => 'Argument "user" is referring to a user that does not exist'));
         }
-        elseif( $user->getId() == $this->user->getId() ) {
+        elseif( $this->user->isEqual($user) ) {
             $response->setStatus(400);
             $response->setBody(array('error' => 'A user can not change admin privileges for its own user account'));
         }
         else {
             $userFactory->setAdminPrivileges($user, $_REQUEST['admin'] == '1');
+            $response->setStatus(204);
         }
 
         return $response;

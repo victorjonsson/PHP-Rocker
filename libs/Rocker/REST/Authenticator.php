@@ -32,10 +32,7 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
     }
 
     /**
-     * @param \Rocker\Server $server
-     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
-     * @param \Rocker\Cache\CacheInterface $cache
-     * @return null|\Rocker\Object\User\UserInterface
+     * @inheritDoc
      */
     public function auth(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {

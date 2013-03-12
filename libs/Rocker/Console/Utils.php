@@ -15,7 +15,8 @@ class Utils {
      * @param string $prompt
      * @return string
      */
-    public static function promptPassword($prompt = 'Enter Password: ') {
+    public static function promptPassword($prompt = 'Enter Password: ')
+    {
         if (preg_match('/^win/i', PHP_OS)) {
             $vbscript = sys_get_temp_dir() . 'prompt_password.vbs';
             file_put_contents(
@@ -41,7 +42,15 @@ class Utils {
         }
     }
 
-    public static function promptAllowingEmpty( $question, $default = false, $marker = ': ' ) {
+    /**
+     * Same as \cli\prompt except that it allows empty input
+     * @param string $question
+     * @param bool $default
+     * @param string $marker
+     * @return string
+     */
+    public static function promptAllowingEmpty( $question, $default = false, $marker = ': ' )
+    {
         if( $default && strpos( $question, '[' ) === false ) {
             $question .= ' [' . $default . ']';
         }
@@ -53,7 +62,12 @@ class Utils {
         }
     }
 
-    public static function parseInput($arguments) {
+    /**
+     * @param array $arguments
+     * @return array
+     */
+    public static function parseInput($arguments)
+    {
         $flags = array();
         $args = array();
         $currentArg = false;

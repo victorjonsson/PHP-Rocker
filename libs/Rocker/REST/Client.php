@@ -8,6 +8,7 @@ use Rocker\Object\DuplicationException;
 use Rocker\Object\SearchResult;
 use Rocker\Server;
 use Rocker\Utils\Security\RC4Cipher;
+use Slim\Http\Request;
 
 
 /**
@@ -31,12 +32,12 @@ class Client extends HttpClient implements ClientInterface {
      * @param string $path
      * @param array $query
      * @param bool $doAuth
+     * @throws \InvalidArgumentException
      * @throws \Exception
      * @return \stdClass
      */
     public function request($method, $path, $query=array(), $doAuth=false)
     {
-
         $this->userAgent = 'Rocker REST Client v'.Server::VERSION;
         $method = strtolower($method);
         $request = $this->initiateRequest($method, $path, $query);
@@ -98,14 +99,18 @@ class Client extends HttpClient implements ClientInterface {
     }
 
     /**
-     * @param $request
+     * @param \Guzzle\Http\Message\Request $request
      */
     private function addAuthHeader($request)
     {
         $request->addHeader('Authorization', $this->auth);
     }
 
-    public function setAuth($user, $pass, $secret = false) {
+    /**
+     * @inheritDoc
+     */
+    public function setAuth($user, $pass, $secret = false)
+    {
         if( $secret ) {
             $this->auth = 'RC4 '.base64_encode(RC4Cipher::encrypt($secret, $user . ':' . $pass));
         } else {
@@ -113,16 +118,27 @@ class Client extends HttpClient implements ClientInterface {
         }
     }
 
-    public function setAuthString($str) {
+    /**
+     * @inheritDoc
+     */
+    public function setAuthString($str)
+    {
         $this->auth = $str;
     }
 
-    private function checkAuth() {
+    /**
+     * @throws \Exception
+     */
+    private function checkAuth()
+    {
         if( empty($this->auth) ) {
             throw new \Exception('Calling this operation requires that you set auth credentials');
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function createUser($nick, $email, $pass, array $meta)
     {
         $response = $this->request('post', 'user', array(
@@ -139,6 +155,9 @@ class Client extends HttpClient implements ClientInterface {
         return $response->body;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function updateUser($user, $nick, $email, $pass, array $meta)
     {
         $response = $this->request('post', 'user/'.$user, array(
@@ -156,19 +175,10 @@ class Client extends HttpClient implements ClientInterface {
     }
 
     /**
-     * @param string|int $id E-mail or user id
-     * @param string $pass
+     * @inheritDoc
      */
-    public function changePassword($id, $pass) {
-        $this->checkAuth();
-        $resp = $this->request('post', 'user/'.$id, array('password'=>$pass));
-    }
-
-    /**
-     * @param string|int $id E-mail or id number of user
-     * @throws \Exception
-     */
-    public function deleteUser($id) {
+    public function deleteUser($id)
+    {
         $this->checkAuth();
         $response = $this->request('delete', 'user/'.$id, array(), true);
         if( $response->status < 200 || $response->status > 299 ) {
@@ -177,9 +187,10 @@ class Client extends HttpClient implements ClientInterface {
     }
 
     /**
-     * Get Rocker version on remote server
+     * @inheritDoc
      */
-    public function serverVersion() {
+    public function serverVersion()
+    {
         $response = $this->request('get', 'system/version');
         if( $response->status == 200 ) {
             return $response->body->version;
@@ -189,14 +200,10 @@ class Client extends HttpClient implements ClientInterface {
     }
 
     /**
-     * @param string $object
-     * @param array $search
-     * @param int $offset
-     * @param int $limit
-     * @throws \Exception
-     * @return \Rocker\Object\SearchResult|\stdClass[]
+     * @inheritDoc
      */
-    public function search($object, $search, $offset=0, $limit=50) {
+    public function search($object, $search, $offset=0, $limit=50)
+    {
         if( empty($search) ) {
             $object .= '?q=all';
         }
@@ -226,7 +233,11 @@ class Client extends HttpClient implements ClientInterface {
         }
     }
 
-    public function loadUser($arg) {
+    /**
+     * @inheritDoc
+     */
+    public function loadUser($arg)
+    {
         $response = $this->request('get', 'user/'.$arg, array());
         if($response->status == 200) {
             return $response->body;
@@ -235,7 +246,11 @@ class Client extends HttpClient implements ClientInterface {
         }
     }
 
-    public function user() {
+    /**
+     * @inheritDoc
+     */
+    public function user()
+    {
         $response = $this->request('get', 'auth', array(), true);
         if( $response->status == 200 ) {
             return $response->body;

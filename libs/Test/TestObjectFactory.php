@@ -192,6 +192,28 @@ class TestObjectFactory extends CommonTestCase {
 
     }
 
+
+    public function testMetaSearchWithSpan() {
+        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'user');
+        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'meta_user');
+        // empty out cache
+        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
+
+        $u = self::$f->createUser('user@user.com', 'Nick 1', '');
+        $u->meta()->set('time', 1000);
+        self::$f->update($u);
+
+        $u = self::$f->createUser('user2@user.com', 'Nick 2', '');
+        $u->meta()->set('time', 500);
+        self::$f->update($u);
+
+       # $result = self::$f->metaSearch(array('time>'=>499));
+       # $this->assertEquals(1, $result->getNumMatching());
+
+        $result = self::$f->metaSearch(array('time>'=>9));
+        $this->assertEquals(2, $result->getNumMatching());
+    }
+
     public function testMetaSearch() {
         self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'user');
         self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'meta_user');

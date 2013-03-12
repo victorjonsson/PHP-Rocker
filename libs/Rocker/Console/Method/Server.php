@@ -5,15 +5,33 @@ use Rocker\REST\Client;
 use Rocker\Utils\Security\RC4Cipher;
 use Rocker\Console\Utils;
 
+
+/**
+ * Console method used to store information about remote Rocker servers
+ *
+ * @package Rocker\Console\Method
+ * @author Victor Jonsson (http://victorjonsson.se)
+ * @license GPL2 (http://www.gnu.org/licenses/gpl-2.0.html)
+ */
 class Server {
 
+    /**
+     * @var null|string
+     */
     private $infoFile;
 
-    public function __construct($f = null) {
+    /**
+     * @param null $f
+     */
+    public function __construct($f = null)
+    {
         $this->infoFile = $f === null ? $_SERVER['HOME'].'/.rocker-servers':$f;
     }
 
-    public function help() {
+    /**
+     */
+    public function help()
+    {
         $_ = function($str) { \cli\line($str); };
         $_('%_Method - server%n');
         $_('---------------------------------');
@@ -25,7 +43,11 @@ class Server {
         $_('  Add or edit a remote server connection');
     }
 
-    private function listServers($servers) {
+    /**
+     * @param array $servers
+     */
+    private function listServers($servers)
+    {
         $default = '';
         if( isset($servers['__default']) ) {
             $default = "\nDefault server: ".$servers['__default'];
@@ -36,8 +58,13 @@ class Server {
         \cli\out(implode(PHP_EOL, $names).$default.PHP_EOL);
     }
 
-    public function call($args, $flags) {
-
+    /**
+     * @param array $args
+     * @param array $flags
+     * @throws \Exception
+     */
+    public function call($args, $flags)
+    {
         // Remove
         if( isset($args['-r']) ) {
             $servers = $this->loadStoredServerInfo();
@@ -115,13 +142,26 @@ class Server {
         }
     }
 
-    public function addServer($name, $address, $auth) {
+    /**
+     * @param string $name
+     * @param string $address
+     * @param string $auth
+     */
+    public function addServer($name, $address, $auth)
+    {
         $servers = $this->loadStoredServerInfo();
         $servers[$name] = array('address' => $address, 'auth'=>$auth);
+        if( count($servers) == 1 )
+            $servers['__default'] = $name;
+
         file_put_contents($this->infoFile, serialize($servers));
     }
 
-    public function loadStoredServerInfo() {
+    /**
+     * @return array|mixed
+     */
+    public function loadStoredServerInfo()
+    {
         if( stream_resolve_include_path($this->infoFile) !== false ) {
             return unserialize( file_get_contents($this->infoFile) );
         } else {
@@ -130,10 +170,12 @@ class Server {
     }
 
     /**
+     * Load client either specified in given args or default client
      * @param array $args
      * @return \Rocker\REST\ClientInterface
      */
-    public static function loadClient($args) {
+    public static function loadClient($args)
+    {
         $self = new self();
         $info = $self->loadStoredServerInfo();
         if( empty($args['-s']) ) {

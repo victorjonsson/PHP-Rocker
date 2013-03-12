@@ -20,7 +20,7 @@ interface AuthenticatorInterface {
      * @param \Rocker\Server $server
      * @param \Fridge\DBAL\Connection\ConnectionInterface $db
      * @param \Rocker\Cache\CacheInterface $cache
-     * @return UserInterface|null
+     * @return \Rocker\Object\User\UserInterface|null
      */
     public function auth(Server $server, ConnectionInterface $db, CacheInterface $cache);
 

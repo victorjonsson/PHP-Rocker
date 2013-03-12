@@ -30,7 +30,8 @@ class ErrorHandler {
      * automatically be transformed into thrown exceptions
      * @param array $config
      */
-    public static function init($config) {
+    public static function init($config)
+    {
         if( !self::$initiated ) {
             self::$initiated = true;
             $handle = new self($config['mode']);
@@ -47,7 +48,8 @@ class ErrorHandler {
      * @return bool
      * @throws \ErrorException
      */
-    public function error($number, $mess, $file, $line) {
+    public function error($number, $mess, $file, $line)
+    {
         // Don't care about minor errors unless we're in dev environment
         if( $this->mode != 'development' && in_array($number, array(E_STRICT, E_DEPRECATED, E_NOTICE, E_USER_NOTICE, E_USER_DEPRECATED))) {
             return true;
@@ -59,8 +61,8 @@ class ErrorHandler {
      * @param \Exception $e
      * @param bool $terminate
      */
-    public function exception(\Exception $e, $terminate = true) {
-
+    public function exception(\Exception $e, $terminate = true)
+    {
         $html_message = '';
         $id = hash('md4', $e->getMessage().$e->getFile().$e->getLine());
 
@@ -117,7 +119,8 @@ class ErrorHandler {
      * Send info about exception to error log
      * @param \Exception $e
      */
-    public static function log(\Exception $e) {
+    public static function log(\Exception $e)
+    {
         $handle = new self();
         $handle->exception($e, false);
     }

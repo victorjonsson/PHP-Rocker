@@ -2,19 +2,34 @@
 namespace Rocker\Console\Method;
 
 
-use Rocker\REST\Client;
-
+/**
+ * Console method used to show info about the user that the console
+ * uses when authenticating against the remote server
+ *
+ * @package Rocker\Console\Method
+ * @author Victor Jonsson (http://victorjonsson.se)
+ * @license GPL2 (http://www.gnu.org/licenses/gpl-2.0.html)
+ */
 class Me {
 
-    public function help() {
+    /**
+     * Output infor about how to use this method
+     */
+    public function help()
+    {
         $_ = function($str) { \cli\line($str); };
         $_('%_Method - me%n');
         $_('---------------------------------');
-        $_('Used to get information about the user that is used by this console program when requesting server');
+        $_('Used to get information about the user that is used by this console program when requesting the server');
         $_("  $ rocker me");
     }
 
-    public function call($args, $flags) {
+    /**
+     * @param array $args
+     * @param array $flags
+     */
+    public function call($args, $flags)
+    {
         $client = Server::loadClient($args);
         $user = $client->user();
         if( $user )

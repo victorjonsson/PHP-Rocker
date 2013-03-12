@@ -1,6 +1,7 @@
 <?php
 namespace Rocker\Object;
 
+
 /**
  * A generic object
  *
@@ -9,6 +10,11 @@ namespace Rocker\Object;
  * @license GPL2 (http://www.gnu.org/licenses/gpl-2.0.html)
  */
 class PlainObject implements ObjectInterface {
+
+    /**
+     * @var string
+     */
+    private $type;
 
     /**
      * @var MetaInterface
@@ -118,5 +124,21 @@ class PlainObject implements ObjectInterface {
     function __sleep()
     {
         throw new \Exception('Object can not be serialized');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isEqual(ObjectInterface $obj)
+    {
+        return $obj->getId() == $this->getId() && $this->type() == $obj->type();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function type()
+    {
+        return $this->type;
     }
 }

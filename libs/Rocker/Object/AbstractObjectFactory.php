@@ -80,7 +80,7 @@ abstract class AbstractObjectFactory
             $this->handlePossibleDuplication($e);
         }
         $objClass = $this->objectClassName();
-        $obj = new $objClass($name, $this->db->lastInsertId());
+        $obj = new $objClass($name, $this->db->lastInsertId(), $this->objectTypeName());
         $obj->setMeta(new MetaData(array()));
         return $obj;
     }
@@ -152,7 +152,7 @@ abstract class AbstractObjectFactory
     function metaSearch(array $where, $offset=0, $limit=50, $idOrder='DESC')
     {
         if(empty($where))
-            throw new \InvalidArgumentException('Empty search is not allowed, use AbstractObjectFactory::search if wanting to do such a search');
+            throw new \InvalidArgumentException('Empty search is not allowed, use AbstractObjectFactory::search');
 
         $result = new SearchResult($offset, $limit);
         $sql = 'SELECT object FROM '.$this->metaTableName.' AS t WHERE ';
@@ -160,21 +160,27 @@ abstract class AbstractObjectFactory
         $index = 0;
         foreach($where as $key => $val) {
 
+            $col = $key;
+            $key = str_replace(array('>','<', '!'), '', $col); // remove chars that modifies the query
+
             if( $index == 0 ) {
                 if( is_array($val) ) {
                     $midQuery = '';
                     foreach($val as $midVal) {
-                        $eq = strpos($midVal, '*') === 0 ? ' LIKE ?':'=?';
+                        $eq = $this->getEqualOperator($midVal, $col);
                         $midQuery .= ' (t.name=? AND t.value'.$eq.') OR ';
                         $args[] = $key;
                         $args[] = str_replace('*', '%', $midVal);
                     }
                     $sql .= rtrim($midQuery, 'OR ');
                 } else {
-                    $eq = strpos($val, '*') === 0 ? ' LIKE ?':'=?';
+                    $eq = $this->getEqualOperator($val, $col);
                     $sql .= " t.name=? AND t.value$eq ";
+                    $value = str_replace('*', '%', $val);
+                    if( is_numeric($value) )
+                        $value = (int)$value;
                     $args[] = $key;
-                    $args[] = str_replace('*', '%', $val);
+                    $args[] = $value;
                 }
             } else {
 
@@ -187,19 +193,20 @@ abstract class AbstractObjectFactory
         	            AND ( ";
 
                 $val = current($val);
-                $args[] = key($val);
+                $col = key($val);
+                $args[] = str_replace(array('>','<', '!'), '', $col); // remove chars that modifies the query
                 $val = current($val);
 
                 if(is_array($val)) {
                     $midQuery = '';
                     foreach($val as $midVal) {
-                        $eq = strpos($midVal, '*') === 0 ? ' LIKE ?':'=?';
+                        $eq = $this->getEqualOperator($midVal, $col);
                         $midQuery .= " t$index.value $eq OR ";
                         $args[] = str_replace('*', '%', $midVal);
                     }
                     $sql .= rtrim($midQuery, 'OR ');
                 } else {
-                    $eq = strpos($val, '*') === 0 ? ' LIKE ?':'=?';
+                    $eq = $this->getEqualOperator($val, $col);
                     $sql .= " t$index.value$eq ";
                     $args[] = str_replace('*', '%', $val);
                 }
@@ -216,6 +223,25 @@ abstract class AbstractObjectFactory
 
         $this->executeSearchQuery($sql, $args, $result, $sort, 'object');
         return $result;
+    }
+
+    /**
+     * @param $val
+     * @param $col
+     * @return string
+     */
+    private function getEqualOperator($val, $col)
+    {
+        $last = substr($col, -1);
+        if( $last == '!' ) {
+            return ' != ?';
+        }
+        elseif( $last == '>' || $last == '<' ) {
+            return ' '.$last.' ? ';
+        }
+        else {
+            return strpos($val, '*') === 0 ? ' LIKE ?' : '=?';
+        }
     }
 
     /**
@@ -292,7 +318,7 @@ abstract class AbstractObjectFactory
         }
 
         $objClass = $this->objectClassName();
-        $obj = new $objClass($data['name'], $data['id']);
+        $obj = new $objClass($data['name'], $data['id'], $this->objectTypeName());
         $this->metaFactory->applyMetaData($obj);
 
         return $obj;
