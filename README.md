@@ -67,7 +67,8 @@ $ php -f install.php
 
 ## API reference
 
-Get version of Rocker
+**Get version of Rocker**
+
 ```
 $ curl http://website.com/api/system/version
 
@@ -76,8 +77,7 @@ $ curl http://website.com/api/system/version
 }
 ```
 
-
-List available operations
+**List available operations**
 
 ```
 $ curl http://website.com/api/operations
@@ -95,7 +95,7 @@ $ curl http://website.com/api/operations
 }
 ```
 
-Clear object cache on remote server
+**Clear object cache** on remote server
 
 ```
 $ curl -u 'admin.user@website.com' -X POST http://website.com/api/clear/cache
@@ -105,7 +105,7 @@ Date: Tue, 12 Mar 2013 06:18:59 GMT
 ...
 ```
 
-Try to authenticate, will return information about the authenticated user on success
+**Try to authenticate**, will return information about the authenticated user on success
 
 ```
 $ curl -u 'admin.user@website.com' http://website.com/api/auth
@@ -120,7 +120,7 @@ $ curl -u 'admin.user@website.com' http://website.com/api/auth
 }
 ```
 
-Create a new user. The parameters email, nick and password is mandatory. The meta parameter should be of type array. 
+**Create a new user**. The parameters email, nick and password is mandatory. The meta parameter should be of type array. 
 Setting a meta value to `true` or `false` will turn the value into corresponding boolean value.
 
 ```
@@ -140,9 +140,10 @@ Date: Tue, 12 Mar 2013 06:27:44 GMT
 }
 ```
 
-Update user data. Any of the parameters email, nick, password and meta can be given. Meta should be of type array. 
+**Update user data**. Any of the parameters email, nick, password and meta can be given. Meta should be of type array. 
 Setting a meta value to `null` will remove the meta data. Setting a meta value to `true` or `false` will turn the 
-value into corresponding boolean value.
+value into corresponding boolean value. To update a user the client has to authenticate as the user in question or as 
+a user that has admin privileges.
 
 ```
 $ curl -X POST http://website.com/api/user/some.user@website.com -d 'nick=Johnny&meta[country]=Norway&meta[adult]=true'
@@ -156,6 +157,27 @@ $ curl -X POST http://website.com/api/user/some.user@website.com -d 'nick=Johnny
         "adult" : true
     }
 }
+```
+
+**Delete a user**. To update a user the client has to authenticate as the user in question or as a user that has admin privileges.
+
+```
+$ curl -X DELETE http://website.com/api/user/some.user@website.com 
+
+HTTP/1.1 204 No Content
+Date: Tue, 12 Mar 2013 06:18:59 GMT
+...
+```
+
+**Add or remove admin privileges**. The client has to authenticate as a user that has admin privileges to manage privileges
+for other users. An admin user can how ever not remove admin privileges from him self.
+
+```
+$ curl -X POST http://website.com/api/admin -d 'user=3&admin=1'
+
+HTTP/1.1 204 No Content
+Date: Tue, 12 Mar 2013 06:18:59 GMT
+...
 ```
 
 ## Manage remote servers via command line
