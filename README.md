@@ -1,9 +1,10 @@
 # PHP Rocker
 
-Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart from many
-of the others is that Rocker is a bundle of Slim and an awesome [database facade](https://github.com/fridge-project/dbal). 
-Not trying to write everything from scratch makes it possible to focus on what's important when writing a RESTful 
-API and let other projects take care of things like routing and data storage.
+Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart 
+from many of the others is that Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
+[database facade](https://github.com/fridge-project/dbal). Not trying to write everything from scratch makes it
+possible for you to focus on what's important when writing your RESTful API and let other projects 
+take care of things like routing and data storage.
 
 #### Features
 
