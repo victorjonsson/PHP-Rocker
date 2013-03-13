@@ -230,12 +230,38 @@ $ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&q[ad
 
 First of move the console program to your bin directory so that you can access it from anywhere.
 
-`$ sudo ln -s /path/to/your/rocker/installation/console /bin/rocker`
+```
+$ sudo ln -s /path/to/your/rocker/installation/console /bin/rocker
+```
 
 Having done that you add your server (you'll be prompted for server address and user credentials)
 
-`$ rocker server`
+```
+$ rocker server
+```
 
+Search for users
+
+```
+# Find users with nick containing John
+$ rocker users -q 'nick=*John*'
+
+# Find users coming from either France or Germany that is not admin
+$ rocker users -q 'country=France|Germany&admin!=1'
+
+# Find users that has a score greater than 80 and that has a description
+# containing either "hockey" or "soccer"
+$ rocker users -q 'score>=80&description=*hockey*|*soccer*'
+
+```
+
+Load user data
+
+```
+$ rocker users -l john.doe@website.com
+```
+
+You can also create, delete and update the users using the console program. Run `rocker users` in the console to get more help.
 
 ## Extending the API with more operations
 
@@ -243,7 +269,7 @@ Lorem te ipusm del tara
 
 ## A note on security
 
-At the moment PHP-Rocker only supports Basic authentication and RC4 encrypted authentication. You should always run your web services
+At the moment Rocker only supports Basic authentication and RC4 encrypted authentication. You should always run your web services
 on a SSL cert when handling business/user data, especially if you're using basic authentication. The RC4 encrypted authentication
 works basically the same as basic authentication except that the user credentials is encrypted on the client and decrypted on the
 server using a shared secret. If wanting to run RC4 encrypted requests you'll need to modify the parameter `application.auth` in config.php.
@@ -271,7 +297,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## License
 
-[General Public License v2](http://www.gnu.org/licenses/gpl-2.0.html)
+[MIT license](http://opensource.org/licenses/MIT)
 
 ## Road map
 

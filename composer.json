@@ -2,6 +2,7 @@
     "name": "rocker/rocker",
     "description": "PHP Rocker - REST Server",
     "minimum-stability": "dev",
+    "license" : "MIT",
     "authors": [{
         "name": "Vic",
         "email": "kontakt@victorjonsson.se"

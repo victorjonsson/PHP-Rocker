@@ -8,7 +8,7 @@
  *
  * @package Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
- * @license MIT
+ * @license MIT license (http://opensource.org/licenses/MIT)
  */
 
 // Check that we're running a console

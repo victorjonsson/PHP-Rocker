@@ -12,7 +12,7 @@ use Slim\Slim;
  *
  * @package Rocker\API
  * @author Victor Jonsson (http://victorjonsson.se)
- * @license GPL2 (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @license MIT license (http://opensource.org/licenses/MIT)
  */
 class Auth extends AbstractOperation {
 

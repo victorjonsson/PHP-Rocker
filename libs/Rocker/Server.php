@@ -9,14 +9,14 @@ use Rocker\Utils\ErrorHandler;
  *
  * @package Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
- * @license GPL2 (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @license MIT license (http://opensource.org/licenses/MIT)
  */
 class Server extends \Slim\Slim  {
 
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '0.9.13';
+    const VERSION = '0.9.14';
 
     /**
      * @param array $config
