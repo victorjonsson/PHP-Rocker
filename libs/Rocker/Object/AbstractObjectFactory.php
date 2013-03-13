@@ -13,8 +13,7 @@ use Rocker\Cache\TempMemoryCache;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-abstract class AbstractObjectFactory
-{
+abstract class AbstractObjectFactory {
 
     /**
      * @var ConnectionInterface

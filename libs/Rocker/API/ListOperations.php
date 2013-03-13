@@ -16,10 +16,7 @@ use Rocker\REST\OperationResponse;
 class ListOperations extends AbstractOperation {
 
     /**
-     * @param \Slim\Slim $app
-     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
-     * @param \Rocker\Cache\CacheInterface $cache
-     * @return \Rocker\REST\OperationResponse
+     * @inheritdoc
      */
     public function exec(\Slim\Slim $app, ConnectionInterface $db, CacheInterface $cache)
     {

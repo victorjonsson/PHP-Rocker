@@ -19,7 +19,8 @@ class APC implements CacheInterface {
     /**
      * @param string $prefix
      */
-    public function __construct($prefix = '') {
+    public function __construct($prefix = '')
+    {
         $this->prefix = $prefix;
     }
 
@@ -50,7 +51,8 @@ class APC implements CacheInterface {
     /**
      * @inheritDoc
      */
-    public function clear() {
+    public function clear()
+    {
         apc_clear_cache('user');
     }
 }

@@ -24,7 +24,7 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
     private $userFactory;
 
     /**
-     * @param \Rocker\Object\User\UserFactory|null $uf
+     * @param \Rocker\Object\User\UserFactory $uf
      */
     public function __construct(UserFactory $uf = null)
     {

@@ -23,11 +23,7 @@ class UserOperation extends AbstractObjectOperation {
     private $requestedObject;
 
     /**
-     * Execute the operation and return response to client
-     * @param \Slim\Slim $app
-     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
-     * @param \Rocker\Cache\CacheInterface $cache
-     * @return \Rocker\REST\OperationResponse
+     * @inheritdoc
      */
     public function exec(\Slim\Slim $app, ConnectionInterface $db, CacheInterface $cache)
     {
@@ -52,7 +48,7 @@ class UserOperation extends AbstractObjectOperation {
     /**
      * @param \Rocker\Object\User\UserInterface $obj
      * @param \Rocker\Object\User\UserFactory $factory
-     * @param OperationResponse $response
+     * @param \Rocker\REST\OperationResponse $response
      */
     protected function updateObject($obj, $factory, $response)
     {
@@ -120,7 +116,13 @@ class UserOperation extends AbstractObjectOperation {
         return array();
     }
 
-    public function createFactory($db, $cache) {
+    /**
+     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
+     * @param \Rocker\Cache\CacheInterface $cache
+     * @return \Rocker\Object\AbstractObjectFactory|UserFactory
+     */
+    public function createFactory($db, $cache)
+    {
         return new UserFactory($db, $cache);
     }
 

@@ -13,8 +13,7 @@ use Rocker\Cache\CacheInterface;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class ObjectMetaFactory
-{
+class ObjectMetaFactory {
 
     /**
      * @var ConnectionInterface

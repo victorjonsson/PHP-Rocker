@@ -9,8 +9,7 @@ namespace Rocker\Object;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class SearchResult implements \Iterator, \ArrayAccess
-{
+class SearchResult implements \Iterator, \ArrayAccess {
 
     /**
      * @var array

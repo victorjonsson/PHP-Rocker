@@ -61,6 +61,7 @@ class UserFactory extends AbstractObjectFactory {
      * @param string $email
      * @param string $nick
      * @param string $password
+     * @throws \InvalidArgumentException
      * @return \Rocker\Object\User\UserInterface
      */
     public function createUser($email, $nick, $password)
@@ -86,7 +87,8 @@ class UserFactory extends AbstractObjectFactory {
      * @param \Rocker\Object\User\UserInterface $user
      * @param bool $toggle
      */
-    public function setAdminPrivileges(UserInterface $user, $toggle) {
+    public function setAdminPrivileges(UserInterface $user, $toggle)
+    {
         self::$changeAdminPrivByCode = true;
         $user->meta()->set('admin', $toggle ? 1:0);
         $this->update($user);
@@ -97,7 +99,8 @@ class UserFactory extends AbstractObjectFactory {
      * @param \Rocker\Object\ObjectInterface $user
      * @throws \InvalidArgumentException
      */
-    public function update(ObjectInterface $user) {
+    public function update(ObjectInterface $user)
+    {
         if( filter_var($user->getName(), FILTER_VALIDATE_EMAIL) === false) {
             throw new \InvalidArgumentException('Not a valid e-mail ');
         }

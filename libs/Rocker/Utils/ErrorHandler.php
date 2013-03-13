@@ -19,10 +19,14 @@ class ErrorHandler {
     /**
      * @param string $mode
      */
-    public function __construct($mode='development') {
+    public function __construct($mode='development')
+    {
         $this->mode = $mode;
     }
 
+    /**
+     * @var bool
+     */
     private static $initiated = false;
 
     /**

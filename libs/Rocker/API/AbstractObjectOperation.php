@@ -23,11 +23,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     private $requestedObject;
 
     /**
-     * Execute the operation and return response to client
-     * @param \Slim\Slim $app
-     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
-     * @param \Rocker\Cache\CacheInterface $cache
-     * @return \Rocker\REST\OperationResponse
+     * @inheritdoc
      */
     public function exec(\Slim\Slim $app, ConnectionInterface $db, CacheInterface $cache)
     {
@@ -65,36 +61,8 @@ abstract class AbstractObjectOperation extends AbstractOperation {
                     // Search for object
                     if( isset($_REQUEST['q']) ) {
 
-                        $offset = !empty($_REQUEST['offset']) ? $_REQUEST['offset']:0;
-                        $limit = !empty($_REQUEST['limit']) ? $_REQUEST['limit'] : 50;
-                        $order = !empty($_REQUEST['order']) && $_REQUEST['order'] == 'ASC' ? 'ASC':'DESC';
-                        $query = array();
-                        if( is_array($_REQUEST['q']) ) {
-                            foreach($_REQUEST['q'] as $key => $val) {
-                                $key = urldecode($key);
-                                $values = explode('|', urldecode($val));
-                                if(empty($query)) {
-                                    $query[$key] = $values;
-                                }
-                                else {
-                                    $not = substr($key, -1) == '!' ? '!':'';
-                                    if( $not )
-                                        $key = str_replace('!', '', $key);
+                        list($offset, $limit, $query, $result, $objects) = $this->searchObjects($factory);
 
-                                    $query[] = array('AND'.$not => array($key=>$values));
-                                }
-                            }
-
-                            $result = $factory->metaSearch($query, $offset, $limit, $order);
-
-                        } else {
-                            $result = $factory->search(null, $offset, $limit, 'id', $order);
-                        }
-
-                        $objects = array();
-                        foreach($result as $obj) {
-                            $objects[] = $obj->toArray();
-                        }
                         $response->setBody(array(
                                 'query' => $query,
                                 'matching' => $result->getNumMatching(),
@@ -113,6 +81,44 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         }
 
         return $response;
+    }
+
+    /**
+     * @param $factory
+     * @return array
+     */
+    protected function searchObjects($factory)
+    {
+        $offset = !empty($_REQUEST['offset']) ? $_REQUEST['offset'] : 0;
+        $limit = !empty($_REQUEST['limit']) ? $_REQUEST['limit'] : 50;
+        $order = !empty($_REQUEST['order']) && $_REQUEST['order'] == 'ASC' ? 'ASC' : 'DESC';
+        $query = array();
+        if ( is_array($_REQUEST['q']) ) {
+            foreach ($_REQUEST['q'] as $key => $val) {
+                $key = urldecode($key);
+                $values = explode('|', urldecode($val));
+                if ( empty($query) ) {
+                    $query[$key] = $values;
+                } else {
+                    $not = substr($key, -1) == '!' ? '!' : '';
+                    if ( $not )
+                        $key = str_replace('!', '', $key);
+
+                    $query[] = array('AND' . $not => array($key => $values));
+                }
+            }
+
+            $result = $factory->metaSearch($query, $offset, $limit, $order);
+
+        } else {
+            $result = $factory->search(null, $offset, $limit, 'id', $order);
+        }
+
+        $objects = array();
+        foreach ($result as $obj) {
+            $objects[] = $obj->toArray();
+        }
+        return array($offset, $limit, $query, $result, $objects);
     }
 
     /**

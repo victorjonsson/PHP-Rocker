@@ -20,11 +20,7 @@ use Slim\Slim;
 class AdminPrivilegeOperation extends AbstractOperation {
 
     /**
-     * Execute the operation and return response to client
-     * @param \Slim\Slim $app
-     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
-     * @param \Rocker\Cache\CacheInterface $cache
-     * @return \Rocker\REST\OperationResponse
+     * @inheritdoc
      */
     public function exec(Slim $app, ConnectionInterface $db, CacheInterface $cache)
     {
@@ -63,7 +59,7 @@ class AdminPrivilegeOperation extends AbstractOperation {
     {
         return array(
             'user', // id or email
-            'admin' // 1:0
+            'admin' // 1 or 0
         );
     }
 

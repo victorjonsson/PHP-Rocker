@@ -36,7 +36,8 @@ class FileCache implements CacheInterface {
 
     /**
      */
-    private function createMissingDir() {
+    private function createMissingDir()
+    {
         if( stream_resolve_include_path($this->cacheDir) === false ) {
             $baseDir = dirname($this->cacheDir);
             if( !is_dir($baseDir) ) {
