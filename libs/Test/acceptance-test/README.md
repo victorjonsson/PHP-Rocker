@@ -1,7 +1,7 @@
 # Acceptance test
 
-This a description of how to run the acceptance test for your Rocker Server. The configuration (config.json) takes
-for granted that your server is running on localhost and port 80, if not you will have to edit the configuration.
+This a description of how to run the acceptance test for your Rocker Server using [dokimon](https://npmjs.org/package/dokimon).
+You will need to edit config.json to match your own setup.
 
 ### Setup
 

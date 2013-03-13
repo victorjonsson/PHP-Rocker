@@ -1,0 +1,87 @@
+#!/usr/bin/node
+/**
+ * Build file for PHP Rocker
+ * --------------------------
+ *
+ * This script does the following:
+ *   1. Runs all unit tests
+ *   2. Runs acceptance tests
+ *   3. Increases version number
+ *   4. Commit and pushes files to github
+ *
+ * Requirements:
+ *   - Node
+ *   - Node module dokimon installed globally ($ npm install -g dokimon)
+ *   - Node module dokimon installed locally in libs/Test/acceptance-test/
+ *   - phpunit.phar has to be downloaded and added to your $PATH
+ */
+
+var fs = require('fs'),
+    exec = require('child_process').exec,
+    replaceInFile = function(path, from, to) {
+        fs.writeFileSync(path, fs.readFileSync(path, 'utf-8').replace(from, to));
+    },
+    mainFile = __dirname+'/libs/Rocker/Server.php',
+    commitMessage = process.argv.slice(-1)[0];
+
+if( commitMessage.substr(-5) == 'build' ) {
+    console.log('Please give a commit message (eg. $ node build "doing a commit...")');
+    return;
+}
+
+
+/*
+ * Find out new version number
+ */
+var versionParts = fs.readFileSync(mainFile, 'utf-8').split("VERSION = '")[1].split("'")[0].trim().split('.');
+if(versionParts.length < 3) {
+    // new version number is decided in code
+    console.log('Building version '+versionParts.join('.')+' of PHP Rocker');
+}
+else {
+    // Increase the last number by one
+    var newSubVersion = parseInt(versionParts.splice(versionParts.length-1, 1)[0]);
+    newVersion = versionParts.join('.') + '.' + (newSubVersion+1).toString();
+
+    replaceInFile(mainFile, "VERSION = '"+( versionParts.join('.') + '.' + (newSubVersion).toString() )+"'", "VERSION = '"+newVersion+"'");
+    console.log('Building version '+newVersion);
+}
+
+exec('cd '+__dirname+'/libs/Test/ && phpunit.phar', function(error, stdout, stderr) {
+    if( error ) {
+        console.log(error);
+    } else if(stderr) {
+        console.log(stderr);
+    } else {
+
+        console.log(stdout);
+
+        exec('cd '+__dirname+'/libs/Test/acceptance-test/ && dokimon -r', function(error, stdout, stderr) {
+
+            if( error ) {
+                console.log(error);
+            } else if(stderr) {
+                console.log(stderr);
+            } else {
+
+                console.log(stdout);
+
+                exec('cd '+__dirname+" && git add . && git commit -a -m '"+commitMessage+"'", function(error, stdout, stderr) {
+                    if( error ) {
+                        console.log(error);
+                    } else if(stderr) {
+                        console.log(stderr);
+                    } else {
+
+                        console.log(stdout);
+
+                        console.log('\033[32mBUILD FINISHED :) \033[0m');
+
+                    }
+                });
+
+            }
+
+        });
+    }
+});

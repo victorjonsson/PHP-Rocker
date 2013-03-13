@@ -77,7 +77,11 @@ abstract class AbstractObjectOperation extends AbstractOperation {
                                     $query[$key] = $values;
                                 }
                                 else {
-                                    $query[] = array('AND' => array($key=>$values));
+                                    $not = substr($key, -1) == '!' ? '!':'';
+                                    if( $not )
+                                        $key = str_replace('!', '', $key);
+
+                                    $query[] = array('AND'.$not => array($key=>$values));
                                 }
                             }
 

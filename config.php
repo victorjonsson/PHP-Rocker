@@ -83,7 +83,7 @@ return array(
     'application.auth' => array(
         'class' => '\\Rocker\\REST\\Authenticator',
         'mechanism' => 'Basic realm="some.service.com"',
-        'secret' => 'Some hard to guess string'
+        'secret' => 'Some hard '
     ),
 
     /*

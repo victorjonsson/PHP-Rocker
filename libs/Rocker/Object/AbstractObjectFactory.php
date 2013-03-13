@@ -168,24 +168,31 @@ abstract class AbstractObjectFactory
                     $midQuery = '';
                     foreach($val as $midVal) {
                         $eq = $this->getEqualOperator($midVal, $col);
-                        $midQuery .= ' (t.name=? AND t.value'.$eq.') OR ';
                         $args[] = $key;
-                        $args[] = str_replace('*', '%', $midVal);
+                        if( $eq == ' > ? ' || $eq == ' < ? ') {
+                            $midQuery .= ' (t.name=? AND t.value'.str_replace('?', intval($midVal), $eq).') OR ';
+                        } else {
+                            $midQuery .= ' (t.name=? AND t.value'.$eq.') OR ';
+                            $args[] = str_replace('*', '%', $midVal);
+                        }
                     }
                     $sql .= rtrim($midQuery, 'OR ');
                 } else {
                     $eq = $this->getEqualOperator($val, $col);
-                    $sql .= " t.name=? AND t.value$eq ";
-                    $value = str_replace('*', '%', $val);
-                    if( is_numeric($value) )
-                        $value = (int)$value;
                     $args[] = $key;
-                    $args[] = $value;
+                    if( $eq == ' > ? ' || $eq == ' < ? ') {
+                        $sql .= " t.name=? AND t.value ".str_replace('?', intval($val), $eq);
+                    } else {
+                        $sql .= " t.name=? AND t.value$eq ";
+                        $args[] = str_replace('*', '%', $val);
+                    }
+
                 }
             } else {
 
-                $key = key($val);
+                $key = str_replace('!', '', key($val));
                 $sql .= (strtoupper($key) == 'AND' ? ' AND ':' OR ').
+                        ( substr(key($val), -1) == '!' ? ' NOT ':'').
                         "EXISTS(SELECT $index FROM ".$this->metaTableName." t$index
                             WHERE t$index.object=t.object
                         AND (
@@ -194,21 +201,29 @@ abstract class AbstractObjectFactory
 
                 $val = current($val);
                 $col = key($val);
-                $args[] = str_replace(array('>','<', '!'), '', $col); // remove chars that modifies the query
+                $args[] = str_replace(array('>','<'), '', $col); // remove chars that modifies the query
                 $val = current($val);
 
                 if(is_array($val)) {
                     $midQuery = '';
                     foreach($val as $midVal) {
                         $eq = $this->getEqualOperator($midVal, $col);
-                        $midQuery .= " t$index.value $eq OR ";
-                        $args[] = str_replace('*', '%', $midVal);
+                        if( $eq == ' > ? ' || $eq == ' < ? ') {
+                            $midQuery .= " t$index.value ".str_replace('?', intval($midVal), $eq)." OR ";
+                        } else {
+                            $midQuery .= " t$index.value $eq OR ";
+                            $args[] = str_replace('*', '%', $midVal);
+                        }
                     }
                     $sql .= rtrim($midQuery, 'OR ');
                 } else {
                     $eq = $this->getEqualOperator($val, $col);
-                    $sql .= " t$index.value$eq ";
-                    $args[] = str_replace('*', '%', $val);
+                    if( $eq == ' > ? ' || $eq == ' < ? ') {
+                        $sql .= " t$index.value ".str_replace('?', intval($val), $eq);
+                    } else {
+                        $sql .= " t$index.value$eq ";
+                        $args[] = str_replace('*', '%', $val);
+                    }
                 }
 
                 $sql .= ') ) )';

@@ -3,7 +3,7 @@
 Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart 
 from many of the others is that Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
 [database facade](https://github.com/fridge-project/dbal). Not trying to write everything from scratch makes it
-possible for you to focus on what's important when writing your RESTful API and let other projects 
+possible for you to focus on what's important when writing your RESTful API and letting other projects
 take care of things like routing and data storage.
 
 #### Features
@@ -23,13 +23,15 @@ take care of things like routing and data storage.
 - [Manage remote servers via command line](#manage-remote-servers-via-command-line)
 - [Extending the API with more operations](#extending-the-api-with-more-operations)
 - [A note on security](#a-note-on-security)
+- [Unit and acceptance testing](#unit-and-acceptance-testing)
 - [License](#license)
 - [Road map](#road-map)
+
 
 ## System requirements
 
 - PHP v >= 5.3.2
-- MySQL (the database layer supports many other databases as well but Rocker is so far only tested with MySQL)
+- MySQL (the database layer has support several different databases (oracle, mssql, postgresql...) but Rocker is so far only tested with MySQL)
 - Web server (apache/nginx)
 
 
@@ -203,10 +205,17 @@ a hobby interest containing the word Hockey or Soccer
 ?q[nick]=*john*&q[country]=France|Norway&q[interests]=*hockey*|*soccer*
 ```
 
+Search for users that has a name containing John and that doesn't go at the school "Haga" and that
+has an average grade above 18
+
+```
+?q[nick]=*john*&q[school!]=Haga&q[grade>]=18
+```
+
 You can also add the parameters `offset` and `limit`
 
 ```
-$ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&offset=50&limit=100
+$ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&q[admin!]=1&offset=50&limit=100
 
 {
     "matching" : 234,
@@ -219,11 +228,11 @@ $ curl http://website.com/api/users?q[nick]=*john*&q[country]=France|Norway&offs
 
 ## Manage remote servers via command line
 
-First of move the console program to your bin directory so that you can access it from anywhere on your computer.
+First of move the console program to your bin directory so that you can access it from anywhere.
 
 `$ sudo ln -s /path/to/your/rocker/installation/console /bin/rocker`
 
-Having done that you add your server (you will be prompted for server address and user credentials)
+Having done that you add your server (you'll be prompted for server address and user credentials)
 
 `$ rocker server`
 
@@ -254,6 +263,11 @@ String crypted = RC4.encrypt("the-hard-to-guess-secret", "som.user@gmail.com:som
 crypted = Base64.encode(crypted);
 request.addHeader("Authorization", "RC4 "+crypted);
 ```
+
+## Unit and acceptance testing
+
+To run the unit tests of Rocker navigate to libs/Test and run [phpunit](http://www.phpunit.de/manual/current/en/installation.html#installation.phar). You can
+also run acceptance tests on your entire infrastructure using the [dokimon tests](https://github.com/victorjonsson/PHP-Rocker/tree/master/libs/Test/acceptance-test)
 
 ## License
 

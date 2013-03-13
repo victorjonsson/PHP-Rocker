@@ -129,10 +129,7 @@ class TestObjectFactory extends CommonTestCase {
     public function testSearch() {
 
         // Clear database
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'user');
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'meta_user');
-        // empty out cache
-        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
+        self::resetDatabase();
 
         self::$f->createUser('jonny@website.se', 'Jonny', '');
         self::$f->createUser('benny@website.se', 'Benny', '');
@@ -192,12 +189,8 @@ class TestObjectFactory extends CommonTestCase {
 
     }
 
-
     public function testMetaSearchWithSpan() {
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'user');
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'meta_user');
-        // empty out cache
-        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
+        self::resetDatabase();
 
         $u = self::$f->createUser('user@user.com', 'Nick 1', '');
         $u->meta()->set('time', 1000);
@@ -207,18 +200,49 @@ class TestObjectFactory extends CommonTestCase {
         $u->meta()->set('time', 500);
         self::$f->update($u);
 
-       # $result = self::$f->metaSearch(array('time>'=>499));
-       # $this->assertEquals(1, $result->getNumMatching());
+        $result = self::$f->metaSearch(array('time>'=>500));
+        $this->assertEquals(1, $result->getNumMatching());
 
-        $result = self::$f->metaSearch(array('time>'=>9));
-        $this->assertEquals(2, $result->getNumMatching());
+        $result = self::$f->metaSearch(array('time<'=>900, array('AND'=>array('nick'=>array('*ic*')))));
+        $this->assertEquals(1, $result->getNumMatching());
+    }
+
+    protected static function resetDatabase()
+    {
+        self::$db->exec('TRUNCATE ' . self::$db->getParameter('prefix') . 'user');
+        self::$db->exec('TRUNCATE ' . self::$db->getParameter('prefix') . 'meta_user');
+        // empty out cache
+        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
+    }
+
+    public function testSearchNotHaving() {
+        self::resetDatabase();
+        $u = self::$f->createUser('user@user.com', 'Nick 1', '');
+        $u->meta()->set('school', 'Haga');
+        self::$f->update($u);
+
+        $u = self::$f->createUser('user2@user.com', 'Nick 2', '');
+        $u->meta()->set('school', 'Bengtfors');
+        self::$f->update($u);
+
+        $result = self::$f->metaSearch(array(
+                        'nick'=>'*ick*',
+                        array('AND!'=>array('school'=>array('Haga')))
+                    ));
+
+        $this->assertEquals(1, $result->getNumMatching());
+        $this->assertEquals('Nick 2', $result[0]->getNick());
+
+        $result = self::$f->metaSearch(array(
+                'school!'=>'Bengtfors'
+            ));
+
+        $this->assertEquals(1, $result->getNumMatching());
+        $this->assertEquals('Nick 1', $result[0]->getNick());
     }
 
     public function testMetaSearch() {
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'user');
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'meta_user');
-        // empty out cache
-        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
+        self::resetDatabase();
 
         $user = self::$f->createUser('user@user.com', 'Diana', '');
         $user->meta()->set('type', 'judge');
@@ -251,7 +275,6 @@ class TestObjectFactory extends CommonTestCase {
         );
 
         $res2 = self::$f->metaSearch($search);
-
 
         $search = array(
             'type' => 'judge',

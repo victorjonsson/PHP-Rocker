@@ -2,7 +2,7 @@
 /**
  * PHP Rocker - Install
  * ---------------------------------
- * Load this file in the console (php -f install.php)
+ * Load this file in the console to install Rocker (php -f install.php)
  *
  * @package Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
