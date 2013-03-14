@@ -111,7 +111,7 @@ Date: Tue, 12 Mar 2013 06:18:59 GMT
 **Try to authenticate**, will return information about the authenticated user on success
 
 ```
-$ curl -u 'admin.user@website.com' http://website.com/api/auth
+$ curl -u 'admin.user@website.com' http://website.com/api/me
 
 {
     "id" : 1,
