@@ -6,6 +6,7 @@ use Rocker\Cache\CacheInterface;
 use Rocker\Object\User\UserFactory;
 use Rocker\REST\AbstractOperation;
 use Rocker\REST\OperationResponse;
+use Rocker\Server;
 use Slim\Http\Request;
 use Slim\Slim;
 
@@ -22,10 +23,10 @@ class AdminPrivilegeOperation extends AbstractOperation {
     /**
      * @inheritdoc
      */
-    public function exec(Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         $userFactory = new UserFactory($db, $cache);
-        $user = $userFactory->load($_REQUEST['user']);
+        $user = $userFactory->loadUser($_REQUEST['user']);
         $response = new OperationResponse();
 
         if( !$user ) {

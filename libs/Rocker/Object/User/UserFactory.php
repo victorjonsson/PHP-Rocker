@@ -2,7 +2,6 @@
 namespace Rocker\Object\User;
 
 use Rocker\Object\AbstractObjectFactory;
-use Rocker\Object\ObjectInterface;
 
 
 /**
@@ -36,7 +35,7 @@ class UserFactory extends AbstractObjectFactory {
      */
     function load($id)
     {
-        return parent::load($id);
+        return parent::loadObject($id);
     }
 
     /**
@@ -71,11 +70,21 @@ class UserFactory extends AbstractObjectFactory {
         }
 
         /* @var \Rocker\Object\User\UserInterface $user */
-        $user = parent::create($email);
+        $user = parent::createObject($email);
         $user->setNick($nick);
         $user->setPassword($password);
-        $this->update($user);
+        $this->updateObject($user);
         return $user;
+    }
+
+    /**
+     * @param $name
+     * @see UserFactory::createUser()
+     * @throws \Exception
+     */
+    public function create($name)
+    {
+        throw new \Exception('Method not allowed, use UserFactory::createUser instead');
     }
 
     /**
@@ -91,17 +100,17 @@ class UserFactory extends AbstractObjectFactory {
     {
         self::$changeAdminPrivByCode = true;
         $user->meta()->set('admin', $toggle ? 1:0);
-        $this->update($user);
+        $this->updateObject($user);
         self::$changeAdminPrivByCode = false;
     }
 
     /**
-     * @param \Rocker\Object\ObjectInterface $user
+     * @param UserInterface $user
      * @throws \InvalidArgumentException
      */
-    public function update(ObjectInterface $user)
+    public function update($user)
     {
-        if( filter_var($user->getName(), FILTER_VALIDATE_EMAIL) === false) {
+        if( filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
             throw new \InvalidArgumentException('Not a valid e-mail ');
         }
 
@@ -112,6 +121,15 @@ class UserFactory extends AbstractObjectFactory {
                 }
             }
         }
-        parent::update($user);
+
+        $this->updateObject($user);
+    }
+
+    /**
+     * @param UserInterface $user
+     */
+    public function delete($user)
+    {
+        $this->deleteObject($user);
     }
 }

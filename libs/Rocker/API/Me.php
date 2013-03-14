@@ -5,6 +5,7 @@ use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\REST\AbstractOperation;
 use Rocker\Cache\CacheInterface;
 use Rocker\REST\OperationResponse;
+use Rocker\Server;
 use Slim\Slim;
 
 /**
@@ -19,7 +20,7 @@ class Me extends AbstractOperation {
     /**
      * @inheritdoc
      */
-    public function exec(Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         return new OperationResponse(200, $this->user->toArray());
     }

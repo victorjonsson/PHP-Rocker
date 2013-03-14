@@ -16,7 +16,12 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '0.9.17';
+    const VERSION = '0.9.16';
+
+    /**
+     * @var array
+     */
+    private $boundEventListeners = array();
 
     /**
      * @param array $config
@@ -24,18 +29,31 @@ class Server extends \Slim\Slim  {
      */
     function __construct(array $config, $initErrorHandler=true)
     {
+        // Initiate error handler
         if( $initErrorHandler ) {
             ErrorHandler::init($config);
         }
 
         parent::__construct($config);
 
+        // Base path of the API requests
         $basePath = trim($this->settings['application.path']);
         if( $basePath != '/' ){
             $basePath = '/'.trim($basePath, '/').'/';
         }
 
+        // Setup dynamic routing
         $this->map($basePath.':args+', array($this, 'handleAPIRequest'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE');
+
+
+        // Bind events defined in config
+        if( !empty($config['application.events']) ) {
+            foreach($config['application.events'] as $eventData) {
+                $event = key($eventData);
+                $func = current($eventData);
+                $this->bind($event, $func);
+            }
+        }
     }
 
     /**
@@ -114,5 +132,28 @@ class Server extends \Slim\Slim  {
     {
         $this->redirect($this->request()->getPath());
         die;
+    }
+
+    /**
+     * @param string $event
+     * @param \Closure $func
+     */
+    public function bind($event, $func)
+    {
+        $this->boundEventListeners[$event][] = $func;
+    }
+
+    /**
+     * @param string $event
+     * @param $db
+     * @param $cache
+     */
+    public function triggerEvent($event, $db, $cache)
+    {
+        if( isset($this->boundEventListeners[$event]) ) {
+            foreach($this->boundEventListeners[$event] as $func) {
+                $func($this, $db, $cache);
+            }
+        }
     }
 }

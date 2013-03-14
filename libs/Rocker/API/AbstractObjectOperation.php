@@ -4,8 +4,11 @@ namespace Rocker\API;
 use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\AbstractObjectFactory;
+use Rocker\Object\FactoryInterface;
+use Rocker\Object\SearchResult;
 use Rocker\REST\AbstractOperation;
 use Rocker\REST\OperationResponse;
+use Rocker\Server;
 use Slim\Http\Request;
 
 /**
@@ -25,12 +28,15 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     /**
      * @inheritdoc
      */
-    public function exec(\Slim\Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         $factory = $this->createFactory($db, $cache);
         $method = $this->request->getMethod();
         $requestedObj = $this->requestedObject() ? $factory->load( $this->requestedObject() ) : null;
         $response = new OperationResponse();
+
+        // Trigger event
+        $server->triggerEvent(strtolower($method).'.object', $db, $cache);
 
         // Create object
         if( $method == 'POST' && $this->requestedObject() === false ) {
@@ -61,6 +67,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
                     // Search for object
                     if( isset($_REQUEST['q']) ) {
 
+                        /* @var SearchResult $result */
                         list($offset, $limit, $query, $result, $objects) = $this->searchObjects($factory);
 
                         $response->setBody(array(
@@ -84,7 +91,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     }
 
     /**
-     * @param $factory
+     * @param FactoryInterface $factory
      * @return array
      */
     protected function searchObjects($factory)
@@ -124,7 +131,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     /**
      * @param $db
      * @param $cache
-     * @return \Rocker\Object\AbstractObjectFactory
+     * @return \Rocker\Object\FactoryInterface
      */
     abstract function createFactory($db, $cache);
 

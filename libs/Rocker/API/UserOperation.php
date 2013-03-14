@@ -6,6 +6,7 @@ use Rocker\Cache\CacheInterface;
 use Rocker\Object\DuplicationException;
 use Rocker\Object\User\UserFactory;
 use Rocker\REST\OperationResponse;
+use Rocker\Server;
 use Slim\Http\Request;
 
 /**
@@ -25,7 +26,7 @@ class UserOperation extends AbstractObjectOperation {
     /**
      * @inheritdoc
      */
-    public function exec(\Slim\Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         $userFactory = new UserFactory($db, $cache);
         $method = $this->request->getMethod();
@@ -42,7 +43,10 @@ class UserOperation extends AbstractObjectOperation {
             return new OperationResponse(403, array('error'=>'A user with admin privileges can not be removed. You have to remove admin privileges first (/api/admin)'));
         }
 
-        return parent::exec($app, $db, $cache);
+        // Trigger event
+        $server->triggerEvent(strtolower($method).'.user', $db, $cache);
+
+        return parent::exec($server, $db, $cache);
     }
 
     /**

@@ -30,12 +30,13 @@ interface OperationInterface {
 
     /**
      * Execute the operation and return response to client
-     * @param \Slim\Slim $app
+     * @param \Rocker\Server $server
      * @param \Fridge\DBAL\Connection\ConnectionInterface $db
      * @param \Rocker\Cache\CacheInterface $cache
+     * @internal param \Slim\Slim $app
      * @return \Rocker\REST\OperationResponse
      */
-    public function exec(Slim $app, ConnectionInterface $db, CacheInterface $cache);
+    public function exec(\Rocker\Server $server, ConnectionInterface $db, CacheInterface $cache);
 
     /**
      * Tells whether or not the client has to be authenticated when calling this

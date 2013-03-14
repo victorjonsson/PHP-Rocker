@@ -101,5 +101,16 @@ return array(
      * set to the latter means that the server will output an entire
      * stack trace in case of an error occurring.
      */
-    'mode' => 'development'
+    'mode' => 'development',
+
+
+    /**
+     * Application events
+     * -------------------
+     * With this parameter you can add event listener. Example:
+     * array(
+     *      array('delete.user'=>'\\MyCompany\\SomeClass::eventListener')
+     * )
+     */
+    'application.events' => array(),
 );

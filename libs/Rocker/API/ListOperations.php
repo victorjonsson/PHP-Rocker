@@ -5,6 +5,7 @@ use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\REST\AbstractOperation;
 use Rocker\Cache\CacheInterface;
 use Rocker\REST\OperationResponse;
+use Rocker\Server;
 
 /**
  * API Operation that returns info about all available operations
@@ -18,10 +19,10 @@ class ListOperations extends AbstractOperation {
     /**
      * @inheritdoc
      */
-    public function exec(\Slim\Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         $operations = array();
-        foreach($app->config('application.operations') as $path => $op) {
+        foreach($server->config('application.operations') as $path => $op) {
 
             /* @var \Rocker\REST\OperationInterface $operation */
             $operation = new $op();

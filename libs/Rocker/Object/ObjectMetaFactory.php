@@ -57,7 +57,7 @@ class ObjectMetaFactory {
         $charset = $this->db->getParameter('charset');
 
         $sql = "
-        CREATE TABLE `" . $this->dbTable . "` (
+        CREATE TABLE IF NOT EXISTS `" . $this->dbTable . "` (
             `object` int(11) NOT NULL,
             `name` varchar(200) COLLATE $collate NOT NULL DEFAULT '',
             `value` text COLLATE $collate,

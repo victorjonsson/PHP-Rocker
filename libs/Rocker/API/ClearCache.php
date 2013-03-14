@@ -6,6 +6,7 @@ use Rocker\Cache\CacheInterface;
 use Rocker\Object\User\UserFactory;
 use Rocker\REST\AbstractOperation;
 use Rocker\REST\OperationResponse;
+use Rocker\Server;
 use Slim\Http\Request;
 use Slim\Slim;
 
@@ -21,7 +22,7 @@ class ClearCache extends AbstractOperation {
     /**
      * @inheritdoc
      */
-    public function exec(Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         $cache->clear();
         return new OperationResponse(204);

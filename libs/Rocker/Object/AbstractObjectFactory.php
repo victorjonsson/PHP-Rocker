@@ -13,17 +13,17 @@ use Rocker\Cache\TempMemoryCache;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-abstract class AbstractObjectFactory {
+abstract class AbstractObjectFactory implements FactoryInterface {
 
     /**
      * @var ConnectionInterface
      */
-    private $db;
+    protected $db;
 
     /**
      * @var CacheInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * @var ObjectMetaFactory
@@ -69,7 +69,7 @@ abstract class AbstractObjectFactory {
      * @throws \Exception
      * @return \Rocker\Object\ObjectInterface
      */
-    protected function create($name)
+    protected function createObject($name)
     {
         /* @var ObjectInterface $obj */
         try {
@@ -89,7 +89,7 @@ abstract class AbstractObjectFactory {
      * @throws \Rocker\Object\DuplicationException
      * @throws \Exception
      */
-    function update(ObjectInterface $obj)
+    protected function updateObject(ObjectInterface $obj)
     {
         $this->metaFactory->saveMetaData($obj);
         $newName = trim($obj->changedName());
@@ -131,7 +131,7 @@ abstract class AbstractObjectFactory {
     /**
      * @param \Rocker\Object\ObjectInterface $obj
      */
-    function delete(ObjectInterface $obj)
+    protected function deleteObject(ObjectInterface $obj)
     {
         $this->db->prepare("DELETE FROM " . $this->tableName . " WHERE id=?")
             ->execute(array($obj->getId()));
@@ -141,14 +141,9 @@ abstract class AbstractObjectFactory {
     }
 
     /**
-     * @param array $where
-     * @param int $offset
-     * @param int $limit
-     * @param string $idOrder
-     * @throws \InvalidArgumentException
-     * @return \Rocker\Object\ObjectInterface[]|\Rocker\Object\SearchResult
+     * @inheritdoc
      */
-    function metaSearch(array $where, $offset=0, $limit=50, $idOrder='DESC')
+    public function metaSearch(array $where, $offset=0, $limit=50, $idOrder='DESC')
     {
         if(empty($where))
             throw new \InvalidArgumentException('Empty search is not allowed, use AbstractObjectFactory::search');
@@ -259,15 +254,9 @@ abstract class AbstractObjectFactory {
     }
 
     /**
-     * Preforms a full text search on object name
-     * @param null $search
-     * @param int $offset
-     * @param int $limit
-     * @param string $sortBy
-     * @param string $sortOrder
-     * @return  \Rocker\Object\ObjectInterface[]|\Rocker\Object\SearchResult
+     * @inheritdoc
      */
-    function search($search=null, $offset = 0, $limit = 50, $sortBy='id', $sortOrder='DESC')
+    public function search($search=null, $offset = 0, $limit = 50, $sortBy='id', $sortOrder='DESC')
     {
         $result = new SearchResult($offset, $limit);
         $sql = 'SELECT id FROM '.$this->tableName;
@@ -305,7 +294,7 @@ abstract class AbstractObjectFactory {
         $searchStatement->execute($args);
         $objects = array();
         while( $row = $searchStatement->fetch() ) {
-            $objects[] = $this->load($row[$idColumn]);
+            $objects[] = $this->loadObject($row[$idColumn]);
         }
 
         $result->setObjects($objects);
@@ -315,7 +304,7 @@ abstract class AbstractObjectFactory {
      * @param int|string $id Name or user id
      * @return \Rocker\Object\ObjectInterface
      */
-    function load($id)
+    protected function loadObject($id)
     {
         $col = is_numeric($id) ? 'id' : 'name';
         $cacheID = $col == 'id' ? $this->cachePrefix . $id : $this->cachePrefix . 'name_' . $id;

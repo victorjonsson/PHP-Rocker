@@ -166,7 +166,7 @@ class TestObjectFactory extends CommonTestCase {
         $ids = array(2, 1);
         $names = array('Benny', 'Jonny');
         $test = array('ids'=>array(), 'names' => array());
-        foreach($result->getObjects() as $user) {
+        foreach($result as $user) {
             $test['ids'][] = $user->getId();
             $test['names'][] = $user->getNick();
         }
@@ -180,7 +180,7 @@ class TestObjectFactory extends CommonTestCase {
         $ids = array(2,1);
         $names = array('Benny', 'Jonny');
         $test = array('ids'=>array(), 'names' => array());
-        foreach($result->getObjects() as $user) {
+        foreach($result as $user) {
             $test['ids'][] = $user->getId();
             $test['names'][] = $user->getNick();
         }

@@ -18,12 +18,9 @@ use Slim\Slim;
 class Version extends AbstractOperation {
 
     /**
-     * @param \Slim\Slim $app
-     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
-     * @param \Rocker\Cache\CacheInterface $cache
-     * @return \Rocker\REST\OperationResponse
+     * @inheritdoc
      */
-    public function exec(Slim $app, ConnectionInterface $db, CacheInterface $cache)
+    public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         return new OperationResponse(200, array('version' => Server::VERSION));
     }
