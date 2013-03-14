@@ -64,7 +64,7 @@ class PlainObject implements ObjectInterface {
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     function getMeta()
     {

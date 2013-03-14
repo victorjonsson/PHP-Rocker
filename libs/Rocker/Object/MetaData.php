@@ -121,6 +121,24 @@ class MetaData {
     }
 
     /**
+     * @param string $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $val
+     */
+    public function __set($key, $val)
+    {
+        $this->set($key, $val);
+    }
+
+    /**
      * @throws \Exception
      */
     function __sleep()
