@@ -32,12 +32,10 @@ require __DIR__.'/vendor/jlogsdon/cli/lib/cli/cli.php';
 function _($str) { \cli\line($str); }
 
 // Parse flags and args
-list($flags, $args, $method) = \Rocker\Console\Utils::parseInput($argv);
-$methodClass = $method ? 'Rocker\\Console\\Method\\'.ucfirst($method) : false;
+list($flags, $args, $method) = \Rocker\Console\Utils::parseInput($argv, $config);
 
-if( $methodClass ) {
-    /* @var \Rocker\Console\Method\ConsoleMethodInterface $method */
-    $method = new $methodClass();
+if( $method !== false ) {
+    /* @var \Rocker\Console\Method\MethodInterface $method */
     if( in_array('-h', $flags) || in_array('-help', $flags) || in_array('help', $flags)) {
         $method->help();
         \cli\line('');
@@ -51,17 +49,5 @@ if( $methodClass ) {
 }
 else {
     _('PHP Rocker (client v'.\Rocker\Server::VERSION.')');
-    $methodClassPath = __DIR__.'/libs/Rocker/Console/Method/';
-    /* @var SplFileInfo $f */
-    foreach(new FilesystemIterator($methodClassPath) as $f) {
-        $class = '\\Rocker\\Console\\Method\\'.pathinfo($f->getFilename(), PATHINFO_FILENAME);
-        if( strpos($class, 'Interface') === false) {
-            try {
-                $obj = new $class();
-                \cli\line('');
-                $obj->help();
-            } catch(\Exception $e) {}
-        }
-    }
-    \cli\line('');
+    \Rocker\Console\Utils::outputAvailableMethods($config, __DIR__.'/libs/Rocker/Console/Method/');
 }

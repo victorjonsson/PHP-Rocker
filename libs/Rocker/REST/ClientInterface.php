@@ -62,7 +62,7 @@ interface ClientInterface {
      * Returns data belonging to the user that is usde for authentication
      * @return \stdClass
      */
-    public function user();
+    public function me();
 
     /**
      * @param string|int $arg

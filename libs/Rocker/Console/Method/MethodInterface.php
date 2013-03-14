@@ -9,17 +9,19 @@ namespace Rocker\Console\Method;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-interface ConsoleMethodInterface 
-{
+interface MethodInterface {
+
     /**
+     * Execute the method
      * @param array $args
      * @param array $flags
-     * @return mixed
+     * @return void
      */
     public function call($args, $flags);
 
     /**
-     * @return mixed
+     * Outputs info about how to call this method
+     * @return void
      */
     public function help();
 

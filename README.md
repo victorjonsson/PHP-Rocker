@@ -101,7 +101,7 @@ $ curl http://website.com/api/operations
 **Clear object cache** on remote server
 
 ```
-$ curl -u 'admin.user@website.com' -X POST http://website.com/api/clear/cache
+$ curl -u 'admin.user@website.com' -X POST http://website.com/api/cache/clear
 
 HTTP/1.1 204 No Content
 Date: Tue, 12 Mar 2013 06:18:59 GMT

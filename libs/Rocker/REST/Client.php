@@ -249,9 +249,9 @@ class Client extends HttpClient implements ClientInterface {
     /**
      * @inheritDoc
      */
-    public function user()
+    public function me()
     {
-        $response = $this->request('get', 'auth', array(), true);
+        $response = $this->request('get', 'me', array(), true);
         if( $response->status == 200 ) {
             return $response->body;
         }

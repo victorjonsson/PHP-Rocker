@@ -12,7 +12,7 @@
         "fridge/dbal": "dev-master",
         "slim/slim": "2.*",
         "jlogsdon/cli": "dev-master",
-        "guzzle/http": "3.0.*@dev"
+        "guzzle/http": "3.3.1"
     },
     "require-dev" : {
         "phpbenchmark/phpbenchmark": "dev-master",

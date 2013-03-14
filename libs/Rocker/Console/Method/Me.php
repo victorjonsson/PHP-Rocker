@@ -10,7 +10,7 @@ namespace Rocker\Console\Method;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class Me {
+class Me implements MethodInterface {
 
     /**
      * Output infor about how to use this method
@@ -31,7 +31,7 @@ class Me {
     public function call($args, $flags)
     {
         $client = Server::loadClient($args);
-        $user = $client->user();
+        $user = $client->me();
         if( $user )
             Users::displayUser( $user );
         else

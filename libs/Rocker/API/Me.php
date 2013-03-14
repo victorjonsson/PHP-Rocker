@@ -14,7 +14,7 @@ use Slim\Slim;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class Auth extends AbstractOperation {
+class Me extends AbstractOperation {
 
     /**
      * @inheritdoc

@@ -13,10 +13,10 @@ use Rocker\Object\User\UserFactory;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class Users {
+class Users implements MethodInterface {
 
     /**
-     * Output help info
+     * @inheritdoc
      */
     public function help()
     {
@@ -45,8 +45,7 @@ class Users {
     }
 
     /**
-     * @param array $args
-     * @param array $flags
+     * @inheritdoc
      */
     public function call($args, $flags)
     {

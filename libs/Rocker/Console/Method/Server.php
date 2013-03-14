@@ -13,7 +13,7 @@ use Rocker\Console\Utils;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class Server {
+class Server implements MethodInterface {
 
     /**
      * @var null|string
@@ -29,6 +29,7 @@ class Server {
     }
 
     /**
+     * @inheritdoc
      */
     public function help()
     {
@@ -59,9 +60,7 @@ class Server {
     }
 
     /**
-     * @param array $args
-     * @param array $flags
-     * @throws \Exception
+     * @inheritdoc
      */
     public function call($args, $flags)
     {
@@ -124,7 +123,7 @@ class Server {
 
                 $client = new Client($address);
                 $client->setAuthString($auth);
-                $user = $client->user(); // just to check that auth is correct
+                $user = $client->me(); // just to check that auth is correct
                 if( !$user ) {
                     throw new \Exception('Could not authenticate');
                 }
@@ -177,24 +176,24 @@ class Server {
     public static function loadClient($args)
     {
         $self = new self();
-        $info = $self->loadStoredServerInfo();
+        $serverList = $self->loadStoredServerInfo();
         if( empty($args['-s']) ) {
-            if( empty($info['__default']) || empty($info[$info['__default']]) ) {
+            if( empty($serverList['__default']) || empty($serverList[$serverList['__default']]) ) {
                 \cli\line('%rNo server given as argument nor set as default%n');
                 return null;
             }
-            $serverName = $info['__default'];
+            $serverName = $serverList['__default'];
         } else {
             $serverName = $args['-s'];
         }
 
-        if( empty($info[$serverName]) ) {
+        if( empty($serverList[$serverName]) ) {
             \cli\line('%rServer "'.$serverName.'" does not exist%n');
             return null;
         }
 
-        $client = new Client($info[$serverName]['address']);
-        $client->setAuthString($info[$serverName]['auth']);
+        $client = new Client($serverList[$serverName]['address']);
+        $client->setAuthString($serverList[$serverName]['auth']);
         return $client;
     }
 

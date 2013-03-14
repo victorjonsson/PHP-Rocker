@@ -65,7 +65,7 @@ return array(
         'system/version' => '\\Rocker\\API\\Version',
         'admin' => '\\Rocker\\API\\AdminPrivilegeOperation',
         'user/*' => '\\Rocker\\API\\UserOperation',
-        'auth' => '\\Rocker\\API\\Auth',
+        'me' => '\\Rocker\\API\\Me',
         'cache/clear' => '\\Rocker\\API\\ClearCache'
     ),
 
@@ -85,6 +85,14 @@ return array(
         'mechanism' => 'Basic realm="some.service.com"',
         'secret' => 'Some hard '
     ),
+
+    /**
+     * Console methods
+     * -------------------
+     * Array with additional console methods. Key being the method name called in the console and
+     * value being the method class. The class has to implement \Rocker\Console\Method\MethodInterface
+     */
+    'application.console' => array(),
 
     /*
      * System mode
