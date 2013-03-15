@@ -3,7 +3,7 @@ namespace Rocker\Cache;
 
 
 /**
- * Cache class that using memory
+ * Cache class that uses a PHP variable as memory
  *
  * @package Rocker\Cache
  * @author Victor Jonsson (http://victorjonsson.se)

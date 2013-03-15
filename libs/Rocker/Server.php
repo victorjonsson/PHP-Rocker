@@ -1,6 +1,8 @@
 <?php
 namespace Rocker;
 
+use Fridge\DBAL\Adapter\ConnectionInterface;
+use Rocker\Cache\CacheInterface;
 use Rocker\Utils\ErrorHandler;
 
 
@@ -145,8 +147,8 @@ class Server extends \Slim\Slim  {
 
     /**
      * @param string $event
-     * @param $db
-     * @param $cache
+     * @param ConnectionInterface $db
+     * @param CacheInterface $cache
      */
     public function triggerEvent($event, $db, $cache)
     {

@@ -48,7 +48,7 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
             if( count($authData) == 2 ) {
                 $authFunc = trim(strtolower($authData[0])).'Auth';
                 if( method_exists($this, $authFunc) ) {
-                    $user = $this->$authFunc($authData[1]);
+                    $user = $this->$authFunc($authData[1], $server);
                 }
             }
         }
@@ -71,12 +71,14 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
 
     /**
      * @param $data
-     * @param $key
+     * @param Server $server
      * @return \Rocker\Object\User\UserInterface|null
      */
-    public function rc4Auth($data, $key)
+    public function rc4Auth($data, $server)
     {
-        $parts = explode(':', RC4Cipher::decrypt($key, $data));
+        $conf = $server->config('application.auth');
+        error_log(print_r($conf,  true));
+        $parts = explode(':', RC4Cipher::decrypt($conf['secret'], base64_decode($data)));
         if( count($parts) == 2 && !is_numeric($parts[0])) { // don't allow to login using user id
             $user = $this->userFactory->load($parts[0]);
             if( $user !== null && $user->hasPassword($parts[1]) ) {

@@ -87,4 +87,23 @@ class TestMeta extends CommonTestCase {
         self::$db->exec('DROP TABLE testCaseMeta');
     }
 
+    function testMagicMethods() {
+        $obj = new \Rocker\Object\PlainObject('testo', 1);
+        self::$f->applyMetaData($obj);
+        $obj->meta()->key = 'value';
+        $this->assertEquals('value', $obj->meta()->key);
+        $this->assertTrue($obj->meta()->has('key'));
+        $this->assertEquals(null, $obj->meta()->unknownKey);
+        self::$f->saveMetaData($obj);
+        self::$f->applyMetaData($obj);
+        $obj->meta()->key = 'value';
+        $this->assertEquals('value', $obj->meta()->key);
+        $obj->meta()->key = null;
+        $this->assertFalse($obj->meta()->has('key'));
+        self::$f->saveMetaData($obj);
+        self::$f->applyMetaData($obj);
+        $this->assertNull($obj->meta()->key);
+        $this->assertFalse($obj->meta()->has('key'));
+    }
+
 }

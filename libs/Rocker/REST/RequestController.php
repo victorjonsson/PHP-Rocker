@@ -67,6 +67,8 @@ class RequestController {
             $this->server->response()->header($name, $val);
         }
 
+        $this->server->triggerEvent('output', null, null);
+
         // todo: support other formats
         echo json_encode($response->getBody());
     }

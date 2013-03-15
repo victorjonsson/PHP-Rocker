@@ -19,7 +19,7 @@ class DB {
      * @param array $config
      * @return \Fridge\DBAL\Connection\ConnectionInterface
      */
-    public static function instance(array $config) {
+    public static function instance(array $config=array()) {
         if( self::$instance === null ) {
             self::$instance = ConnectionFactory::create($config);
         }
