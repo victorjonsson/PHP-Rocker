@@ -1,10 +1,10 @@
 {
-    "name": "rocker/rocker",
-    "description": "PHP Rocker - REST Server",
+    "name": "rocker/server",
+    "description": "Boilerplate that helps you write RESTful web services on top of Slim framework",
     "minimum-stability": "dev",
     "license" : "MIT",
     "authors": [{
-        "name": "Vic",
+        "name": "Victor Jonsson",
         "email": "kontakt@victorjonsson.se"
     }],
     "require" : {
