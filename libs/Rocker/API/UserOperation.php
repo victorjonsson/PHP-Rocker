@@ -83,6 +83,8 @@ class UserOperation extends AbstractObjectOperation {
                 $_REQUEST['password']
             );
 
+            $newUser->meta()->set('created', time());
+
             // Add meta data
             if ( isset($_REQUEST['meta']) && is_array($_REQUEST['meta']) ) {
                 foreach ($_REQUEST['meta'] as $name => $val) {
@@ -90,8 +92,8 @@ class UserOperation extends AbstractObjectOperation {
                         $newUser->meta()->set($name, $val);
                     }
                 }
-                $userFactory->update($newUser);
             }
+            $userFactory->update($newUser);
 
             // Prepare response
             $response->setStatus(201);

@@ -98,10 +98,11 @@ class Utils {
         $method = false;
         $methodClassName = current(array_splice($flags, 0, 1));
         $methodClass = $methodClassName ? 'Rocker\\Console\\Method\\'.ucfirst($methodClassName) : false;
+
         if( $methodClass && class_exists($methodClass) ) {
             $method = new $methodClass();
-        } else if($methodClassName && !empty($config['application.console']) && isset($config['application.console'][ucfirst($method)])) {
-            $methodClass = $config['application.console'][ucfirst($method)];
+        } else if($methodClassName && !empty($config['application.console']) && isset($config['application.console'][$methodClassName])) {
+            $methodClass = $config['application.console'][$methodClassName];
             $method = new $methodClass();
         }
 

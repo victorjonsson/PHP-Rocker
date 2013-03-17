@@ -39,7 +39,7 @@ var createUser = new dokimon.TestFormPost(
         var user = JSON.parse(body);
         assert.equal(user.email, userEmail);
         assert.equal(user.nick, 'Nicky');
-        assert.equal(user.meta ? user.meta.length : false, 0);
+        assert.equal(user.meta && user.meta.created ? true:false, true, 'Incorrect meta');
     },
     true
 );

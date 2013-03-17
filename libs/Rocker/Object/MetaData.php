@@ -10,7 +10,7 @@ namespace Rocker\Object;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class MetaData {
+class MetaData extends \stdClass {
 
     /**
      * @var array
@@ -37,11 +37,12 @@ class MetaData {
 
     /**
      * @param string $name
+     * @param mixed $default
      * @return mixed
      */
-    function get($name)
+    function get($name, $default=null)
     {
-        return isset($this->meta[$name]) ? $this->meta[$name] : null;
+        return isset($this->meta[$name]) ? $this->meta[$name] : $default;
     }
 
     /**

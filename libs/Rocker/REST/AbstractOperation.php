@@ -17,6 +17,11 @@ use Slim\Slim;
 abstract class AbstractOperation implements OperationInterface {
 
     /**
+     * @var null|string|bool
+     */
+    private $requestedObject;
+
+    /**
      * @var \Slim\Http\Request
      */
     protected $request;
@@ -72,5 +77,18 @@ abstract class AbstractOperation implements OperationInterface {
     public function setRequest(Request $request)
     {
         $this->request = $request;
+    }
+
+    /**
+     * When having configured a wildcard route for an operation this function
+     * may be used to retrieve requested object (eg. 'users/*' => 'SomeOperation')
+     * @return string
+     */
+    protected function requestedObject()
+    {
+        if( $this->requestedObject === null ) {
+            $this->requestedObject = current( array_slice(explode('/', $this->request->getPath()), -1));
+        }
+        return $this->requestedObject;
     }
 }

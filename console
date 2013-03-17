@@ -28,6 +28,9 @@ require __DIR__.'/vendor/jlogsdon/cli/lib/cli/cli.php';
 // Setup error handler
 \Rocker\Utils\ErrorHandler::init(array('mode'=>'production'));
 
+// Load config
+$config = require __DIR__.'/config.php';
+
 // Shorthand for \cli\line()
 function _($str) { \cli\line($str); }
 

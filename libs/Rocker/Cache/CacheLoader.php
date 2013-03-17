@@ -21,7 +21,7 @@ class CacheLoader {
      * @param array $config
      * @return \Rocker\Cache\CacheInterface
      */
-    public static function instance($config)
+    public static function instance($config=array())
     {
         if( self::$instance === null ) {
             self::$instance = new $config['class']($config['prefix']);

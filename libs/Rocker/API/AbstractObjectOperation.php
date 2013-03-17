@@ -21,11 +21,6 @@ use Slim\Http\Request;
 abstract class AbstractObjectOperation extends AbstractOperation {
 
     /**
-     * @var null|string|bool
-     */
-    private $requestedObject;
-
-    /**
      * @inheritdoc
      */
     public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
@@ -196,16 +191,5 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     public function requiresAuth()
     {
         return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function requestedObject()
-    {
-        if( $this->requestedObject === null ) {
-            $this->requestedObject = current( array_slice(explode('/', $this->request->getPath()), -1));
-        }
-        return $this->requestedObject;
     }
 }

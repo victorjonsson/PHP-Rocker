@@ -21,7 +21,7 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
     /**
      * @var \Rocker\Object\User\UserFactory
      */
-    private $userFactory;
+    protected $userFactory;
 
     /**
      * @param \Rocker\Object\User\UserFactory $uf
@@ -77,7 +77,6 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
     public function rc4Auth($data, $server)
     {
         $conf = $server->config('application.auth');
-        error_log(print_r($conf,  true));
         $parts = explode(':', RC4Cipher::decrypt($conf['secret'], base64_decode($data)));
         if( count($parts) == 2 && !is_numeric($parts[0])) { // don't allow to login using user id
             $user = $this->userFactory->load($parts[0]);
@@ -93,7 +92,7 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
      * @param $data
      * @return \Rocker\Object\User\UserInterface|null
      */
-    public function basicAuth($data)
+    public function basicAuth($data, $server)
     {
         $parts = explode(':', base64_decode($data));
         if( count($parts) == 2 && !is_numeric($parts[0]) ) { // don't allow to login using user id

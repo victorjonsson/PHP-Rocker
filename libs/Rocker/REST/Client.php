@@ -175,6 +175,14 @@ class Client extends HttpClient implements ClientInterface {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getBaseURI()
+    {
+        return $this->getBaseUrl();
+    }
+
+    /**
      * @inheritDoc
      */
     public function deleteUser($id)

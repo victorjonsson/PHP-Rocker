@@ -89,4 +89,9 @@ interface ClientInterface {
      * @return mixed
      */
     public function updateUser($user, $nick, $email, $pass, array $meta);
+
+    /**
+     * @return string
+     */
+    public function getBaseURI();
 }
