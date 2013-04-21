@@ -3,6 +3,8 @@ namespace Rocker;
 
 use Fridge\DBAL\Adapter\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
+use Rocker\Object\DB;
+use Rocker\REST\RequestController;
 use Rocker\Utils\ErrorHandler;
 
 
@@ -18,12 +20,17 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '0.9.18';
+    const VERSION = '0.9.19';
 
     /**
      * @var array
      */
     private $boundEventListeners = array();
+
+    /**
+     * @var bool
+     */
+    private $closeDBConnOnDestruct = true;
 
     /**
      * @param array $config
@@ -45,7 +52,7 @@ class Server extends \Slim\Slim  {
         }
 
         // Setup dynamic routing
-        $this->map($basePath.':args+', array($this, 'handleAPIRequest'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE');
+        $this->map($basePath.':args+', array($this, 'handleAPIRequest'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'OPTIONS');
 
 
         // Bind events defined in config
@@ -59,15 +66,42 @@ class Server extends \Slim\Slim  {
     }
 
     /**
+     * Closes database connection
+     * @see Server::closeDBConnOnDestruct()
+     */
+    public function __destruct()
+    {
+        if( $this->closeDBConnOnDestruct && DB::isInitiated() ) {
+            DB::instance()->close();
+        }
+    }
+
+    /**
+     * @param bool $toggle
+     */
+    public function closeDBConnOnDestruct($toggle)
+    {
+        $this->closeDBConnOnDestruct = (bool)$toggle;
+    }
+
+    /**
      * Handles request and echos response to client
      * @param array $path
+     * @param null|RequestController $controller
      */
-    public function handleAPIRequest($path)
+    public function handleAPIRequest($path, $controller=null)
     {
         try {
+
             $db = \Rocker\Object\DB::instance($this->config('application.db'));
-            $cache = \Rocker\Cache\CacheLoader::instance($this->config('application.cache'));
-            $controller = new \Rocker\REST\RequestController($this, $db, $cache);
+            $cache = \Rocker\Cache\Cache::instance($this->config('application.cache'));
+
+            if( $controller === null ) {
+                $controller = new \Rocker\REST\RequestController($this, $db, $cache);
+            } else {
+                $controller->setDatabase($db);
+                $controller->setCache($cache);
+            }
 
             $controller->handle($path);
 

@@ -3,14 +3,14 @@ namespace Rocker\Cache;
 
 
 /**
- * Class used to load singleton instances of the cache class
+ * Class used to load a singleton instance of the cache class
  * defined in the main configuration file (config.php)
  *
  * @package Rocker\Cache
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class CacheLoader {
+class Cache {
 
     /**
      * @var \Rocker\Cache\CacheInterface

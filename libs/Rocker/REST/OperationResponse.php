@@ -51,6 +51,15 @@ class OperationResponse {
     }
 
     /**
+     * @param string $name
+     * @param string $val
+     */
+    public function addHeader($name, $val)
+    {
+        $this->headers[$name] = $val;
+    }
+
+    /**
      * @return array
      */
     public function getHeaders()

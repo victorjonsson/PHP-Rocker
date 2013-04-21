@@ -135,7 +135,7 @@ class ObjectMetaFactory {
                 if( $this->isSerialized($row['value']) )
                     $meta_values[$row['name']] = unserialize($row['value']);
                 else
-                    $meta_values[$row['name']] = $row['value'];
+                    $meta_values[$row['name']] = is_numeric($row['value']) ? (int)$row['value']:$row['value'];
             }
 
             $this->cache->store($this->cachePrefix . $obj->getId(), $meta_values);

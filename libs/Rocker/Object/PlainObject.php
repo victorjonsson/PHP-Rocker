@@ -112,7 +112,7 @@ class PlainObject implements ObjectInterface {
      */
     public function toArray() {
         return array(
-            'id' => $this->getId(),
+            'id' => (int)$this->getId(),
             'name' => $this->getName(),
             'meta' => $this->meta()->toArray()
         );

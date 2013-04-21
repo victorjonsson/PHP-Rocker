@@ -9,6 +9,9 @@
  *   3. Increases version number
  *   4. Commit and pushes files to github
  *
+ * Example:
+ *  $ node build 'doing a commit...'
+ *
  * Requirements:
  *   - Node
  *   - Node module dokimon installed globally ($ npm install -g dokimon)

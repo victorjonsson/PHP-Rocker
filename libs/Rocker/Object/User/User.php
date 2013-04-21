@@ -80,7 +80,7 @@ class User extends PlainObject implements UserInterface {
         unset($meta['password']);
         unset($meta['nick']);
         return array(
-            'id' => $this->getId(),
+            'id' => (int)$this->getId(),
             'email' => $this->getEmail(),
             'nick' => $nick,
             'meta' => $meta

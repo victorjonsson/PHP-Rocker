@@ -88,6 +88,8 @@ abstract class AbstractOperation implements OperationInterface {
     {
         if( $this->requestedObject === null ) {
             $this->requestedObject = current( array_slice(explode('/', $this->request->getPath()), -1));
+            if( basename($this->request->getPath()) == $this->requestedObject )
+                $this->requestedObject = false;
         }
         return $this->requestedObject;
     }

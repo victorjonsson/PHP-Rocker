@@ -119,16 +119,7 @@ class Users implements MethodInterface {
                 print_r($result);
             }
 
-            \cli\line('%_Matching users: '.$result->getNumMatching().'%n');
-            $data = array();
-            foreach($result as $obj) {
-                $data[] = array($obj->id, $obj->email, $obj->nick);
-            }
-
-            $table = new \cli\Table();
-            $table->setHeaders(array('ID', 'E-mail', 'Nick'));
-            $table->setRows($data);
-            $table->display();
+            $this->displaySearchResult($result);
         }
 
         // Update user
@@ -164,6 +155,23 @@ class Users implements MethodInterface {
             $this->help();
         }
 
+    }
+
+    /**
+     * @param $result
+     */
+    protected function displaySearchResult($result)
+    {
+        \cli\line('%_Matching users: ' . $result->getNumMatching() . '%n');
+        $data = array();
+        foreach ($result as $obj) {
+            $data[] = array($obj->id, $obj->email, $obj->nick);
+        }
+
+        $table = new \cli\Table();
+        $table->setHeaders(array('ID', 'E-mail', 'Nick'));
+        $table->setRows($data);
+        $table->display();
     }
 
     /**

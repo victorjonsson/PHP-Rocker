@@ -26,4 +26,12 @@ class DB {
 
         return self::$instance;
     }
+
+    /**
+     * @return bool
+     */
+    public static function isInitiated()
+    {
+        return self::$instance !== null;
+    }
 }

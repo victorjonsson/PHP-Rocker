@@ -95,9 +95,8 @@ class UserOperation extends AbstractObjectOperation {
             }
             $userFactory->update($newUser);
 
-            // Prepare response
             $response->setStatus(201);
-            $response->setBody($newUser->toArray());
+            $response->setBody( $this->objectToArray($newUser) );
 
         } catch (DuplicationException $e) {
             $response->setStatus(409);

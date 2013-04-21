@@ -16,7 +16,7 @@ use Rocker\Utils\Security\RC4Cipher;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
+class Authenticator implements \Rocker\REST\AuthenticatorInterface {
 
     /**
      * @var \Rocker\Object\User\UserFactory
@@ -46,7 +46,7 @@ class Authenticator implements \Rocker\Rest\AuthenticatorInterface {
         if( $auth ) {
             $authData = explode(' ', $auth);
             if( count($authData) == 2 ) {
-                $authFunc = trim(strtolower($authData[0])).'Auth';
+                $authFunc = trim(strtolower($authData[0]), ':').'Auth';
                 if( method_exists($this, $authFunc) ) {
                     $user = $this->$authFunc($authData[1], $server);
                 }

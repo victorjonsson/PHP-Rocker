@@ -19,17 +19,17 @@ class RequestController {
     /**
      * @var Server
      */
-    private $server;
+    protected $server;
 
     /**
      * @var ConnectionInterface
      */
-    private $db;
+    protected $db;
 
     /**
      * @var CacheInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * @param \Rocker\Server $server
@@ -118,10 +118,10 @@ class RequestController {
 
     /**
      * @param array $path
-     * @param \Slim\Slim $app
+     * @param \Rocker\Server $server
      * @return OperationResponse
      */
-    public function dispatchRequest(array $path, Slim $app)
+    public function dispatchRequest(array $path, Server $server)
     {
         $op = $this->loadOperation($path);
         $method = $this->server->request()->getMethod();
@@ -132,7 +132,17 @@ class RequestController {
             return $response;
         }
 
-        $op->setRequest($app->request());
+        $op->setRequest($server->request());
+        $isAuthenticated = $this->authenticate($op);
+
+        // Handle options request
+        if( $method == 'OPTIONS' ) {
+            $methods = $op->allowedMethods();
+            $methods[] = 'OPTIONS';
+            $response = new OperationResponse();
+            $response->setMethods($methods);
+            return $response;
+        }
 
         if( !in_array($method, $op->allowedMethods()) ) {
             $response = new OperationResponse(405);
@@ -141,9 +151,9 @@ class RequestController {
                     'error'=>'Wrong request method, only '.implode(', ', $op->allowedMethods()).' is allowed'
                 ));
         }
-        elseif( $op->requiresAuth($this->server->request()) && !$this->authenticate($op) ) {
+        elseif( $op->requiresAuth() && !$isAuthenticated ) {
             $response = new OperationResponse(401);
-            if( $app->request()->headers('HTTP_X_REQUESTED_WITH') != 'xmlhttprequest' ) {
+            if( $server->request()->headers('HTTP_X_REQUESTED_WITH') != 'xmlhttprequest' ) {
                 $authConfig = $this->server->config('application.auth');
                 $response->setHeaders(array('WWW-Authenticate'=> $authConfig['mechanism']));
             }
@@ -172,10 +182,34 @@ class RequestController {
         $authConfig = $this->server->config('application.auth');
         $authenticator = new $authConfig['class']();
         $user = $authenticator->auth($this->server, $this->db, $this->cache);
-        if( empty($user) || ($op->requiresAdminAuth($this->server->request()) && !$user->isAdmin())) {
+        if( empty($user) || ($op->requiresAdminAuth() && !$user->isAdmin())) {
             return false;
         }
         $op->setAuthenticatedUser($user);
         return true;
+    }
+
+    /**
+     * @param \Rocker\Cache\CacheInterface $cache
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
+     */
+    public function setDatabase($db)
+    {
+        $this->db = $db;
+    }
+
+    /**
+     * @param \Rocker\Server $server
+     */
+    public function setServer($server)
+    {
+        $this->server = $server;
     }
 }

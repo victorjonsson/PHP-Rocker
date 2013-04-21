@@ -5,6 +5,7 @@ use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\AbstractObjectFactory;
 use Rocker\Object\FactoryInterface;
+use Rocker\Object\ObjectInterface;
 use Rocker\Object\SearchResult;
 use Rocker\REST\AbstractOperation;
 use Rocker\REST\OperationResponse;
@@ -76,7 +77,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
                     // Get the requested object
                     else {
-                        $response->setBody($requestedObj->toArray());
+                        $response->setBody( $this->objectToArray($requestedObj) );
                     }
                 }
             }
@@ -118,7 +119,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
         $objects = array();
         foreach ($result as $obj) {
-            $objects[] = $obj->toArray();
+            $objects[] = $this->objectToArray($obj);
         }
         return array($offset, $limit, $query, $result, $objects);
     }
@@ -153,7 +154,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         }
 
         $factory->update($obj);
-        $response->setBody($obj->toArray());
+        $response->setBody( $this->objectToArray($obj) );
     }
 
     /**
@@ -175,6 +176,15 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         }
 
         return array();
+    }
+
+    /**
+     * @param ObjectInterface $object
+     * @return mixed
+     */
+    protected function objectToArray($object)
+    {
+        return $object->toArray();
     }
 
     /**

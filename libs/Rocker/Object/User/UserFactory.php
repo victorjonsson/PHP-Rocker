@@ -111,7 +111,7 @@ class UserFactory extends AbstractObjectFactory {
     public function update($user)
     {
         if( filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
-            throw new \InvalidArgumentException('Not a valid e-mail ');
+            throw new \InvalidArgumentException('Not a valid e-mail');
         }
 
         if( !self::$changeAdminPrivByCode ) {

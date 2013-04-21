@@ -37,9 +37,9 @@ var createUser = new dokimon.TestFormPost(
     function(res, body) {
         assert.equal(res.statusCode, 201, 'Wrong status');
         var user = JSON.parse(body);
-        assert.equal(user.email, userEmail);
-        assert.equal(user.nick, 'Nicky');
-        assert.equal(user.meta && user.meta.created ? true:false, true, 'Incorrect meta');
+        assert.equal(user.email, userEmail, 'Wrong email');
+        assert.equal(user.nick, 'Nicky', 'Wrong nick');
+        assert.equal(user.meta.created !== undefined, true, 'Wrong meta');
     },
     true
 );
