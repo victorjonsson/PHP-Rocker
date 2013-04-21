@@ -140,7 +140,7 @@ class RequestController {
         $op->setRequest($server->request());
         $isAuthenticated = $this->authenticate($op);
 
-        // Handle options request
+        // Handle OPTIONS request
         if( $method == 'OPTIONS' ) {
             $methods = $op->allowedMethods();
             $methods[] = 'OPTIONS';
@@ -149,6 +149,7 @@ class RequestController {
             return $response;
         }
 
+        // Wrong method!
         if( !in_array($method, $op->allowedMethods()) ) {
             $response = new OperationResponse(405);
             $response->setMethods($op->allowedMethods());
@@ -156,20 +157,27 @@ class RequestController {
                     'error'=>'Wrong request method, only '.implode(', ', $op->allowedMethods()).' is allowed'
                 ));
         }
+
+        // Not authorized!
         elseif( $op->requiresAuth() && !$isAuthenticated ) {
             $response = new OperationResponse(401);
-            if( $server->request()->headers('HTTP_X_REQUESTED_WITH') != 'xmlhttprequest' ) {
+            $with = $server->request()->headers('HTTP_X_REQUESTED_WITH');
+            if( !$with || strtolower($with) != 'xmlhttprequest' ) {
                 $authConfig = $this->server->config('application.auth');
                 $response->setHeaders(array('WWW-Authenticate'=> $authConfig['mechanism']));
             }
             $response->setMethods($op->allowedMethods());
         }
+
+        // Missing arguments!
         elseif( $missingArgs = $this->findMissingArgs($method, $op) ) {
             $response = new OperationResponse(400);
             $response->setBody(array(
                     'error' => 'One or more required arguments is missing ('.implode(', ', $missingArgs).')'
                 ));
         }
+
+        // All is fine :)
         else {
             $response = $op->exec($this->server, $this->db, $this->cache);
         }
