@@ -1,5 +1,6 @@
 *.DS_Store
 static*
+rocker-js*
 test.php
 node_modules*
 .idea*
