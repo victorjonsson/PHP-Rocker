@@ -10,7 +10,7 @@ use Slim\Slim;
 /**
  * Class that manages request to the API
  *
- * @package Rocker\REST
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
@@ -84,18 +84,23 @@ class RequestController {
         $wildCardIndex_b = implode('/', $path).'/*';
         $index = implode('/', $path);
 
-        if( isset($operations[$wildCardIndex_a]) ) {
-            return new $operations[$wildCardIndex_a]();
-        }
-        elseif( isset($operations[$wildCardIndex_b]) ) {
-            return new $operations[$wildCardIndex_b]();
-        }
-        else {
-            try {
+        try {
+            if( isset($operations[$wildCardIndex_a]) ) {
+                return new $operations[$wildCardIndex_a]();
+            }
+            elseif( isset($operations[$wildCardIndex_b]) ) {
+                return new $operations[$wildCardIndex_b]();
+            }
+            elseif( isset($operations[$index]) ) {
                 return new $operations[$index]();
-            } catch(\Exception $e) {
+            } else {
                 return null;
             }
+        } catch(\Exception $e) {
+            if( $this->server->config('mode') == 'development' ) {
+                throw $e;
+            }
+            return null;
         }
     }
 

@@ -20,7 +20,7 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '0.9.19';
+    const VERSION = '0.9.20';
 
     /**
      * @var array

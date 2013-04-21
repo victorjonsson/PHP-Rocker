@@ -9,7 +9,7 @@ use Rocker\Console\Utils;
 /**
  * Console method used to store information about remote Rocker servers
  *
- * @package Rocker\Console\Method
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

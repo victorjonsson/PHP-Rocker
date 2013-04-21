@@ -5,7 +5,7 @@ namespace Rocker\Console\Method;
 /**
  * Interface for console methods
  *
- * @package Rocker\Console\Method
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

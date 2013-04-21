@@ -8,7 +8,7 @@ use Rocker\Utils\Security\Utils;
 /**
  * Object representing a user
  *
- * @package Rocker\Object\User
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

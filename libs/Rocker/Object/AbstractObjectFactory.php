@@ -9,7 +9,7 @@ use Rocker\Cache\TempMemoryCache;
 /**
  * Base class for factory classes that creates objects of any kind
  *
- * @package Rocker\Object
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

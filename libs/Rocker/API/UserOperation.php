@@ -12,7 +12,7 @@ use Slim\Http\Request;
 /**
  * API Operation used to manage user objects
  *
- * @package Rocker\API
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

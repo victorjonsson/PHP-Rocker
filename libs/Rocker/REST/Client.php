@@ -15,7 +15,7 @@ use Slim\Http\Request;
  * Rocker Rest Server client. Makes it possible to communicate
  * with a remote Rocker server
  *
- * @package Rocker\REST
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

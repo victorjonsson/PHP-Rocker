@@ -11,7 +11,7 @@ use Slim\Slim;
 /**
  * Returns the user data of the user that authenticates the request
  *
- * @package Rocker\API
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

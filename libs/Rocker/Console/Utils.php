@@ -9,7 +9,7 @@ use Rocker\REST\ClientInterface;
 /**
  * General utility functions used when writing console programs
  *
- * @package Rocker\Console
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

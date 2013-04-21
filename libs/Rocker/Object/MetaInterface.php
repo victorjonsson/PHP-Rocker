@@ -5,7 +5,7 @@ namespace Rocker\Object;
 /**
  * Interface for objects that has meta data
  *
- * @package Rocker\Object
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

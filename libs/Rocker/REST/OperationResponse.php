@@ -6,7 +6,7 @@ namespace Rocker\REST;
  * Class that represents a response from an API operation. This class
  * is used to setup the response to the client
  *
- * @package Rocker\REST
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

@@ -7,7 +7,7 @@ use Fridge\DBAL\ConnectionFactory;
 /**
  * Class used to load a singleton instance of the database class
  *
- * @package Rocker\Object
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

@@ -5,7 +5,7 @@ namespace Rocker\Cache;
 /**
  * Cache class that uses file system
  *
- * @package Rocker\Cache
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

@@ -6,7 +6,7 @@ namespace Rocker\Object;
  * This class serves as a container from where you
  * can fetch and store data of any kind
  *
- * @package Rocker\Object
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

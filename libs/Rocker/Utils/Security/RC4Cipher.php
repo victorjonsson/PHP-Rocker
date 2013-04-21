@@ -4,6 +4,7 @@ namespace Rocker\Utils\Security;
 /**
  * RC4 symmetric cipher encryption/decryption
  *
+ * @package PHP-Rocker
  * @author Ali Farhadi (http://farhadi.ir/)
  * @license Gnu Public License, see the GPL for details.
  */

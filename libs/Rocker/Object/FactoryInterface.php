@@ -4,7 +4,7 @@ namespace Rocker\Object;
 /**
  * Interface for factory that handles CRUD operations on objects
  *
- * @package Rocker\Object
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

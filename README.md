@@ -56,7 +56,7 @@ $ composer install
 ```
 
 **3) Edit config.php**. There's a lot of things you can configure if you want to but the database parameters is
-the only ones you probably must edit.
+the only thing you probably must edit.
 
 
 **4) Run install.php** in your console which will setup the database tables and create an admin user. You will be
@@ -261,11 +261,11 @@ Load user data
 $ rocker users -l john.doe@website.com
 ```
 
-You can also create, delete and update the users using the console program. Run `rocker users` in the console to get more help.
+You can also create, delete and update the users using the console program. Run `rocker` in the console to get more help.
 
 ## Extending the API with more operations
 
-Lorem te ipusm del tara
+Here you can [read more about how to create custom operations](https://github.com/victorjonsson/PHP-Rocker/wiki/Creating-a-custom-operation)
 
 ## A note on security
 

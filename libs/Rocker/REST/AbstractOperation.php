@@ -10,7 +10,7 @@ use Slim\Slim;
 /**
  * Base class that can be extended by classes that serves as API operations
  *
- * @package Rocker\REST
+ * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
