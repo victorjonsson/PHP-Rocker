@@ -20,12 +20,12 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '0.9.20';
+    const VERSION = '1.0.2';
 
     /**
      * @var array
      */
-    private $boundEventListeners = array();
+    private $boundEventListeners = array('filter'=>array(), 'event'=>array());
 
     /**
      * @var bool
@@ -57,10 +57,15 @@ class Server extends \Slim\Slim  {
 
         // Bind events defined in config
         if( !empty($config['application.events']) ) {
-            foreach($config['application.events'] as $eventData) {
-                $event = key($eventData);
-                $func = current($eventData);
+            foreach($config['application.events'] as $event => $func) {
                 $this->bind($event, $func);
+            }
+        }
+
+        // Add filters defined in config
+        if( !empty($config['application.filters']) ) {
+            foreach( $config['application.filters'] as $filter => $func) {
+                $this->bind($filter, $func, 'filter');
             }
         }
     }
@@ -173,10 +178,11 @@ class Server extends \Slim\Slim  {
     /**
      * @param string $event
      * @param \Closure $func
+     * @param string $type
      */
-    public function bind($event, $func)
+    public function bind($event, $func, $type='event')
     {
-        $this->boundEventListeners[$event][] = $func;
+        $this->boundEventListeners[$type][$event][] = $func;
     }
 
     /**
@@ -186,10 +192,36 @@ class Server extends \Slim\Slim  {
      */
     public function triggerEvent($event, $db, $cache)
     {
-        if( isset($this->boundEventListeners[$event]) ) {
-            foreach($this->boundEventListeners[$event] as $func) {
-                $func($this, $db, $cache);
+        if( isset($this->boundEventListeners['event'][$event]) ) {
+            foreach($this->boundEventListeners['event'][$event] as $func) {
+                call_user_func($func, $this, $db, $cache);
             }
         }
+    }
+
+    /**
+     * @param string $event
+     * @param mixed $content
+     * @param $db
+     * @param $cache
+     * @return mixed
+     */
+    public function applyFilter($event, $content, $db, $cache)
+    {
+        if( isset($this->boundEventListeners['filter'][$event]) ) {
+            foreach($this->boundEventListeners['filter'][$event] as $func) {
+                $content = call_user_func($func, $this, $content, $db, $cache);
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->settings;
     }
 }

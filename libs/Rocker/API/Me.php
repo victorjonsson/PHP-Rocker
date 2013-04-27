@@ -22,7 +22,8 @@ class Me extends AbstractOperation {
      */
     public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
-        return new OperationResponse(200, $this->user->toArray());
+        $userData = $server->applyFilter('user.array', $this->user->toArray(), $db, $cache);
+        return new OperationResponse(200, $userData);
     }
 
     /**

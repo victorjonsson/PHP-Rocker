@@ -50,11 +50,9 @@ class UserOperation extends AbstractObjectOperation {
     }
 
     /**
-     * @param \Rocker\Object\User\UserInterface $obj
-     * @param \Rocker\Object\User\UserFactory $factory
-     * @param \Rocker\REST\OperationResponse $response
+     * @inheritdoc
      */
-    protected function updateObject($obj, $factory, $response)
+    protected function updateObject($obj, $factory, $response, $db, $cache, $server)
     {
         if ( !empty($_REQUEST['email']) ) {
             $obj->setEmail($_REQUEST['email']);
@@ -65,14 +63,13 @@ class UserOperation extends AbstractObjectOperation {
         if ( !empty($_REQUEST['password']) ) {
             $obj->setPassword($_REQUEST['password']);
         }
-        parent::updateObject($obj, $factory, $response);
+        parent::updateObject($obj, $factory, $response, $db, $cache, $server);
     }
 
     /**
-     * @param \Rocker\Object\User\UserFactory $userFactory
-     * @param OperationResponse $response
+     * @inheritdoc
      */
-    protected function createNewObject($userFactory, $response)
+    protected function createNewObject($userFactory, $response, $db, $cache, $server)
     {
         try {
 
@@ -96,7 +93,7 @@ class UserOperation extends AbstractObjectOperation {
             $userFactory->update($newUser);
 
             $response->setStatus(201);
-            $response->setBody( $this->objectToArray($newUser) );
+            $response->setBody( $this->objectToArray($newUser, $server, $db, $cache) );
 
         } catch (DuplicationException $e) {
             $response->setStatus(409);
@@ -119,6 +116,14 @@ class UserOperation extends AbstractObjectOperation {
         }
 
         return array();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function objectToArray($object, $server, $db, $cache)
+    {
+        return $server->applyFilter('user.array', $object->toArray(), $db, $cache);
     }
 
     /**

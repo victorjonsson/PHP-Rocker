@@ -16,7 +16,7 @@ return array(
      * Database
      * ------------------
      * Configuration parameters for your database. Supported drivers
-     * are pdo_mysql, postgrsql, mssql (see Fridge DBAL)
+     * are pdo_mysql, postgrsql, mssql, oracle (see Fridge DBAL)
      */
     'application.db' => array(
         'host' => 'localhost',
@@ -25,7 +25,7 @@ return array(
         'password' => 'root',
         'prefix' => 'rocker_',
         'collate' => 'utf8_swedish_ci',
-        'engine' => 'innoDb',
+        'engine' => 'InnoDB',
         'charset' => 'utf8',
         'driver' => 'pdo_mysql'
     ),
@@ -38,7 +38,7 @@ return array(
      *
      * $class — Which ever cache class you want to use. You can choose
      * between TempMemoryCache, FileCache and APC depending on what's
-     * supported by your system. You can of course also change this
+     * supported by your server. You can of course also change this
      * to a class of your own, as long as it implements Rocker\Cache\CacheInterface
      */
     'application.cache' => array(
@@ -47,7 +47,7 @@ return array(
     ),
 
     /*
-     * Base path of the API
+     * Base path of the API (eg. http://webservice.com/api/)
      */
     'application.path' => '/api/',
 
@@ -61,12 +61,27 @@ return array(
      * the Rocker\REST\OperationInterface
      */
     'application.operations' => array(
+
+        // List all available operations (does not require authentication)
         'operations' => '\\Rocker\\API\\ListOperations',
+
+        // Get current version of PHP-Rocker (does not require authentication)
         'system/version' => '\\Rocker\\API\\Version',
+
+        // Add/remove admin privileges from users
         'admin' => '\\Rocker\\API\\AdminPrivilegeOperation',
+
+        // CRUD operations for users
         'user/*' => '\\Rocker\\API\\UserOperation',
+
+        // Get user data of the authenticated user
         'me' => '\\Rocker\\API\\Me',
-        'cache/clear' => '\\Rocker\\API\\ClearCache'
+
+        // Clear cache
+        'cache/clear' => '\\Rocker\\API\\ClearCache',
+
+        // CRUD operations for files (file storage)
+        'file/*' => '\\Rocker\\API\\FileOperation'
     ),
 
     /*
@@ -86,7 +101,18 @@ return array(
         'secret' => 'Some hard to guess string'
     ),
 
-    /**
+    /*
+     * File storage
+     * -----------------
+     * Lorem te ipsum
+     */
+    'application.files' => array(
+        'class' => '\\Rocker\\Utils\\FileStorage\\Storage',
+        'path' => __DIR__.'/static/',
+        'base' => 'http://localhost/PHP-Rocker/static/'
+    ),
+
+    /*
      * Console methods
      * -------------------
      * Array with additional console methods. Key being the method name called in the console and
@@ -95,7 +121,7 @@ return array(
     'application.console' => array(),
 
     /*
-     * System mode
+     * System mode (slim parameter)
      * ----------------
      * Either "production" or "development". Having this parameter
      * set to the latter means that the server will output an entire
@@ -103,8 +129,7 @@ return array(
      */
     'mode' => 'development',
 
-
-    /**
+    /*
      * Application events
      * -------------------
      * With this parameter you can add event listener. Example:
@@ -112,5 +137,18 @@ return array(
      *      array('delete.user'=>'\\MyCompany\\SomeClass::eventListener')
      * )
      */
-    'application.events' => array(),
+    'application.events' => array(
+        // This action is only needed if the application supports file storage
+        'delete.user' => '\\Rocker\\API\\FileOperation::deleteUserEvent'
+    ),
+
+    /*
+     * Application filters
+     * ----------------------
+     * Use this parameter to setup filters applied by the server
+     */
+    'application.filters' => array(
+        // This filter is only needed if the application supports file storage
+        'user.array' => '\\Rocker\\API\\FileOperation::userFilter'
+    )
 );

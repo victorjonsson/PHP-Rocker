@@ -96,6 +96,27 @@ var updateUser = new dokimon.TestFormPost(
     true
 );
 
+var createFile = new dokimon.Test(
+    'createFile',
+    {
+        url : '/file/myfile.txt',
+        method : 'PUT',
+        write : 'tjena',
+        dependsOn: 'createUser',
+        headers : {
+            Authorization : auth
+        }
+    },
+    function(res, body) {
+        assert.equal(res.statusCode, 201);
+        var file = JSON.parse(body);
+        assert.equal(file.extension, 'txt');
+        assert.equal(file.size, 5);
+        assert.equal(file.name, userEmail+'/myfile.txt');
+    },
+    true
+);
+
 var canOnlyDeleteSelf = new dokimon.Test(
     'canOnlyDeleteSelf',
     {
@@ -151,6 +172,7 @@ module.exports = [
     userNameCollision,
     updateUserWithInvalidAuth,
     updateUser,
+    createFile,
     canOnlyDeleteSelf,
     deleteUser,
     isDeletedUserGone

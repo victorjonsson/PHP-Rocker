@@ -1,5 +1,4 @@
 *.DS_Store
-static*
 rocker-js*
 test.php
 node_modules*
@@ -7,3 +6,4 @@ node_modules*
 vendor*
 composer.lock
 phpunit.phar
+!.keep

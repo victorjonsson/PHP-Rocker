@@ -36,7 +36,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
         // Create object
         if( $method == 'POST' && $this->requestedObject() === false ) {
-            $this->createNewObject($factory, $response);
+            $this->createNewObject($factory, $response, $db, $cache, $server);
         }
         else {
 
@@ -49,7 +49,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
                 // Update object
                 if( $method == 'POST' ) {
-                    $this->updateObject($requestedObj, $factory, $response);
+                    $this->updateObject($requestedObj, $factory, $response, $db, $cache, $server);
                 }
 
                 // Delete object
@@ -64,7 +64,8 @@ abstract class AbstractObjectOperation extends AbstractOperation {
                     if( isset($_REQUEST['q']) ) {
 
                         /* @var SearchResult $result */
-                        list($offset, $limit, $query, $result, $objects) = $this->searchObjects($factory);
+                        $search = $this->searchObjects($factory, $db, $cache, $server);
+                        list($offset, $limit, $query, $result, $objects) = $search;
 
                         $response->setBody(array(
                                 'query' => $query,
@@ -77,7 +78,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
                     // Get the requested object
                     else {
-                        $response->setBody( $this->objectToArray($requestedObj) );
+                        $response->setBody( $this->objectToArray($requestedObj, $server, $db, $cache) );
                     }
                 }
             }
@@ -87,10 +88,9 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     }
 
     /**
-     * @param FactoryInterface $factory
-     * @return array
+     * @inheritdoc
      */
-    protected function searchObjects($factory)
+    protected function searchObjects($factory, $db, $cache, $server)
     {
         $offset = !empty($_REQUEST['offset']) ? $_REQUEST['offset'] : 0;
         $limit = !empty($_REQUEST['limit']) ? $_REQUEST['limit'] : 50;
@@ -119,7 +119,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
         $objects = array();
         foreach ($result as $obj) {
-            $objects[] = $this->objectToArray($obj);
+            $objects[] = $this->objectToArray($obj, $server, $db, $cache);
         }
         return array($offset, $limit, $query, $result, $objects);
     }
@@ -135,8 +135,11 @@ abstract class AbstractObjectOperation extends AbstractOperation {
      * @param \Rocker\Object\ObjectInterface $obj
      * @param \Rocker\Object\AbstractObjectFactory $factory
      * @param OperationResponse $response
+     * @param ConnectionInterface $db
+     * @param CacheInterface $cache
+     * @param \Rocker\Server $server
      */
-    protected function updateObject($obj, $factory, $response)
+    protected function updateObject($obj, $factory, $response, $db, $cache, $server)
     {
         if ( isset($_REQUEST['name']) ) {
             $obj->setName($_REQUEST['name']);
@@ -154,14 +157,17 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         }
 
         $factory->update($obj);
-        $response->setBody( $this->objectToArray($obj) );
+        $response->setBody( $this->objectToArray($obj, $server, $db, $cache) );
     }
 
     /**
-     * @param $factory
+     * @param AbstractObjectFactory $factory
      * @param OperationResponse $response
+     * @param ConnectionInterface $db
+     * @param CacheInterface $cache
+     * @param Server $sever
      */
-    abstract protected function createNewObject($factory, $response);
+    abstract protected function createNewObject($factory, $response, $db, $cache, $server);
 
     /**
      * @inheritDoc
@@ -180,11 +186,14 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
     /**
      * @param ObjectInterface $object
+     * @param \Rocker\Server $server
+     * @param ConnectionInterface $db
+     * @param CacheInterface $cache
      * @return mixed
      */
-    protected function objectToArray($object)
+    protected function objectToArray($object, $server, $db, $cache)
     {
-        return $object->toArray();
+        return $server->applyFilter('object.array', $object->toArray(), $db, $cache);
     }
 
     /**

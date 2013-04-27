@@ -17,7 +17,7 @@ use Slim\Slim;
 class RequestController {
 
     /**
-     * @var Server
+     * @var \Rocker\Server
      */
     protected $server;
 
@@ -80,19 +80,20 @@ class RequestController {
     private function loadOperation(array $path)
     {
         $operations = $this->server->config('application.operations');
-        $wildCardIndex_a = implode('/', array_slice($path, 0, count($path)-1)).'/*';
+        $prePath = array_slice($path, 0, count($path)-1);
+        $wildCardIndex_a = implode('/', $prePath).'/*';
         $wildCardIndex_b = implode('/', $path).'/*';
         $index = implode('/', $path);
 
         try {
             if( isset($operations[$wildCardIndex_a]) ) {
-                return new $operations[$wildCardIndex_a]();
+                return new $operations[$wildCardIndex_a](implode('/', $prePath));
             }
             elseif( isset($operations[$wildCardIndex_b]) ) {
-                return new $operations[$wildCardIndex_b]();
+                return new $operations[$wildCardIndex_b]($index);
             }
             elseif( isset($operations[$index]) ) {
-                return new $operations[$index]();
+                return new $operations[$index]($index);
             } else {
                 return null;
             }

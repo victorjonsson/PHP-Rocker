@@ -9,7 +9,7 @@ take care of things like routing and data storage.
 #### Features
 
 - User management 
-- CRUD operations (use the template classes in Rocker framework to extend the API with your own objects)
+- CRUD operations (use the base classes in Rocker framework to extend the API with your own objects)
 - EAV data model
 - Built in object cache (supporting both APC and file based caching)
 - Interface based (easy to extend and customize)
