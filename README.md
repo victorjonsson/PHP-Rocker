@@ -11,6 +11,7 @@ take care of things like routing and data storage.
 - User management 
 - CRUD operations (use the base classes in Rocker framework to extend the API with your own objects)
 - EAV data model
+- Static file storage (with support for image manipulation and storage on Amazon S3)
 - Built in object cache (supporting both APC and file based caching)
 - Interface based (easy to extend and customize)
 - Administer your remote Rocker server from the console
@@ -301,7 +302,6 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Road map
 
-- Change from POST to PUT when creating objects
 - Write the authentication method as a Slim middleware
-- Make it possible to store blob data using PUT
+- ~~Make it possible to store blob data using PUT~~
 - Look into using another data model for stored objects
