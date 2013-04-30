@@ -4,6 +4,7 @@ namespace Rocker;
 use Fridge\DBAL\Adapter\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\DB;
+use Rocker\REST\OperationResponse;
 use Rocker\REST\RequestController;
 use Rocker\Utils\ErrorHandler;
 
@@ -20,7 +21,7 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.4';
 
     /**
      * @var array
@@ -112,8 +113,8 @@ class Server extends \Slim\Slim  {
 
         } catch(\InvalidArgumentException $e) {
 
-            $response = new REST\OperationResponse(400, array('error'=>$e->getMessage()));
-            $controller = new REST\RequestController($this, null, null);
+            $response = new OperationResponse(400, array('error'=>$e->getMessage()));
+            $controller = new RequestController($this, null, null);
             $controller->handleResponse( $response );
 
         } catch(\Exception $e) {
@@ -122,10 +123,10 @@ class Server extends \Slim\Slim  {
 
             $mess = array('message'=>$e->getMessage());
             if( $this->config('mode') == 'development' ) {
-                $mess['trace'] = $e->getTrace();
+                $mess['trace'] = $e->getTraceAsString();
             }
-            $response = new REST\OperationResponse(500, $mess);
-            $controller = new REST\RequestController($this, null, null);
+            $response = new OperationResponse(500, $mess);
+            $controller = new RequestController($this, null, null);
             $controller->handleResponse( $response );
         }
     }

@@ -86,7 +86,7 @@ class ErrorHandler {
 
         $log_body = trim(strip_tags($html_message));
 
-        // If we're not in dev mode the html message will not
+        // If we're in production/test the html message will not
         // contain info about the file where the error appeared
         // therefor we add it to error log here
         if( $this->mode != 'development' ) {
@@ -95,8 +95,8 @@ class ErrorHandler {
                 "\n- Code: ".$e->getCode();
         }
 
-        $log_message = '### Error '.$_SERVER['PHP_SELF'].
-            ( empty($_SERVER['QUERY_STRING']) ? '':'?'.$_SERVER['QUERY_STRING']).
+        $log_message = '### Error '.( empty($_SERVER['REQUEST_URI']) ? '':$_SERVER['REQUEST_URI']).
+            ( empty($_SERVER['REQUEST_METHOD']) ? '':' ('.$_SERVER['REQUEST_METHOD'].')').
             ( empty($_SERVER['REMOTE_ADDR']) ? '':' '.$_SERVER['REMOTE_ADDR']).
             "\n".$log_body.
             "\n".$e->getTraceAsString();

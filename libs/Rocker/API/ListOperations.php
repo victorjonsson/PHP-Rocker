@@ -25,7 +25,7 @@ class ListOperations extends AbstractOperation {
         foreach($server->config('application.operations') as $path => $op) {
 
             /* @var \Rocker\REST\OperationInterface $operation */
-            $operation = new $op();
+            $operation = new $op(null);
 
             $operations[$path] = array(
                 'class' => $op,

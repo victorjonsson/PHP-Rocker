@@ -16,7 +16,7 @@ var checkOperations = new dokimon.Test(
         url : '/operations'
     },
     function(res, body) {
-        assert.equal(res.statusCode, 200);
+        assert.equal(res.statusCode, 200, 'Invalid status code...');
         var ops = JSON.parse(body);
         assert.equal(ops['system/version'] !== undefined, true, 'Not containing version operation');
     }

@@ -104,12 +104,27 @@ return array(
     /*
      * File storage
      * -----------------
-     * Lorem te ipsum
+     * $class - Any class that implements Rocker\Utils\FileStorage\StorageInterface
+     *
+     * $path - File path to the directory where files will be saved
+     *
+     * $base - Base URI of file directory
+     *
+     * $img_manipulation_max_size - Image versions will not be generated for images
+     * which file size exceeds this limit wil
+     *
+     * $img_manipulation_max_dimensions - Image versions will not be generated for
+     * images which dimension exceeds this value ([width]x[height])
+     *
+     * $img_manipulation_quality - Quality of generated image versions
      */
     'application.files' => array(
         'class' => '\\Rocker\\Utils\\FileStorage\\Storage',
         'path' => __DIR__.'/static/',
-        'base' => 'http://localhost/PHP-Rocker/static/'
+        'base' => 'http://localhost/PHP-Rocker/static/',
+        'img_manipulation_max_size' => '5MB',
+        'img_manipulation_max_dimensions' => '1024x1024',
+        'img_manipulation_quality' => 90
     ),
 
     /*

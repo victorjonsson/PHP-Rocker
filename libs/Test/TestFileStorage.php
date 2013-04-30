@@ -18,7 +18,10 @@ class TestFileStorage extends CommonTestCase {
         self::$storage = new Rocker\Utils\FileStorage\Storage(array(
             'mode' => 'development',
             'application.files' => array(
-                'path' => __DIR__.'/tmp-storage'
+                'path' => __DIR__.'/tmp-storage',
+                'img_manipulation_max_size' => '5MB',
+                'img_manipulation_max_dimensions' => '300x300',
+                'img_manipulation_quality' => 90
             )
         ));
     }
@@ -29,25 +32,26 @@ class TestFileStorage extends CommonTestCase {
         $this->assertEquals(array(
                 'name' => 'test.txt',
                 'size' => 5,
-                'ext' => 'txt'
+                'extension' => 'txt'
             ), $data);
 
         $data = self::$storage->storeFile($f, 'test2.axc');
         $this->assertEquals(array(
                 'name' => 'test2.axc',
                 'size' => 5,
-                'ext' => 'axc'
+                'extension' => 'axc'
             ), $data);
 
         $data = self::$storage->storeFile($f, 'aloha/test.txt');
         $this->assertEquals(array(
                 'name' => 'aloha/test.txt',
                 'size' => 5,
-                'ext' => 'txt'
+                'extension' => 'txt'
             ), $data);
 
         $files= array();
         $dirs = array();
+        /* @var SplFileInfo $f */
         foreach( new FilesystemIterator(__DIR__.'/tmp-storage/') as $f ) {
             if( is_dir($f->getRealPath()) ) {
                 $dirs[] = basename($f->getRealPath());
@@ -63,6 +67,35 @@ class TestFileStorage extends CommonTestCase {
         self::$storage->removeFile('aloha/test.txt');
 
         $this->assertFalse(file_exists(__DIR__.'/tmp-storage/aloha/test.txt'));
+    }
+
+    public function testImageVersionsFailed() {
+        $data = self::$storage->storeFile(__DIR__.'/img-large.jpg', 'large.jpg', array('thumb'=>'100x100'));
+        $this->assertEquals('skipped', $data['versions']);
+    }
+
+    public function testImageVersions() {
+        $data = self::$storage->storeFile(__DIR__.'/img.jpg', 'image.jpg', array('thumb'=>'30x30', 'medium'=>'100x0'));
+        $this->assertEquals(array(
+                'thumb'=> 'image-30x30.jpg',
+                'medium' => 'image-100x0.jpg'
+            ), $data['versions']);
+
+        list($width, $height) = getimagesize( __DIR__.'/tmp-storage/image-30x30.jpg' );
+        $this->assertEquals(30, $width);
+        $this->assertEquals(30, $height);
+        list($width, $height) = getimagesize( __DIR__.'/tmp-storage/image-100x0.jpg' );
+        $this->assertEquals(100, $width);
+        $this->assertEquals(100, $height);
+
+        self::$storage->removeVersions($data['name'], array('image-30x30.jpg'));
+        $this->assertFalse( file_exists(__DIR__.'/tmp-storage/image-30x30.jpg') );
+        $this->assertTrue( file_exists(__DIR__.'/tmp-storage/image-100x0.jpg') );
+
+        self::$storage->generateVersion($data['name'], '10x40');
+        list($width, $height) = getimagesize( __DIR__.'/tmp-storage/image-10x40.jpg' );
+        $this->assertEquals(10, $width);
+        $this->assertEquals(40, $height);
     }
 
     public static function tearDownAfterClass() {

@@ -4,18 +4,21 @@ namespace Rocker\API;
 use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Object\ObjectInterface;
 use Rocker\Object\User\UserFactory;
-use Rocker\Object\User\UserInterface;
-use Rocker\Utils\FileStorage\StorageInterface;
 use Rocker\REST\AbstractOperation;
 use Rocker\Cache\CacheInterface;
 use Rocker\REST\OperationResponse;
 use Rocker\Server;
-use Rocker\Utils\Security\Utils;
-use Slim\Slim;
 
 
 /**
- * Returns the user data of the user that authenticates the request
+ * CRUD operations for static files:
+ *
+ *  - Put a new file (and create image versions)
+ *  - Delete a file
+ *  - Get info about all files
+ *  - Delete all files
+ *  - Remove image versions
+ *  - Create image versions
  *
  * @package PHP-Rocker
  * @author Victor Jonsson (http://victorjonsson.se)
@@ -44,6 +47,41 @@ class FileOperation extends AbstractOperation {
             return new OperationResponse(404, array('error'=>'file not found'));
         }
 
+
+        if( $method == 'POST' ) {
+
+            /*
+             * Create new image versions
+             */
+            if( empty($_REQUEST['versions']) ) {
+                return new OperationResponse(400, array('error'=>'Request parameter "versions" missing'));
+            } else {
+
+                // Create
+                if( is_array($_REQUEST['versions']) ) {
+                    $status = 201;
+                    // todo: remove old files if version existed before this request
+                    $fileName = $userFiles[$obj]['name'];
+                    foreach($_REQUEST['versions'] as $versionName => $versionSize) {
+                        if( $versionBaseName = $storage->generateVersion($fileName, $versionSize) ) {
+                            $userFiles[$obj]['versions'][$versionName] = $versionBaseName;
+                        }
+                    }
+                }
+                // Remove versions
+                else {
+                    $status = 200;
+                    $storage->removeVersions($userFiles[$obj]['name'], $userFiles[$obj]['versions']);
+                    unset($userFiles[$obj]['versions']);
+                }
+
+                $this->user->meta()->set('files', $userFiles);
+                $userFactory = new UserFactory($db, $cache);
+                $userFactory->update($this->user);
+                return new OperationResponse($status, $this->addLocation($userFiles[$obj], $fileConf));
+            }
+
+        }
         if( $method == 'GET' || $method == 'DELETE' ) {
 
             /*
@@ -52,12 +90,31 @@ class FileOperation extends AbstractOperation {
             if( $obj ) {
                 if( $method == 'DELETE' ) {
                     $file = $userFiles[$obj];
-                    $storage->removeFile($file['name']);
-                    unset($userFiles[$obj]);
+
+                    // Remove versions
+                    if( !empty($_GET['versions']) ) {
+                        if( !empty($userFiles['versions']) ) {
+                            $versionFiles = array();
+                            foreach($_GET['versions'] as $versionName) {
+                                if( isset($userFiles['versions'][$versionName]) )
+                                    $versionFiles[] = $userFiles['versions'][$versionName];
+                            }
+                            $storage->removeVersions($userFiles[$obj]['name'], $versionFiles);
+                        }
+                        $message = 'Version removed';
+                    }
+                    // Remove file
+                    else {
+                        $storage->removeFile($file['name']);
+                        unset($userFiles[$obj]);
+                        $message = 'File removed';
+                    }
+
                     $this->user->meta()->set('files', $userFiles);
                     $userFactory = new UserFactory($db, $cache);
                     $userFactory->update($this->user);
-                    return new OperationResponse(204);
+                    return new OperationResponse(200, array('message'=>$message));
+
                 } else {
                     return new OperationResponse(200, $this->addLocation($userFiles[$obj], $fileConf));
                 }
@@ -73,7 +130,7 @@ class FileOperation extends AbstractOperation {
                 }
 
                 /*
-                 * Get all files
+                 * Get info about all files
                  */
                 else {
                     foreach($userFiles as $name => $fileData) {
@@ -93,23 +150,25 @@ class FileOperation extends AbstractOperation {
                 return new OperationResponse(400, array('error' => 'no file given'));
             }
 
-            $tmpFile = $this->saveRequestBodyToFile($server->request()->getBody());
+            // No php files please...
+            if( strpos(pathinfo($obj, PATHINFO_EXTENSION), 'php') !== false ) {
+                $obj = pathinfo($obj, PATHINFO_FILENAME) .'.nfw';
+            }
+
+            // Store the file
+            $tmpFile = $this->saveRequestBodyToFile($server->request()->getBody(), isset($_GET['base64_decode']));
             $newFileName = $this->createFileName($obj);
-            $fileData = $storage->storeFile( $tmpFile, $newFileName );
-
-           # if( $this->isImage($fileData) && !empty($_GET['versions']) && is_array($_GET['versions']) ) {
-                // todo: generate image versions
-            #    $fileData['versions'] = $_GET['versions'];
-            #}
-
+            $versions = !empty($_GET['versions']) && is_array($_GET['versions']) ? $_GET['versions']:array();
+            $fileData = $storage->storeFile( $tmpFile, $newFileName, $versions );
             fclose($tmpFile);
 
+            // Add file data to user meta and update user
             $userFiles[$obj] = $fileData;
             $this->user->meta()->set('files', $userFiles);
-
             $userFactory = new UserFactory($db, $cache);
             $userFactory->update($this->user);
 
+            // Return file info
             return new OperationResponse(201, $this->addLocation($fileData, $fileConf));
         }
     }
@@ -127,11 +186,14 @@ class FileOperation extends AbstractOperation {
      * @param ObjectInterface $user
      * @param \Rocker\Object\User\UserFactory $factory
      * @param array $userFiles
-     * @param StorageInterface $storage
+     * @param \Rocker\Utils\FileStorage\StorageInterface $storage
      */
     protected static function deleteAllFiles(ObjectInterface $user, UserFactory $factory, $userFiles, $storage)
     {
         foreach($userFiles as $f) {
+            if( !empty($f['versions']) ) {
+                $storage->removeVersions($f['name'], $f['versions']);
+            }
             $storage->removeFile($f['name']);
         }
 
@@ -161,18 +223,19 @@ class FileOperation extends AbstractOperation {
 
     /**
      * @param string $input
+     * @param bool $base64Decode
      * @throws \ErrorException
      * @return resource
      */
-    protected function saveRequestBodyToFile($input)
+    protected function saveRequestBodyToFile($input, $base64Decode = false)
     {
         $file = tmpfile();
 
         if( !$file ) {
             throw new \ErrorException('Unable to open temp file for writing');
         }
-
-        fwrite($file, $input);
+        error_log($input);
+        fwrite($file, $base64Decode ? base64_decode($input):$input);
 
         return $file;
     }
@@ -200,7 +263,7 @@ class FileOperation extends AbstractOperation {
      */
     public function allowedMethods()
     {
-        return array('PUT', 'GET', 'DELETE');
+        return array('PUT', 'GET', 'DELETE', 'POST');
     }
 
     /**
