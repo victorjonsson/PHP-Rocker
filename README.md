@@ -9,7 +9,7 @@ take care of things like routing and data storage.
 #### Features
 
 - User management 
-- CRUD operations (use the base classes in Rocker framework to extend the API with your own objects)
+- CRUD operations (use the base classes in PHP-Rocker to extend the API with your own objects and operations)
 - EAV data model
 - Static file storage (with support for image manipulation and storage on Amazon S3)
 - Built in object cache (supporting APC and file based caching)
@@ -38,7 +38,7 @@ take care of things like routing and data storage.
 
 ## Installation
 
-**1) Download and unzip** Rocker into your web folder. Running the following command in the terminal will download the
+**1) Download and unzip** PHP-Rocker into your web folder. Running the following command in the terminal will download the
 latest version of PHP-Rocker and unzip it to a directory named rocker.
 
 ```
@@ -68,7 +68,7 @@ $ php -f install.php
 
 ## API reference
 
-The [API reference](https://github.com/victorjonsson/PHP-Rocker/wiki/API-Reference) has moved to its own wiki page.
+The API reference has moved to its own [wiki page](https://github.com/victorjonsson/PHP-Rocker/wiki/API-Reference).
 
 ## Extending the API with more operations
 
