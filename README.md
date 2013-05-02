@@ -12,8 +12,8 @@ take care of things like routing and data storage.
 - CRUD operations (use the base classes in Rocker framework to extend the API with your own objects)
 - EAV data model
 - Static file storage (with support for image manipulation and storage on Amazon S3)
-- Built in object cache (supporting both APC and file based caching)
-- Interface based (easy to extend and customize)
+- Built in object cache (supporting APC and file based caching)
+- Interface based (easy to extend and to customize)
 - Administer your remote Rocker server from the console
 
 
@@ -21,8 +21,8 @@ take care of things like routing and data storage.
 - [System requirements](#system-requirements)
 - [Installation](#installation)
 - [API reference](#api-reference)
-- [Manage remote servers via command line](#manage-remote-servers-via-command-line)
 - [Extending the API with more operations](#extending-the-api-with-more-operations)
+- [Manage remote servers via command line](#manage-remote-servers-via-command-line)
 - [A note on security](#a-note-on-security)
 - [Unit and acceptance testing](#unit-and-acceptance-testing)
 - [License](#license)
@@ -37,9 +37,6 @@ take care of things like routing and data storage.
 
 
 ## Installation
-
-Here you can see [a screencast](http://www.screenr.com/6ct7) going through the install procedure and how to manage
-your Rocker server remotely using the console.
 
 **1) Download and unzip** Rocker into your web folder. Running the following command in the terminal will download the
 latest version of PHP-Rocker and unzip it to a directory named rocker.
@@ -72,6 +69,10 @@ $ php -f install.php
 ## API reference
 
 The [API reference](https://github.com/victorjonsson/PHP-Rocker/wiki/API-Reference) has moved to its own wiki page.
+
+## Extending the API with more operations
+
+Here you can [read more about how to create custom operations](https://github.com/victorjonsson/PHP-Rocker/wiki/Creating-a-custom-operation)
 
 ## Manage remote servers via command line
 
@@ -109,10 +110,6 @@ $ rocker users -l john.doe@website.com
 ```
 
 You can also create, delete and update the users using the console program. Run `rocker` in the console to get more help.
-
-## Extending the API with more operations
-
-Here you can [read more about how to create custom operations](https://github.com/victorjonsson/PHP-Rocker/wiki/Creating-a-custom-operation)
 
 ## A note on security
 
