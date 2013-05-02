@@ -67,7 +67,7 @@ class UserOperation extends AbstractObjectOperation {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     protected function createNewObject($userFactory, $response, $db, $cache, $server)
     {

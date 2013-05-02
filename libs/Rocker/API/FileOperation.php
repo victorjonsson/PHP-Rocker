@@ -92,16 +92,19 @@ class FileOperation extends AbstractOperation {
                     $file = $userFiles[$obj];
 
                     // Remove versions
-                    if( !empty($_GET['versions']) ) {
-                        if( !empty($userFiles['versions']) ) {
+                    if( !empty($_REQUEST['versions']) ) {
+                        if( !empty($file['versions']) ) {
                             $versionFiles = array();
-                            foreach($_GET['versions'] as $versionName) {
-                                if( isset($userFiles['versions'][$versionName]) )
-                                    $versionFiles[] = $userFiles['versions'][$versionName];
+                            foreach($_REQUEST['versions'] as $versionName) {
+                                if( isset($file['versions'][$versionName]) ) {
+                                    $versionFiles[] = $file['versions'][$versionName];
+                                    unset($file['versions'][$versionName]);
+                                }
                             }
-                            $storage->removeVersions($userFiles[$obj]['name'], $versionFiles);
+                            $storage->removeVersions($file['name'], $versionFiles);
                         }
                         $message = 'Version removed';
+                        $userFiles[$obj] = $file;
                     }
                     // Remove file
                     else {

@@ -17,6 +17,8 @@ interface StorageInterface {
      *  size - The file size in bytes
      *  extension - The file extension
      *  versions - Array with image versions (if created)
+     *  width - int (only present if file was an image)
+     *  height - int (only present if file was an image)
      *
      * Example of storing an image and generating versions:
      * <code>
