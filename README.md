@@ -54,7 +54,8 @@ $ composer install
 ```
 
 **3) Edit config.php**. There's a lot of things you can configure if you want to but the database parameters is
-the only thing you probably must edit.
+the only thing you probably must edit. If you want to support file storage you also need to 
+edit 'application.files' => 'base' to the URL of your static files directory
 
 
 **4) Run install.php** in your console which will setup the database tables and create an admin user. You will be
