@@ -13,8 +13,7 @@
         "fridge/dbal": "dev-master",
         "slim/slim": "2.*",
         "jlogsdon/cli": "dev-master",
-        "guzzle/http": "3.3.1.0",
-        "aws/aws-sdk-php": "2.3.1"
+        "guzzle/http": "3.3.1.0"
     },
     "require-dev" : {
         "phpbenchmark/phpbenchmark": "dev-master",
