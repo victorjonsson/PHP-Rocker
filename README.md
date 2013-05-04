@@ -33,7 +33,7 @@ take care of things like routing and data storage.
 
 - **PHP v >= 5.3.2**
 - **MySQL** *The database layer has support several different databases (oracle, mssql, postgresql...) but Rocker is so far only tested with MySQL*
-- **Web server (apache/nginx)** *If using nginx the .htaccess rewrite rules has to be moved to the rewrite configuration of the server" 
+- **Web server (apache/nginx)** *If using nginx the .htaccess rewrite rules has to be moved to the rewrite configuration of the server* 
 
 
 ## Installation
