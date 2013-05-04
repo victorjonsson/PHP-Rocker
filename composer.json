@@ -3,6 +3,7 @@
     "description": "Boilerplate that helps you write RESTful web services on top of Slim framework",
     "minimum-stability": "dev",
     "license" : "MIT",
+    "version" : "1.1.0",
     "authors": [{
         "name": "Victor Jonsson",
         "email": "kontakt@victorjonsson.se"
@@ -12,7 +13,8 @@
         "fridge/dbal": "dev-master",
         "slim/slim": "2.*",
         "jlogsdon/cli": "dev-master",
-        "guzzle/http": "3.3.1"
+        "guzzle/http": "3.3.1.0",
+        "aws/aws-sdk-php": "2.3.1"
     },
     "require-dev" : {
         "phpbenchmark/phpbenchmark": "dev-master",

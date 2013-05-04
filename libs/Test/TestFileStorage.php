@@ -28,25 +28,28 @@ class TestFileStorage extends CommonTestCase {
 
     public function testStorage() {
         $f = __DIR__.'/dummy-file.txt';
-        $data = self::$storage->storeFile($f, 'test.txt');
+        $data = self::$storage->storeFile($f, 'test.txt', 'plain/text');
         $this->assertEquals(array(
                 'name' => 'test.txt',
                 'size' => 5,
-                'extension' => 'txt'
+                'extension' => 'txt',
+                'mime' => 'plain/text'
             ), $data);
 
-        $data = self::$storage->storeFile($f, 'test2.axc');
+        $data = self::$storage->storeFile($f, 'test2.axc', 'plain/text');
         $this->assertEquals(array(
                 'name' => 'test2.axc',
                 'size' => 5,
-                'extension' => 'axc'
+                'extension' => 'axc',
+                'mime' => 'plain/text'
             ), $data);
 
-        $data = self::$storage->storeFile($f, 'aloha/test.txt');
+        $data = self::$storage->storeFile($f, 'aloha/test.txt', 'plain/text');
         $this->assertEquals(array(
                 'name' => 'aloha/test.txt',
                 'size' => 5,
-                'extension' => 'txt'
+                'extension' => 'txt',
+                'mime' => 'plain/text'
             ), $data);
 
         $files= array();
@@ -70,12 +73,12 @@ class TestFileStorage extends CommonTestCase {
     }
 
     public function testImageVersionsFailed() {
-        $data = self::$storage->storeFile(__DIR__.'/img-large.jpg', 'large.jpg', array('thumb'=>'100x100'));
+        $data = self::$storage->storeFile(__DIR__.'/img-large.jpg', 'large.jpg', '', array('thumb'=>'100x100'));
         $this->assertEquals('skipped', $data['versions']);
     }
 
     public function testImageVersions() {
-        $data = self::$storage->storeFile(__DIR__.'/img.jpg', 'image.jpg', array('thumb'=>'30x30', 'medium'=>'100x0'));
+        $data = self::$storage->storeFile(__DIR__.'/img.jpg', 'image.jpg', 'image/jpeg', array('thumb'=>'30x30', 'medium'=>'100x0'));
         $this->assertEquals(array(
                 'thumb'=> 'image-30x30.jpg',
                 'medium' => 'image-100x0.jpg'

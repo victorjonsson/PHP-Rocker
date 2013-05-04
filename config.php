@@ -124,7 +124,7 @@ return array(
         'base' => 'http://localhost/PHP-Rocker/static/',
         'img_manipulation_max_size' => '5MB',
         'img_manipulation_max_dimensions' => '1024x1024',
-        'img_manipulation_quality' => 90
+        'img_manipulation_quality' => 90,
     ),
 
     /*

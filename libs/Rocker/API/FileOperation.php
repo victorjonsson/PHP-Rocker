@@ -158,11 +158,17 @@ class FileOperation extends AbstractOperation {
                 $obj = pathinfo($obj, PATHINFO_FILENAME) .'.nfw';
             }
 
+            // get mime type
+            $request = $server->request();
+            if( !($mime = $request->headers('HTTP_CONTENT_TYPE') || $mime = $request->headers('CONTENT_TYPE')) ) {
+                $mime = 'text/plain';
+            }
+
             // Store the file
             $tmpFile = $this->saveRequestBodyToFile($server->request()->getBody(), isset($_GET['base64_decode']));
             $newFileName = $this->createFileName($obj);
             $versions = !empty($_GET['versions']) && is_array($_GET['versions']) ? $_GET['versions']:array();
-            $fileData = $storage->storeFile( $tmpFile, $newFileName, $versions );
+            $fileData = $storage->storeFile( $tmpFile, $newFileName, $mime, $versions );
             fclose($tmpFile);
 
             // Add file data to user meta and update user
@@ -211,7 +217,9 @@ class FileOperation extends AbstractOperation {
      */
     protected function addLocation($fileData, $fileConf)
     {
-        $fileData['location'] = $fileConf['base'] . $fileData['name'];
+        if( empty($fileData['location']) ) {
+            $fileData['location'] = $fileConf['base'] . $fileData['name'];
+        }
         return $fileData;
     }
 
@@ -237,7 +245,6 @@ class FileOperation extends AbstractOperation {
         if( !$file ) {
             throw new \ErrorException('Unable to open temp file for writing');
         }
-        error_log($input);
         fwrite($file, $base64Decode ? base64_decode($input):$input);
 
         return $file;

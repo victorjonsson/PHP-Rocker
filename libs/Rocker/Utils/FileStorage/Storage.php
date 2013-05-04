@@ -27,24 +27,24 @@ class Storage implements StorageInterface {
     /**
      * @var string
      */
-    private $maxImageDim;
+    protected $maxImageDim;
 
     /**
      * @var string
      */
-    private $maxImageSize;
+    protected $maxImageSize;
 
     /**
      * @var int
      */
-    private $versionQuality;
+    protected $versionQuality;
 
     /**
      * @param array $config
      */
     public function __construct($config)
     {
-        $this->path = rtrim($config['application.files']['path']).'/';
+        $this->path = rtrim(@$config['application.files']['path']).'/';
         $this->debug = $config['mode'] == 'development';
         $this->maxImageSize = round(floatval($config['application.files']['img_manipulation_max_size']) * 1024 * 1024);
         $this->maxImageDim = explode('x', $config['application.files']['img_manipulation_max_dimensions']);
@@ -54,7 +54,7 @@ class Storage implements StorageInterface {
     /**
      * @inheritdoc
      */
-    public function storeFile($file, $name, array $versions=array()) {
+    public function storeFile($file, $name, $mime, array $versions=array()) {
 
         $filePath = $this->path . $name;
 
@@ -82,11 +82,12 @@ class Storage implements StorageInterface {
         $data = array(
             'name' => $name,
             'size' => $fileSize,
-            'extension' => $ext
+            'extension' => $ext,
+            'mime' => $mime
         );
 
         // Generate image versions
-        if( $this->isImage($ext) ) {
+        if( self::isImage($ext) ) {
             $generatedVersions = $this->generateImageVersions($versions, $ext, $fileSize, $filePath);
             try {
                 $imgDim = @getimagesize($filePath);
@@ -94,6 +95,7 @@ class Storage implements StorageInterface {
                     throw new \Exception('getimagesize() could not analyze image');
                 $data['width'] = $imgDim[0];
                 $data['height'] = $imgDim[1];
+                $data['mime'] = $imgDim['mime'];
             } catch(\Exception $e) {
                 ErrorHandler::log($e);
             }
@@ -103,27 +105,39 @@ class Storage implements StorageInterface {
             $data['versions'] = $generatedVersions;
         }
 
+        if( empty($data['mime']) )
+            $data['mime'] = 'text/plain';
+
         return $data;
     }
 
     /**
-     * @param $name
      * @param array $versions
-     * @param $ext
-     * @param $fileSize
-     * @param $filePath
+     * @param string $ext
+     * @param int $fileSize
+     * @param string $filePath
+     * @param null|string $newName
      * @return array
      */
-    protected function generateImageVersions(array $versions, $ext, $fileSize, $filePath)
+    protected function generateImageVersions(array $versions, $ext, $fileSize, $filePath, $newName=null)
     {
         $generatedVersions = null;
-        if ( $this->isImage($ext) && !empty($versions) ) {
+        if ( self::isImage($ext) && !empty($versions) ) {
             if ( $fileSize > $this->maxImageSize || !$this->hasAllowedDimension($filePath) ) {
                 $generatedVersions = 'skipped';
             } else {
-                $versionGenerator = new ImageModifier($filePath);
+                if( $newName ) {
+                    copy($filePath, dirname($filePath).'/'.$newName);
+                    $versionGenerator = new ImageModifier(dirname($filePath).'/'.$newName);
+                } else {
+                    $versionGenerator = new ImageModifier($filePath);
+                }
+                $generatedVersions = array();
                 foreach ($versions as $name => $sizeName) {
                     $generatedVersions[$name] = basename($versionGenerator->create($sizeName, $this->versionQuality));
+                }
+                if( $newName ) {
+                    @unlink(dirname($filePath).'/'.$newName);
                 }
             }
         }
@@ -134,7 +148,7 @@ class Storage implements StorageInterface {
      * @param string $extension
      * @return bool
      */
-    protected function isImage($extension)
+    public static function isImage($extension)
     {
         return in_array(strtolower($extension), array('jpeg', 'jpg', 'gif', 'png'));
     }
@@ -197,7 +211,7 @@ class Storage implements StorageInterface {
     {
         $file = $this->path . $name;
         $extension = pathinfo($file, PATHINFO_EXTENSION);
-        if( $this->isImage($extension) && filesize($file) < $this->maxImageSize && $this->hasAllowedDimension($file) ) {
+        if( self::isImage($extension) && filesize($file) < $this->maxImageSize && $this->hasAllowedDimension($file) ) {
             $versionGenerator = new ImageModifier($file);
             $version = $versionGenerator->create($sizeName,  $this->versionQuality);
             return basename($version);

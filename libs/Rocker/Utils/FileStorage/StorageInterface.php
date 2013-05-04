@@ -28,10 +28,11 @@ interface StorageInterface {
      *
      * @param string|resource $file
      * @param string $name
+     * @param string $mime
      * @param array $versions Only used when storing an image
      * @return array
      */
-    function storeFile($file, $name, array $versions=array());
+    function storeFile($file, $name, $mime, array $versions=array());
 
     /**
      * @param $name
