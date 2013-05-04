@@ -1,7 +1,7 @@
-# PHP Rocker
+# PHP-Rocker
 
 Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart 
-from many of the others is that Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
+from many of the others is that PHP-Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
 [database facade](https://github.com/fridge-project/dbal). Not trying to write everything from scratch makes it
 possible for you to focus on what's important when writing your RESTful API and letting other projects
 take care of things like routing and data storage.
@@ -32,7 +32,7 @@ take care of things like routing and data storage.
 ## System requirements
 
 - **PHP v >= 5.3.2**
-- **MySQL** *The database layer has support several different databases (oracle, mssql, postgresql...) but Rocker is so far only tested with MySQL*
+- **MySQL** *The database layer has support several different databases (oracle, mssql, postgresql...) but PHP-Rocker is so far only tested with MySQL*
 - **Web server (apache/nginx)** *If using nginx the .htaccess rewrite rules has to be moved to the rewrite configuration of the server* 
 
 
