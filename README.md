@@ -8,13 +8,13 @@ take care of things like routing and data storage.
 
 #### Features
 
-- User management 
-- CRUD operations (use the base classes in PHP-Rocker to extend the API with your own objects and operations)
-- EAV data model
-- Static file storage (with support for image manipulation and storage on Amazon S3)
-- Built in object cache (supporting APC and file based caching)
-- Interface based (easy to extend and to customize)
-- Administer your remote Rocker server from the console
+- **User management** 
+- **CRUD operations** *Use the base classes in PHP-Rocker to extend the API with your own objects and operations*
+- **EAV data model**
+- **Static file storage** *With support for image manipulation and storage on [Amazon S3](https://github.com/victorjonsson/PHP-Rocker/wiki/File-storage-on-Amazon-S3)*
+- **Built in object cache** *Built in support for APC and file based caching*
+- **Interface based** *Easy to extend and to customize*
+- **Administer your remote Rocker server from the console**
 
 
 #### Read more
@@ -31,9 +31,9 @@ take care of things like routing and data storage.
 
 ## System requirements
 
-- PHP v >= 5.3.2
-- MySQL (the database layer has support several different databases (oracle, mssql, postgresql...) but Rocker is so far only tested with MySQL)
-- Web server (apache/nginx)
+- **PHP v >= 5.3.2**
+- **MySQL** *The database layer has support several different databases (oracle, mssql, postgresql...) but Rocker is so far only tested with MySQL*
+- **Web server (apache/nginx)** *If using nginx the .htaccess rewrite rules has to be moved to the rewrite configuration of the server* 
 
 
 ## Installation
@@ -54,7 +54,8 @@ $ composer install
 ```
 
 **3) Edit config.php**. There's a lot of things you can configure if you want to but the database parameters is
-the only thing you probably must edit.
+the only thing you probably must edit. If you want to support file storage you also need to 
+edit 'application.files' => 'base' to the URL of your static files directory
 
 
 **4) Run install.php** in your console which will setup the database tables and create an admin user. You will be
