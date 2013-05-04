@@ -146,6 +146,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Road map
 
+- ~~Support file storage on Amazone S3~~
 - Write the authentication method as a Slim middleware
 - ~~Make it possible to store blob data using PUT~~
 - Look into using another data model for stored objects
