@@ -1,4 +1,4 @@
-# PHP Rocker
+# PHP-Rocker
 
 Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart 
 from many of the others is that PHP-Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
