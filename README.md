@@ -12,7 +12,7 @@ take care of things like routing and data storage.
 - **CRUD operations** *Use the base classes in PHP-Rocker to extend the API with your own objects and operations*
 - **EAV data model**
 - **Static file storage** *With support for image manipulation and storage on [Amazon S3](https://github.com/victorjonsson/PHP-Rocker/wiki/File-storage-on-Amazon-S3)*
-- **Built in object cache** *Built in support for APC and file based caching*
+- **Built in object cache** *With support for APC and file based caching*
 - **Interface based** *Easy to extend and to customize*
 - **Administer your remote Rocker server from the console**
 
