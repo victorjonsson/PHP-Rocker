@@ -156,12 +156,13 @@ class FileOperation extends AbstractOperation {
             // No php files please...
             if( strpos(pathinfo($obj, PATHINFO_EXTENSION), 'php') !== false ) {
                 $obj = pathinfo($obj, PATHINFO_FILENAME) .'.nfw';
-            }
-
-            // get mime type
-            $request = $server->request();
-            if( !($mime = $request->headers('HTTP_CONTENT_TYPE') || $mime = $request->headers('CONTENT_TYPE')) ) {
                 $mime = 'text/plain';
+            }
+            else {
+                $mime = $server->request()->getContentType();
+                if( !$mime ) {
+                    $mime = 'text/plain';
+                }
             }
 
             // Store the file

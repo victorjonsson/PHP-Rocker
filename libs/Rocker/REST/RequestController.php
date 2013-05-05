@@ -163,6 +163,8 @@ class RequestController {
         elseif( $op->requiresAuth() && !$isAuthenticated ) {
             $response = new OperationResponse(401);
             $with = $server->request()->headers('HTTP_X_REQUESTED_WITH');
+            if( !$with )
+                $with = $server->request()->headers('X_REQUESTED_WITH');
             if( !$with || strtolower($with) != 'xmlhttprequest' ) {
                 $authConfig = $this->server->config('application.auth');
                 $response->setHeaders(array('WWW-Authenticate'=> $authConfig['mechanism']));
