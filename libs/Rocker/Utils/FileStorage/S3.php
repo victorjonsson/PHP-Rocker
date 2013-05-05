@@ -136,8 +136,6 @@ class S3 extends Storage {
      */
     protected function removeFileFromAmazon($name)
     {
-        error_log($name.' - '.$this->bucket);
-
         $this->client->deleteObject(array(
                 'Bucket'=> $this->bucket,
                 'Key' => $name
