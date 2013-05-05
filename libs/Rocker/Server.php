@@ -21,7 +21,7 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '1.1.0';
+    const VERSION = '1.1.1';
 
     /**
      * @var array
@@ -58,14 +58,18 @@ class Server extends \Slim\Slim  {
 
         // Bind events defined in config
         if( !empty($config['application.events']) ) {
-            foreach($config['application.events'] as $event => $func) {
+            foreach($config['application.events'] as $arr) {
+                $event = key($arr);
+                $func = current($arr);
                 $this->bind($event, $func);
             }
         }
 
         // Add filters defined in config
         if( !empty($config['application.filters']) ) {
-            foreach( $config['application.filters'] as $filter => $func) {
+            foreach( $config['application.filters'] as $arr) {
+                $filter = key($arr);
+                $func = current($arr);
                 $this->bind($filter, $func, 'filter');
             }
         }

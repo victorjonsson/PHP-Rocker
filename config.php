@@ -154,7 +154,7 @@ return array(
      */
     'application.events' => array(
         // This action is only needed if the application supports file storage
-        'delete.user' => '\\Rocker\\API\\FileOperation::deleteUserEvent'
+        array('delete.user' => '\\Rocker\\API\\FileOperation::deleteUserEvent')
     ),
 
     /*
@@ -164,6 +164,6 @@ return array(
      */
     'application.filters' => array(
         // This filter is only needed if the application supports file storage
-        'user.array' => '\\Rocker\\API\\FileOperation::userFilter'
+        array('user.array' => '\\Rocker\\API\\FileOperation::userFilter')
     )
 );
