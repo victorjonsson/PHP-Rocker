@@ -1,5 +1,5 @@
 {
-    "host" : "127.0.0.1",
+    "host" : "localhost",
     "verbose" : false,
     "testdir" : "tests",
     "path" : "/PHP-rocker/api"

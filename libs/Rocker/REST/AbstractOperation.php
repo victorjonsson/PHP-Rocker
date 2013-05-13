@@ -1,6 +1,7 @@
 <?php
 namespace Rocker\REST;
 
+use Aws\CloudFront\Exception\Exception;
 use Rocker\Object\User\UserFactory;
 use Rocker\Object\User\UserInterface;
 use Slim\Http\Request;
@@ -117,7 +118,12 @@ abstract class AbstractOperation implements OperationInterface {
     protected function requestedObject()
     {
         if( $this->requestedObject === null ) {
-            $this->requestedObject = current( array_slice(explode('/', $this->request->getPath()), -1));
+            $requestPath = $this->request->getPath();
+            if( basename(dirname($requestPath)) != basename($this->path) ) {
+                $this->requestedObject = false;
+            } else {
+                $this->requestedObject = current( array_slice(explode('/', $requestPath), -1));
+            }
         }
         return $this->requestedObject;
     }
