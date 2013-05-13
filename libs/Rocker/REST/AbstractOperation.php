@@ -1,7 +1,6 @@
 <?php
 namespace Rocker\REST;
 
-use Aws\CloudFront\Exception\Exception;
 use Rocker\Object\User\UserFactory;
 use Rocker\Object\User\UserInterface;
 use Slim\Http\Request;
