@@ -29,6 +29,10 @@ take care of things like routing and data storage.
 - [Road map](#road-map)
 
 
+#### Additional packages
+- [Facebook login](https://github.com/victorjonsson/PHP-Rocker-facebook-login) Integrate your PHP-Rocker server with Facebook
+- [Google login](https://github.com/victorjonsson/PHP-Rocker-google-login) Enable authenticated request with user credentials from Google
+
 ## System requirements
 
 - **PHP v >= 5.3.2**
