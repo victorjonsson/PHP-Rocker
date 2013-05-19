@@ -51,9 +51,6 @@ class ImageModifier implements ImageModifierInterface {
     public function crop($width, $height, $quality=100) {
 
         $this->newFilePath = $this->createNewImageFilePath($width, $height);
-        if( stream_resolve_include_path($this->newFilePath) !== false )
-            return $this->newFilePath;
-
         $new_source = imagecreatetruecolor($width, $height);
         list($dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h) = $this->imageResizeDimensions($this->data['width'], $this->data['height'], $width, $height, true);
         imagecopyresampled($new_source, $this->getImageResource(), $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h);
@@ -156,9 +153,6 @@ class ImageModifier implements ImageModifierInterface {
     public function resize($width, $height, $quality=100) {
 
         $this->newFilePath = $this->createNewImageFilePath($width, $height);
-        if( stream_resolve_include_path($this->newFilePath) !== false )
-            return $this->newFilePath;
-
         return $this->doResize($width, $height, $quality);
     }
 
