@@ -118,7 +118,7 @@ You can also create, delete and update the users using the console program. Run 
 
 ## A note on security
 
-At the moment Rocker only supports Basic authentication and RC4 encrypted authentication. You should always run your web services
+PHP-Rocker supports basic authentication and RC4 encrypted authentication out of the box. You should always run your web services
 on a SSL cert when handling business/user data, especially if you're using basic authentication. The RC4 encrypted authentication
 works basically the same as basic authentication except that the user credentials is encrypted on the client and decrypted on the
 server using a shared secret. If wanting to run RC4 encrypted requests you'll need to modify the parameter `application.auth` in config.php.
@@ -138,6 +138,12 @@ String crypted = RC4.encrypt("the-hard-to-guess-secret", "som.user@gmail.com:som
 crypted = Base64.encode(crypted);
 request.addHeader("Authorization", "RC4 "+crypted);
 ```
+
+#### Other authentication packages
+
+- [Facebook login](https://github.com/victorjonsson/PHP-Rocker-facebook-login) Integrate your PHP-Rocker server with Facebook
+- [Google login](https://github.com/victorjonsson/PHP-Rocker-google-login) Enable authenticated request with user credentials from Google
+
 
 ## Unit and acceptance testing
 
