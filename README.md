@@ -3,7 +3,7 @@
 Here you have yet another **framework for writing RESTful web services** in PHP, jay! What sets this framework apart 
 from many of the others is that PHP-Rocker is a bundle of [Slim](https://github.com/codeguy/Slim) and an awesome 
 [database facade](https://github.com/fridge-project/dbal). Not trying to write everything from scratch makes it
-possible for you to focus on what's important when writing your RESTful API and letting other projects
+possible for you to focus on what's important when writing your RESTful API and let other projects
 take care of things like routing and data storage.
 
 #### Features
@@ -160,3 +160,16 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Write the authentication method as a Slim middleware
 - ~~Make it possible to store blob data using PUT~~
 - Look into using another data model for stored objects
+- Look into using noSQL instead of a relational database
+- Build console program as a phar and move the source code to a separate project
+
+
+## Changelog
+
+### 1.1.7
+- General improvements in PHP-Rocker\Object\ObjectMetaFactory
+- Fixed bug that made code iterate over null variable
+
+#### 1.1.6
+- Added support for file storage
+- Added functionality for image manipulation

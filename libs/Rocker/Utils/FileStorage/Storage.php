@@ -101,7 +101,7 @@ class Storage implements StorageInterface {
             }
         }
 
-        if( isset($generatedVersions) ) {
+        if( !empty($generatedVersions) ) {
             $data['versions'] = $generatedVersions;
         }
 
@@ -112,16 +112,20 @@ class Storage implements StorageInterface {
     }
 
     /**
+     * Will return either an array with file names of the generated image versions or a
+     * string with the value 'skipped' in case the image versions could'nt be
+     * generated, what rules that the image has to meet in order to be generated
+     * is defined in config.php (application.files)
      * @param array $versions
      * @param string $ext
      * @param int $fileSize
      * @param string $filePath
      * @param null|string $newName
-     * @return array
+     * @return array|string
      */
     protected function generateImageVersions(array $versions, $ext, $fileSize, $filePath, $newName=null)
     {
-        $generatedVersions = null;
+        $generatedVersions = array();
         if ( self::isImage($ext) && !empty($versions) ) {
             if ( $fileSize > $this->maxImageSize || !$this->hasAllowedDimension($filePath) ) {
                 $generatedVersions = 'skipped';

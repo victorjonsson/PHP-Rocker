@@ -73,9 +73,14 @@ class ObjectMetaFactory {
      */
     function removeMetaData(MetaInterface $obj)
     {
-        $this->db->prepare("DELETE FROM " . $this->dbTable . " WHERE object=?")
+        // Remove db entries
+        $this->db->prepare('DELETE FROM ' . $this->dbTable . ' WHERE object=?')
             ->execute(array($obj->getId()));
 
+        // Change to empty meta object
+        $obj->setMeta(new MetaData(array()));
+
+        // Clear cache
         $this->cache->delete($this->cachePrefix . $obj->getId());
     }
 
@@ -83,14 +88,17 @@ class ObjectMetaFactory {
      * Save changed meta data
      * @param \Rocker\Object\MetaInterface $obj
      * @throws \Exception
+     * @return bool Whether or not any meta data had changed
      */
     function saveMetaData(MetaInterface $obj)
     {
         $meta = $obj->meta();
         $id = $obj->getId();
+        $changed = false;
 
         // Update / insert of values
         foreach ($meta->getUpdatedValues() as $name => $val) {
+            $changed = true;
             $value = is_string($val) || is_int($val) ? trim($val) : serialize($val);
             try {
 
@@ -109,14 +117,19 @@ class ObjectMetaFactory {
 
         // Deleted values
         foreach ($meta->getDeletedValues() as $name) {
+            $changed = true;
             $this->db->prepare("DELETE FROM " . $this->dbTable . " WHERE `object`=? AND `name`=?")
                 ->execute(array($id, $name));
         }
 
-        // Clear the meta object of data that needs to be updated
-        $meta->setDeletedValues(array());
-        $meta->setUpdatedValues(array());
-        $this->cache->delete($this->cachePrefix . $obj->getId());
+        // Clear the meta object of data that needs to be updated and remove cached data
+        if( $changed ) {
+            $meta->setDeletedValues(array());
+            $meta->setUpdatedValues(array());
+            $this->cache->delete($this->cachePrefix . $obj->getId());
+        }
+
+        return $changed;
     }
 
     /**
@@ -132,10 +145,12 @@ class ObjectMetaFactory {
             $sql->execute(array($obj->getId()));
 
             while ($row = $sql->fetch()) {
+                if( is_numeric($row['value']) )
+                    $meta_values[$row['name']] = (int)$row['value'];
                 if( $this->isSerialized($row['value']) )
                     $meta_values[$row['name']] = unserialize($row['value']);
                 else
-                    $meta_values[$row['name']] = is_numeric($row['value']) ? (int)$row['value']:$row['value'];
+                    $meta_values[$row['name']] = $row['value'];
             }
 
             $this->cache->store($this->cachePrefix . $obj->getId(), $meta_values);
@@ -151,9 +166,6 @@ class ObjectMetaFactory {
      */
     private function isSerialized($str)
     {
-        if ( is_numeric($str) ) {
-            return false;
-        }
         $str = trim($str);
         if ( 'N;' == $str ) {
             return true;

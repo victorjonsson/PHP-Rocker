@@ -80,8 +80,10 @@ class S3 extends Storage {
             $versionData = $this->generateImageVersions($versions, $fileData['extension'], $fileData['size'], $tmpFile, basename($name));
             $tmpDir = dirname($tmpFile);
             $fileDir = dirname($name);
-            foreach($versionData as $name => $fileName) {
-                $this->putFileOnAmazon($tmpDir.'/'.$fileName, $fileDir.'/'.$fileName, $mime);
+            if( is_array($versionData) ) {
+                foreach($versionData as $name => $fileName) {
+                    $this->putFileOnAmazon($tmpDir.'/'.$fileName, $fileDir.'/'.$fileName, $mime);
+                }
             }
         }
 
