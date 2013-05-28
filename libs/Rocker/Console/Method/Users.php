@@ -181,19 +181,24 @@ class Users implements MethodInterface {
     public static function displayUser($user)
     {
         \cli\line('%_'.$user->nick.'%n '.$user->email.' (#'.$user->id.')');
-        if( isset($user->meta) ) {
-            $data = array();
-            foreach($user->meta as $name=> $val) {
-                if( is_bool($val) ) {
+        if( !empty($user->meta) ) {
+
+            $metaData = array();
+            foreach($user->meta as $name => $val) {
+                if( is_bool($val) )
                     $val = '%Wbool('.($val ? 'true':'false').')%n';
-                }
-                $data[] = array($name, $val);
+                elseif( is_array($val) )
+                    $val = 'array('.json_encode($val).')';
+                elseif( $val instanceof \stdClass )
+                    $val = 'array('.json_encode( (array)$val ).')';
+
+                $metaData[] = array($name, $val);
             }
+
             $table = new \cli\Table();
             $table->setHeaders(array('Meta name', 'Meta value'));
-            $table->setRows($data);
+            $table->setRows( $metaData );
             $table->display();
         }
     }
-
 }

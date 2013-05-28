@@ -160,8 +160,8 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Write the authentication method as a Slim middleware
 - ~~Make it possible to store blob data using PUT~~
 - Look into using another data model for stored objects
-- Look into using noSQL instead of a relational database
-- Build console program as a phar and move the source code to a separate project
+- Look into supporting noSQL instead of a relational database
+- Rewrite the console program as a phar and move the source code to a separate project
 
 
 ## Changelog
@@ -170,6 +170,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory
 - Fixed bug that made the code to iterate over null variable
 - Replaced logic for image manipulation with Gregwar/Image
+- Fixed bug that sometimes made the console program to crash
 
 #### 1.1.6
 - Added support for file storage
