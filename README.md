@@ -166,9 +166,10 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Changelog
 
-### 1.1.7
+#### 1.1.7
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory
-- Fixed bug that made code iterate over null variable
+- Fixed bug that made the code to iterate over null variable
+- Replaced logic for image manipulation with Gregwar/Image
 
 #### 1.1.6
 - Added support for file storage
