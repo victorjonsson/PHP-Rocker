@@ -4,6 +4,7 @@ test.php
 node_modules*
 .idea*
 vendor*
+cache*
 composer.lock
 phpunit.phar
 static/*
