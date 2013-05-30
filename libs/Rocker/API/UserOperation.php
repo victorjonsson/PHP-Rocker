@@ -63,7 +63,12 @@ class UserOperation extends AbstractObjectOperation {
         if ( !empty($_REQUEST['password']) ) {
             $obj->setPassword($_REQUEST['password']);
         }
+
         parent::updateObject($obj, $factory, $response, $db, $cache, $server);
+
+        if( $response->getStatus() == 409 ) {
+            $response->setBody(array('error'=>'E-mail taken by another user'));
+        }
     }
 
     /**

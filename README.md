@@ -166,6 +166,9 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Changelog
 
+#### 1.1.8
+- Trying to update a user with an already registered e-mail address now results in http status 409 instead of 400
+
 #### 1.1.7
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory
 - Fixed bug that made the code to iterate over null variable

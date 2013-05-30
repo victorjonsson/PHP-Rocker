@@ -56,9 +56,8 @@ return array(
      * ------------------
      * Here is where you define which operations that should be available
      * through the API. You may remove/add operations as you want as long
-     * as you keep "system/version" and "auth" since those operations is
-     * used by the console program. The operation classes must implement
-     * the Rocker\REST\OperationInterface
+     * as you keep "system/version" which is used by the console program.
+     * The operation classes must implement the Rocker\REST\OperationInterface
      */
     'application.operations' => array(
 
@@ -92,6 +91,8 @@ return array(
      *
      * $mechanism — The authentication mechanism sent with the www-authentication
      * header. Rocker supports only basic authentication and RC4 encrypted authentication
+     * out of the box but it exists additional packages that gives your API support
+     * for facebook login and google authentication (more info available in README.md)
      *
      * $secret - Only used in case you're using RC4 encrypted authentication
      */
@@ -111,7 +112,7 @@ return array(
      * $base - Base URI of file directory
      *
      * $img_manipulation_max_size - Image versions will not be generated for images
-     * which file size exceeds this limit wil
+     * that has a file size exceeding this limit.
      *
      * $img_manipulation_max_dimensions - Image versions will not be generated for
      * images which dimension exceeds this value ([width]x[height])

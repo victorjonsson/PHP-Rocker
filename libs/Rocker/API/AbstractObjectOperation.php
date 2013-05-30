@@ -4,6 +4,7 @@ namespace Rocker\API;
 use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\AbstractObjectFactory;
+use Rocker\Object\DuplicationException;
 use Rocker\Object\FactoryInterface;
 use Rocker\Object\ObjectInterface;
 use Rocker\Object\SearchResult;
@@ -156,8 +157,13 @@ abstract class AbstractObjectOperation extends AbstractOperation {
             }
         }
 
-        $factory->update($obj);
-        $response->setBody( $this->objectToArray($obj, $server, $db, $cache) );
+        try {
+            $factory->update($obj);
+            $response->setBody( $this->objectToArray($obj, $server, $db, $cache) );
+        } catch( DuplicationException $e ) {
+            $response->setStatus(409);
+            $response->setBody(array('error'=>$e->getMessage()));
+        }
     }
 
     /**
