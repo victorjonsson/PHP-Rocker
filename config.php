@@ -166,5 +166,15 @@ return array(
     'application.filters' => array(
         // This filter is only needed if the application supports file storage
         array('user.array' => '\\Rocker\\API\\FileOperation::userFilter')
+    ),
+
+    /**
+     * Application install
+     * -----------------------
+     * Classes implementing Rocker\Utils\InstallableInterface that should
+     * run the install procedure when that application gets installed
+     */
+    'application.install' => array(
+        '\\Rocker\\Object\\User\\UserFactory'
     )
 );

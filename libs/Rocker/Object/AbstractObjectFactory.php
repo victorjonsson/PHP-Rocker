@@ -4,6 +4,7 @@ namespace Rocker\Object;
 use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Cache\TempMemoryCache;
+use Rocker\Utils\InstallableInterface;
 
 
 /**
@@ -13,7 +14,7 @@ use Rocker\Cache\TempMemoryCache;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-abstract class AbstractObjectFactory implements FactoryInterface {
+abstract class AbstractObjectFactory implements FactoryInterface, InstallableInterface {
 
     /**
      * @var ConnectionInterface
@@ -341,9 +342,9 @@ abstract class AbstractObjectFactory implements FactoryInterface {
     abstract function objectClassName();
 
     /**
-     * Creates needed database tables
+     * @inheritdoc
      */
-    function install()
+    public function install()
     {
         $engine = $this->db->getParameter('engine');
         $collate = $this->db->getParameter('collate');
@@ -359,5 +360,23 @@ abstract class AbstractObjectFactory implements FactoryInterface {
         );
 
         $this->metaFactory->createTable();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isInstalled()
+    {
+        $installed = false;
+        try {
+            $this->db->query('SELECT COUNT(*) FROM '.$this->tableName);
+            $installed = true;
+        } catch(\Exception $e) {
+            if( $e->getCode() != '42S02' ) {
+                throw $e;
+            }
+        }
+
+        return $installed;
     }
 }

@@ -36,36 +36,46 @@ try {
 }
 
 // Check that tables don't already exists
-$userFactory = new \Rocker\Object\User\UserFactory($db);
-$table = $config['application.db']['prefix'].$userFactory->objectTypeName();
-$foundTable = false;
-foreach($tables as $t) {
-    if( $t[0] == $table ) {
-        $foundTable = true;
-        break;
+foreach($config['application.install'] as $class) {
+    /* @var \Rocker\Utils\InstallableInterface $obj */
+    $obj = new $class($db);
+    if( $obj->isInstalled() ) {
+        _('* '.$class.' already installed');
+    } else {
+        $obj->install();
+        _('- installed '.$class);
     }
 }
-if( !$foundTable ) {
-    _('- Creating user tables');
-    $userFactory->install();
-} else {
-    _('* Database tables already exists');
-}
+
+$userFactory = new \Rocker\Object\User\UserFactory($db);
 
 // todo: check if it exists an admin
+$hasAdmin = $userFactory->metaSearch(array('admin'=>1))->getNumMatching() > 0;
 
-// Ask for user credentials
+// Ask for e-mail
 _('## Create admin user');
-$email = \cli\prompt('E-mail');
-while( filter_var($email, FILTER_VALIDATE_EMAIL) === false ) {
-    _('%rNot a valid e-mail%n');
-    $email = \cli\prompt('E-mail');
+while( empty($email) ) {
+    $email = Rocker\Console\Utils::promptAllowingEmpty('E-mail');
+    if( empty($email) && !$hasAdmin ) {
+        _('%rYou must create an admin user%n');
+    }
+    elseif( empty($email) && $hasAdmin ) {
+        $email = 'skip';
+    }
+    else {
+        if( filter_var($email, FILTER_VALIDATE_EMAIL) === false ) {
+            _('%rNot a valid e-mail%n');
+            $email = null;
+        }
+    }
 }
-$nick = \cli\prompt('Nick name');
-$password = \Rocker\Console\Utils::promptPassword('Password: ');
 
 // Create admin user
-$user = $userFactory->createUser($email, $nick, $password);
-$userFactory->setAdminPrivileges($user, true);
+if( $email != 'skip' ) {
+    $nick = \cli\prompt('Nick name');
+    $password = \Rocker\Console\Utils::promptPassword('Password: ');
+    $user = $userFactory->createUser($email, $nick, $password);
+    $userFactory->setAdminPrivileges($user, true);
+}
 
 _('%gRocker Server v'.\Rocker\Server::VERSION.' was successfully installed :) %n');

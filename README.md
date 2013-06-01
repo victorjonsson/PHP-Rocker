@@ -168,6 +168,8 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 #### 1.1.8
 - Trying to update a user with an already registered e-mail address now results in http status 409 instead of 400
+- Added InstallableInterface to abstract object factories.
+- Improved install script, all classes that should run install when app is installed is now declared in config.php
 
 #### 1.1.7
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory
