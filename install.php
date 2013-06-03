@@ -35,7 +35,7 @@ try {
     return;
 }
 
-// Check that tables don't already exists
+// Run class installations
 foreach($config['application.install'] as $class) {
     /* @var \Rocker\Utils\InstallableInterface $obj */
     $obj = new $class($db);

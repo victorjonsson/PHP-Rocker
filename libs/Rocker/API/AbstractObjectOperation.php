@@ -147,6 +147,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         }
 
         if ( isset($_REQUEST['meta']) && is_array($_REQUEST['meta']) ) {
+
             foreach ($_REQUEST['meta'] as $name => $val) {
                 if( $val == 'null' )
                     $obj->meta()->delete($name);
@@ -154,6 +155,15 @@ abstract class AbstractObjectOperation extends AbstractOperation {
                     $obj->meta()->set($name, $val == 'true');
                 else
                     $obj->meta()->set($name, $val);
+            }
+
+            // Check that we don't exceed the maximum number of meta entries allowed
+            $numMeta = count( $obj->meta()->toArray() );
+            $metaLimit = $server->config('application.meta_limit');
+            if( $numMeta > 20 && (empty($metaLimit) || $metaLimit < $numMeta) ) {
+                $response->setStatus(403);
+                $response->setBody(array('error'=>'This object has exceed the maximum number of meta entries allowed'));
+                return;
             }
         }
 
