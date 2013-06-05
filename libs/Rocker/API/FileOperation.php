@@ -8,6 +8,7 @@ use Rocker\REST\AbstractOperation;
 use Rocker\Cache\CacheInterface;
 use Rocker\REST\OperationResponse;
 use Rocker\Server;
+use Rocker\Utils\FileStorage\Storage;
 
 
 /**
@@ -20,7 +21,7 @@ use Rocker\Server;
  *  - Remove image versions
  *  - Create image versions
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
@@ -165,6 +166,12 @@ class FileOperation extends AbstractOperation {
                 }
             }
 
+            // Check that it's not too large
+            $contentLength = $server->request()->getContentLength();
+            if( !empty($fileConf['max_size']) && Storage::convertFileSizeNameToBytes($fileConf['max_size']) < $contentLength ) {
+                return new OperationResponse(413, array('error'=>'File is too large'));
+            }
+
             // Store the file
             $tmpFile = $this->saveRequestBodyToFile($server->request()->getBody(), isset($_GET['base64_decode']));
             $newFileName = $this->createFileName($obj);
@@ -280,7 +287,7 @@ class FileOperation extends AbstractOperation {
     /**
      * @param Server $server
      * @param array $content
-     * @param \Fridge\DBAL\Adapter\ConnectionInterface $db
+     * @param ConnectionInterface $db
      * @param CacheInterface $cache
      * @return array
      */

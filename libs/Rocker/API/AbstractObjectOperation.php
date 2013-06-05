@@ -16,11 +16,22 @@ use Slim\Http\Request;
 /**
  * API Operation used to manage generic objects
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
 abstract class AbstractObjectOperation extends AbstractOperation {
+
+    const SEARCH_QUERY_ARG = 'q';
+
+    /**
+     * @var array
+     */
+    protected $conf = array(
+            'meta_limit' => 25,
+            'meta_max_size' => 1048576,
+            'authenticated_search' => false
+        );
 
     /**
      * @inheritdoc
@@ -42,7 +53,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         else {
 
             // object not found
-            if( empty($requestedObj) && empty($_GET['q']) ) {
+            if( empty($requestedObj) && empty($_GET[self::SEARCH_QUERY_ARG]) ) {
                 $response->setStatus(404);
                 $response->setBody(array('error'=>'object not found -> '.$_SERVER['QUERY_STRING']));
             }
@@ -62,7 +73,7 @@ abstract class AbstractObjectOperation extends AbstractOperation {
                 else {
 
                     // Search for object
-                    if( isset($_REQUEST['q']) ) {
+                    if( isset($_REQUEST[self::SEARCH_QUERY_ARG]) ) {
 
                         /* @var SearchResult $result */
                         $search = $this->searchObjects($factory, $db, $cache, $server);
@@ -89,6 +100,16 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     }
 
     /**
+     * @param array|null $conf
+     */
+    protected function setConfig($conf)
+    {
+        if( !empty($conf) ) {
+            $this->conf = array_merge($this->conf, $conf);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     protected function searchObjects($factory, $db, $cache, $server)
@@ -97,8 +118,8 @@ abstract class AbstractObjectOperation extends AbstractOperation {
         $limit = !empty($_REQUEST['limit']) ? $_REQUEST['limit'] : 50;
         $order = !empty($_REQUEST['order']) && $_REQUEST['order'] == 'ASC' ? 'ASC' : 'DESC';
         $query = array();
-        if ( is_array($_REQUEST['q']) ) {
-            foreach ($_REQUEST['q'] as $key => $val) {
+        if ( is_array($_REQUEST[self::SEARCH_QUERY_ARG]) ) {
+            foreach ($_REQUEST[self::SEARCH_QUERY_ARG] as $key => $val) {
                 $key = urldecode($key);
                 $values = explode('|', urldecode($val));
                 if ( empty($query) ) {
@@ -148,21 +169,11 @@ abstract class AbstractObjectOperation extends AbstractOperation {
 
         if ( isset($_REQUEST['meta']) && is_array($_REQUEST['meta']) ) {
 
-            foreach ($_REQUEST['meta'] as $name => $val) {
-                if( $val == 'null' )
-                    $obj->meta()->delete($name);
-                elseif($val == 'true' || $val == 'false')
-                    $obj->meta()->set($name, $val == 'true');
-                else
-                    $obj->meta()->set($name, $val);
-            }
-
-            // Check that we don't exceed the maximum number of meta entries allowed
-            $numMeta = count( $obj->meta()->toArray() );
-            $metaLimit = $server->config('application.meta_limit');
-            if( $numMeta > 20 && (empty($metaLimit) || $metaLimit < $numMeta) ) {
-                $response->setStatus(403);
-                $response->setBody(array('error'=>'This object has exceed the maximum number of meta entries allowed'));
+            $result = $this->addMetaFromRequestToObject($obj);
+            if( $result !== null ) {
+                // Something not okay with the meta values
+                $response->setStatus($result[0]);
+                $response->setBody($result[1]);
                 return;
             }
         }
@@ -177,11 +188,43 @@ abstract class AbstractObjectOperation extends AbstractOperation {
     }
 
     /**
+     * Add meta data from request to object and check that no meta
+     * entry is too large and that we're not exceeding the maximum
+     * allowed number of meta entries per object
+     *
+     * @param ObjectInterface $obj
+     * @return array|null
+     */
+    protected function addMetaFromRequestToObject($obj)
+    {
+        foreach ($_REQUEST['meta'] as $name => $val) {
+            if( $val == 'null' )
+                $obj->meta()->delete($name);
+            elseif($val == 'true' || $val == 'false')
+                $obj->meta()->set($name, $val == 'true');
+            else {
+                if( strlen($val) > $this->conf['meta_max_size'] ) {
+                    return array(413, array('error'=>'Meta entry "'.$name.'" exceeded allowed max size of '.$this->conf['meta_max_size'].' bytes'));
+                }
+                $obj->meta()->set($name, $val);
+            }
+        }
+
+        // Check that we don't exceed the maximum number of meta entries allowed
+        if( $this->conf['meta_limit'] < $obj->meta()->count() ) {
+            return array(403, array('error'=>'This object has exceeded the maximum number of meta entries allowed'));
+        }
+
+        return null;
+    }
+
+    /**
      * @param AbstractObjectFactory $factory
      * @param OperationResponse $response
      * @param ConnectionInterface $db
      * @param CacheInterface $cache
-     * @param Server $sever
+     * @param Server $server
+     * @return void
      */
     abstract protected function createNewObject($factory, $response, $db, $cache, $server);
 
@@ -225,6 +268,6 @@ abstract class AbstractObjectOperation extends AbstractOperation {
      */
     public function requiresAuth()
     {
-        return false;
+        return $this->request->getMethod() == 'GET' && isset($_GET[self::SEARCH_QUERY_ARG]) && $this->conf['authenticated_search'];
     }
 }

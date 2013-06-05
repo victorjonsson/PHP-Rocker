@@ -8,7 +8,7 @@ use Rocker\Utils\FileStorage\Image\ImageModifier;
 /**
  * Class that can store files locally
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
@@ -46,7 +46,7 @@ class Storage implements StorageInterface {
     {
         $this->path = rtrim(@$config['application.files']['path']).'/';
         $this->debug = $config['mode'] == 'development';
-        $this->maxImageSize = round(floatval($config['application.files']['img_manipulation_max_size']) * 1024 * 1024);
+        $this->maxImageSize = self::convertFileSizeNameToBytes($config['application.files']['img_manipulation_max_size']);
         $this->maxImageDim = explode('x', $config['application.files']['img_manipulation_max_dimensions']);
         $this->versionQuality = $config['application.files']['img_manipulation_quality'];
     }
@@ -223,4 +223,41 @@ class Storage implements StorageInterface {
         return false;
     }
 
+    /**
+     * Example:
+     *  100M = 100 Mega bytes
+     *  100kb = 100 Kilobytes
+     *  100b = 100 bytes
+     *  100 = 100 bytes
+     *
+     * @param string $sizeName
+     * @param $sizeName
+     * @throws \InvalidArgumentException
+     * @return \InvalidArgumentException
+     */
+    public static function convertFileSizeNameToBytes($sizeName)
+    {
+        $last = substr($sizeName, -1);
+        if( is_numeric($last) ) {
+            return (int)$sizeName;
+        }
+        elseif( substr($sizeName, -2) == 'kb' ) {
+            $kb = (int)substr($sizeName, 0, strlen($sizeName)-2);
+            return $kb * 1024;
+        }
+        elseif( substr($sizeName, -2) == 'MB' ) {
+            $megaBytes = (int)substr($sizeName, 0, strlen($sizeName)-2);
+            return $megaBytes * 1024 * 1024;
+        }
+        elseif( $last == 'b' ) {
+            return (int)substr($sizeName, 0, strlen($sizeName) - 1);
+        }
+        elseif( $last == 'M' ) {
+            $megaBytes = (int)substr($sizeName, 0, strlen($sizeName) - 1);
+            return $megaBytes * 1024 * 1024;
+        }
+        else {
+            throw new \InvalidArgumentException('Unable to convert "'.$sizeName.'" to bytes');
+        }
+    }
 }

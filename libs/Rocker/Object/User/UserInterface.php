@@ -7,7 +7,7 @@ use Rocker\Object\ObjectInterface;
 /**
  * Interface for objects representing a user
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

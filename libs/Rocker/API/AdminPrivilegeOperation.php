@@ -14,7 +14,7 @@ use Slim\Slim;
  * Operation that can be used to add or remove admin privileges
  * from a user account
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

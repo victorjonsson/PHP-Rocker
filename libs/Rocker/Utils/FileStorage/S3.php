@@ -10,7 +10,7 @@ use Rocker\Utils\FileStorage\Image\ImageModifier;
 /**
  * Class that can store files locally
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

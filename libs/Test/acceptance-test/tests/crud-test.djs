@@ -5,6 +5,11 @@ var dokimon = require('dokimon'),
     userID = null,
     auth = 'Basic '+ (new Buffer(userEmail+':'+userPass).toString('base64'));
 
+    var largeStr = '1';
+    for(var i=0; i<1025; i++) {
+        largeStr += '1';
+    }
+
 
 var getUnexistingUser = new dokimon.Test(
     'getUnexistingUser',
@@ -59,6 +64,42 @@ var userNameCollision = new dokimon.TestFormPost(
     },
     true
 );
+
+var tooManyMetaEntries = new dokimon.TestFormPost(
+    'tooManyMetaEntries',
+    {
+        url : '/user/'+userEmail,
+        write : 'meta[1]=1&meta[2]=1&meta[3]=1&meta[4]=1&meta[5]=1&meta[6]=1&meta[7]=1&meta[8]=1&meta[9]=1&meta[10]=1'+
+                '&meta[11]=1&meta[12]=1&meta[13]=1&meta[14]=1&meta[15]=1&meta[16]=1&meta[17]=1&meta[18]=1&meta[19]=1&meta[20]=1&meta[21]=1',
+        headers : {
+            Authorization: auth
+        },
+        dependsOn : 'createUser'
+    },
+    function (res, body) {
+        assert.equal(res.statusCode, 403);
+    },
+    true
+);
+
+
+var tooLargeMetaEntry = new dokimon.TestFormPost(
+    'tooLargeMetaEntry',
+    {
+        url : '/user/'+userEmail,
+        write : 'meta[1]='+largeStr,
+        headers : {
+            Authorization: auth
+        },
+        dependsOn : 'createUser'
+    },
+    function (res, body) {
+        assert.equal(res.statusCode, 413);
+        console.log(body);
+    },
+    true
+);
+
 
 var updateUserWithInvalidAuth = new dokimon.TestFormPost(
     'updateUserWithInvalidAuth',
@@ -219,6 +260,8 @@ module.exports = [
     createUserFailing,
     createUser,
     userNameCollision,
+    tooManyMetaEntries,
+    tooLargeMetaEntry,
     updateUserWithInvalidAuth,
     updateUser,
     createFile,

@@ -6,7 +6,7 @@ namespace Rocker\Console\Method;
  * Console method used to show info about the user that the console
  * uses when authenticating against the remote server
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

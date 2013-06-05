@@ -9,7 +9,7 @@ use Rocker\Object\User\UserFactory;
 /**
  * Console method used to manage users on a remote server
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

@@ -5,7 +5,7 @@ namespace Rocker\Utils\FileStorage;
 /**
  * Interface for classes that can store files on the server
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

@@ -5,7 +5,7 @@ namespace Rocker\Utils\Security;
 /**
  * Class with utility functions used when working with user input
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

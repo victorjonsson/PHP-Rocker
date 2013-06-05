@@ -6,11 +6,11 @@ namespace Rocker\Object;
  * This class serves as a container from where you
  * can fetch and store data of any kind
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class MetaData extends \stdClass {
+class MetaData extends \stdClass implements \Countable  {
 
     /**
      * @var array
@@ -145,5 +145,13 @@ class MetaData extends \stdClass {
     function __sleep()
     {
         throw new \Exception('Can not be serialized');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function count()
+    {
+        return count($this->meta);
     }
 }

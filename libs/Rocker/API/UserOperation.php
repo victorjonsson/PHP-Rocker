@@ -12,11 +12,16 @@ use Slim\Http\Request;
 /**
  * API Operation used to manage user objects
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
 class UserOperation extends AbstractObjectOperation {
+
+    /**
+     * @var UserFactory
+     */
+    private $userFactory;
 
     /**
      * @var null|string|bool
@@ -28,9 +33,18 @@ class UserOperation extends AbstractObjectOperation {
      */
     public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
-        $userFactory = new UserFactory($db, $cache);
+        // add possible config
+        $this->setConfig($server->config('application.user_object'));
+
+        // Create user factory
+        if( empty($this->conf['factory']) ) {
+            $this->userFactory = new UserFactory($db, $cache);
+        } else {
+            $this->userFactory = new $this->conf['factory']($db, $cache);
+        }
+
         $method = $this->request->getMethod();
-        $requestedUser = $this->requestedObject() ? $userFactory->load( $this->requestedObject() ) : false;
+        $requestedUser = $this->requestedObject() ? $this->userFactory->load( $this->requestedObject() ) : false;
 
         if( ($method == 'POST' || $method == 'DELETE') &&
             $requestedUser &&
@@ -89,10 +103,13 @@ class UserOperation extends AbstractObjectOperation {
 
             // Add meta data
             if ( isset($_REQUEST['meta']) && is_array($_REQUEST['meta']) ) {
-                foreach ($_REQUEST['meta'] as $name => $val) {
-                    if ( $name != 'admin' ) { // can only be granted admin privileges
-                        $newUser->meta()->set($name, $val);
-                    }
+                $result = $this->addMetaFromRequestToObject($newUser);
+                if( $result !== null ) {
+                    // Something was not okay with the given meta data
+                    $userFactory->delete($newUser);
+                    $response->setStatus($result[0]);
+                    $response->setBody($result[1]);
+                    return;
                 }
             }
             $userFactory->update($newUser);
@@ -138,7 +155,7 @@ class UserOperation extends AbstractObjectOperation {
      */
     public function createFactory($db, $cache)
     {
-        return new UserFactory($db, $cache);
+        return $this->userFactory;
     }
 
     /**

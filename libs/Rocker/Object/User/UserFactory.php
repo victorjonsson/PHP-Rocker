@@ -7,7 +7,7 @@ use Rocker\Object\AbstractObjectFactory;
 /**
  * Factory class that creates users
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

@@ -6,7 +6,7 @@ namespace Rocker\Utils;
  * Interface for classes that has an installable process that
  * should run once before the class is used
  *
- * @package Rocker\Utils
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

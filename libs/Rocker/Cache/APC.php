@@ -10,7 +10,7 @@ use Rocker\Utils\ErrorHandler;
  * (Be aware of "Potential cache slam averted for key")
  *
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

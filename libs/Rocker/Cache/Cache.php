@@ -6,7 +6,7 @@ namespace Rocker\Cache;
  * Class used to load a singleton instance of the cache class
  * defined in the main configuration file (config.php)
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

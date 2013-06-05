@@ -111,6 +111,8 @@ return array(
      *
      * $base - Base URI of file directory
      *
+     * $max_size - The maximum allowed size of a single file
+     *
      * $img_manipulation_max_size - Image versions will not be generated for images
      * that has a file size exceeding this limit.
      *
@@ -123,6 +125,7 @@ return array(
         'class' => '\\Rocker\\Utils\\FileStorage\\Storage',
         'path' => __DIR__.'/static/',
         'base' => 'http://localhost/PHP-Rocker/static/',
+        'max_size' => '20MB',
         'img_manipulation_max_size' => '5MB',
         'img_manipulation_max_dimensions' => '1024x1024',
         'img_manipulation_quality' => 90,
@@ -168,13 +171,32 @@ return array(
         array('user.array' => '\\Rocker\\API\\FileOperation::userFilter')
     ),
 
-    /**
+    /*
      * Application install
      * -----------------------
      * Classes implementing Rocker\Utils\InstallableInterface that should
-     * run the install procedure when that application gets installed
+     * run the install procedure when the application gets installed
      */
     'application.install' => array(
         '\\Rocker\\Object\\User\\UserFactory'
+    ),
+
+    /*
+     * User objects
+     * -----------------------
+     * $meta_limit - The maximum number of meta entries allowed per object
+     *
+     * $meta_max_size - The maximum size of each meta entry
+     *
+     * $authenticated_search - Whether or not the client must authenticate
+     * when searching for users
+     *
+     * $factory - Factory class for users
+     */
+    'application.user_object' => array(
+        'meta_limit' => 20,
+        'meta_max_size' => '1024kb',
+        'authenticated_search' => false,
+        'factory' => '\\Rocker\\Object\\User\\UserFactory'
     )
 );

@@ -10,7 +10,7 @@ use Rocker\Utils\InstallableInterface;
 /**
  * Base class for factory classes that creates objects of any kind
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

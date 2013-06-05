@@ -10,7 +10,7 @@ use Rocker\Server;
 /**
  * API Operation that returns info about all available operations
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

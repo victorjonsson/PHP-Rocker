@@ -2,6 +2,8 @@
 
 require_once __DIR__.'/CommonTestCase.php';
 
+use Rocker\Utils\FileStorage\Storage;
+
 class TestFileStorage extends CommonTestCase {
 
     /**
@@ -15,7 +17,7 @@ class TestFileStorage extends CommonTestCase {
         parent::setUpBeforeClass();
         mkdir(__DIR__.'/tmp-storage');
         file_put_contents(__DIR__.'/dummy-file.txt', 'lorem');
-        self::$storage = new Rocker\Utils\FileStorage\Storage(array(
+        self::$storage = new Storage(array(
             'mode' => 'development',
             'application.files' => array(
                 'path' => __DIR__.'/tmp-storage',
@@ -99,6 +101,13 @@ class TestFileStorage extends CommonTestCase {
         list($width, $height) = getimagesize( __DIR__.'/tmp-storage/image-10x40.jpg' );
         $this->assertEquals(10, $width);
         $this->assertEquals(40, $height);
+    }
+
+    public function testFileSizeNameConversion() {
+        $this->assertEquals(100, Storage::convertFileSizeNameToBytes('100'));
+        $this->assertEquals(100, Storage::convertFileSizeNameToBytes('100b'));
+        $this->assertEquals(102400, Storage::convertFileSizeNameToBytes('100kb'));
+        $this->assertEquals(1024*1024, Storage::convertFileSizeNameToBytes('1M'));
     }
 
     public static function tearDownAfterClass() {

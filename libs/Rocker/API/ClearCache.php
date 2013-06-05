@@ -13,7 +13,7 @@ use Slim\Slim;
 /**
  * Makes it possible for administrators to clear application cache
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

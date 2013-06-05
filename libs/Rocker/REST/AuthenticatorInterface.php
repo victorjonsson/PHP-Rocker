@@ -10,7 +10,7 @@ use Rocker\Server;
 /**
  * Interface for classes that can authenticate a client
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

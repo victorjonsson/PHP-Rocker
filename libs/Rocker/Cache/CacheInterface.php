@@ -4,7 +4,7 @@ namespace Rocker\Cache;
 /**
  * Interface that is implemented by classes that serves as a cache pool
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

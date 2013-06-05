@@ -9,7 +9,7 @@ use Rocker\Cache\CacheInterface;
  * Factory class that can store and retrieve meta data belonging to
  * objects implementing the MetaInterface
  *
- * @package PHP-Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
