@@ -4,7 +4,7 @@
  * ---------------------------------
  * Load this file in the console to install Rocker (php -f install.php)
  *
- * @package Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

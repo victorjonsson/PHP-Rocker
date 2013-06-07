@@ -6,7 +6,7 @@
  * Console program for managing remote servers running
  * on Rocker. Symlink this file to your /bin/ directory
  *
- * @package Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

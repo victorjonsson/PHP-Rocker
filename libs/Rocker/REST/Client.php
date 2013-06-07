@@ -1,10 +1,9 @@
 <?php
 namespace Rocker\REST;
 
-use Fridge\DBAL\Exception\Exception;
 use Guzzle\Http\Client as HttpClient;
 use Guzzle\Http\EntityBody;
-use Rocker\Object\DuplicationException;
+use Guzzle\Http\Message\Response;
 use Rocker\Object\SearchResult;
 use Rocker\Server;
 use Rocker\Utils\Security\RC4Cipher;
@@ -12,14 +11,19 @@ use Slim\Http\Request;
 
 
 /**
- * Rocker Rest Server client. Makes it possible to communicate
- * with a remote Rocker server
+ * PHP-Rocker server client. Makes it possible to communicate
+ * with a remote PHP-Rocker application
  *
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
 class Client extends HttpClient implements ClientInterface {
+
+    /**
+     * @var Response
+     */
+    private $lastResponse;
 
     /**
      * @var string
@@ -47,35 +51,39 @@ class Client extends HttpClient implements ClientInterface {
         }
 
         try {
-            $resp = $request->send();
+            $this->lastResponse = $request->send();
         } catch(\Guzzle\Http\Exception\ClientErrorResponseException $e) {
-            $resp = $e->getResponse();
-            if( $resp->getStatusCode() == 401 && !$doAuth && !empty($this->user) ) {
-                trigger_error('Doing unauthenticated requests to an URI that requires authentication ('.$path.')');
+            $this->lastResponse = $e->getResponse();
+            if( $this->lastResponse->getStatusCode() == 401 && !$doAuth && !empty($this->user) ) {
+                trigger_error('Doing unauthenticated requests to an URI that requires authentication ('.$path.')', E_WARNING);
                 return $this->request($method, $path, $query, true);
             }
         }
 
-        if( $resp->getStatusCode() == 400 ) {
-            throw new \InvalidArgumentException((string)$resp->getBody());
+        if( $this->lastResponse->getStatusCode() == 400 ) {
+            throw new ClientException($this->lastResponse, 400);
         }
 
-        if( $resp->getStatusCode() == 204 ) {
+        if( $this->lastResponse->getStatusCode() == 204 ) {
             return (object)array(
                     'status' => 204,
                     'body' => array()
                 );
         }
 
-        if( strpos($resp->getContentType(), 'json') === false ) {
-            throw new \Exception('Server responded with unexpected content type ('.$resp->getContentType().')');
+        if( strpos($this->lastResponse->getContentType(), 'json') === false ) {
+            throw new ClientException(
+                        $this->lastResponse,
+                        ClientException::ERR_UNEXPECTED_CONTENT_TYPE,
+                        'Server responded with unexpected content type ('.$this->lastResponse->getContentType().')'
+                    );
         }
 
-        $str = (string)$resp->getBody();
+        $str = (string)$this->lastResponse->getBody();
         $body = json_decode($str);
 
         return (object)array(
-            'status' => $resp->getStatusCode(),
+            'status' => $this->lastResponse->getStatusCode(),
             'body' => $body
         );
     }
@@ -109,12 +117,12 @@ class Client extends HttpClient implements ClientInterface {
     /**
      * @inheritDoc
      */
-    public function setAuth($user, $pass, $secret = false)
+    public function setUser($user, $pass, $secret = false)
     {
         if( $secret ) {
-            $this->auth = 'RC4 '.base64_encode(RC4Cipher::encrypt($secret, $user . ':' . $pass));
+            $this->setAuthString('RC4 '.base64_encode(RC4Cipher::encrypt($secret, $user . ':' . $pass)));
         } else {
-            $this->auth = 'Basic '.base64_encode($user . ':' . $pass);
+            $this->setAuthString('Basic '.base64_encode($user . ':' . $pass));
         }
     }
 
@@ -149,7 +157,7 @@ class Client extends HttpClient implements ClientInterface {
                 ));
 
         if( $response->status == 409 ) {
-            throw new DuplicationException('User already exists');
+            throw new ClientException($this->lastResponse, 409, 'User already exists');
         }
 
         return $response->body;
@@ -168,7 +176,7 @@ class Client extends HttpClient implements ClientInterface {
             ), true);
 
         if( $response->status == 409 ) {
-            throw new DuplicationException('User already exists');
+            throw new ClientException($this->lastResponse, 409, 'User already exists');
         }
 
         return $response->body;
@@ -190,7 +198,7 @@ class Client extends HttpClient implements ClientInterface {
         $this->checkAuth();
         $response = $this->request('delete', 'user/'.$id, array(), true);
         if( $response->status < 200 || $response->status > 299 ) {
-            throw new \Exception(implode(',', $response->body));
+            throw new ClientException($this->lastResponse, $response->status);
         }
     }
 
@@ -203,7 +211,7 @@ class Client extends HttpClient implements ClientInterface {
         if( $response->status == 200 ) {
             return $response->body->version;
         } else {
-            throw new Exception('Server responded with status '.$response->status);
+            throw new ClientException($this->lastResponse, $response->status);
         }
     }
 
@@ -237,7 +245,7 @@ class Client extends HttpClient implements ClientInterface {
             $result->setObjects($response->body->objects);
             return $result;
        } else {
-            throw new \Exception('Server responded with status '.$response->status);
+            throw new ClientException($this->lastResponse, $response->status);
         }
     }
 
@@ -249,9 +257,8 @@ class Client extends HttpClient implements ClientInterface {
         $response = $this->request('get', 'user/'.$arg, array());
         if($response->status == 200) {
             return $response->body;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -259,10 +266,12 @@ class Client extends HttpClient implements ClientInterface {
      */
     public function me()
     {
+        $this->checkAuth();
         $response = $this->request('get', 'me', array(), true);
         if( $response->status == 200 ) {
             return $response->body;
+        } else {
+            throw new ClientException($this->lastResponse, $response->status);
         }
-        return false;
     }
 }

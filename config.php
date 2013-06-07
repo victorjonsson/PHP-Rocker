@@ -4,7 +4,7 @@
  * ---------------------------------
  * Main configuration file for Rocker REST Server
  *
- * @package Rocker
+ * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */

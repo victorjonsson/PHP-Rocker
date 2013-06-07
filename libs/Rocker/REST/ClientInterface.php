@@ -3,6 +3,7 @@ namespace Rocker\REST;
 
 
 /**
+ * Interface for classes that can communicate with a PHP-Rocker application
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
@@ -23,14 +24,14 @@ interface ClientInterface {
     /**
      * @param string $user
      * @param string $pass
-     * @param bool|string $secret
+     * @param bool|string $secret In case the credentials is RC4 encrypted
      * @return void
      */
-    public function setAuth($user, $pass, $secret = false);
+    public function setUser($user, $pass, $secret = false);
 
     /**
-     * @param $str - For example 'Basic ==sdfjk2n42n3lk'
-     * @see ClientInterface::setAuth()
+     * @param $str - For example 'Bearer ==sdfjk2n42n3lkdsll2wekowp3'
+     * @see ClientInterface::setUser()
      * @return void
      */
     public function setAuthString($str);
