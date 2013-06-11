@@ -171,6 +171,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Abstract object factories now implements InstallableInterface
 - Improved install script, all classes that should run install when app is installed is now declared in config.php
 - Added configuration options for user management and file storage
+- Access-Allow-Headers is now only sent request method is OPTIONS
 
 #### 1.1.7
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory

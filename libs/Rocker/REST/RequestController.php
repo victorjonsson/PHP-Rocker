@@ -59,10 +59,8 @@ class RequestController {
     {
         $this->server->response()->header('Content-Type', 'application/json');
         $this->server->response()->header('Access-Control-Allow-Origin', '*');
-        $this->server->response()->header('Access-Control-Allow-Headers', 'Authorization,Content-Type,Content-Length');
-
-        $this->server->response()->header('Access-Control-Allow-Methods', implode(',', $response->getMethods()));
         $this->server->response()->status($response->getStatus());
+
         foreach($response->getHeaders() as $name => $val) {
             $this->server->response()->header($name, $val);
         }
@@ -143,10 +141,15 @@ class RequestController {
 
         // Handle OPTIONS request
         if( $method == 'OPTIONS' ) {
-            $methods = $op->allowedMethods();
-            $methods[] = 'OPTIONS';
+
             $response = new OperationResponse();
-            $response->setMethods($methods);
+
+            // Add allowed request data
+            $requestHeaders = $server->request()->headers('Access-Control-Request-Headers', false);
+            $allowedHeaders = 'Authorization, Content-Type, Content-Length'. ( $requestHeaders ? ', '.$requestHeaders:'');
+            $response->addHeader('Access-Control-Allow-Headers', ucwords($allowedHeaders));
+            $response->addHeader('Access-Control-Allow-Methods', implode(',', $op->allowedMethods()));
+
             return $response;
         }
 
