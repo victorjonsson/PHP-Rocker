@@ -73,7 +73,6 @@ class MetaData extends \stdClass implements \Countable  {
     }
 
     /**
-     * @see MetaData:merge()
      * @param array $arr
      */
     public function setByArray($arr)

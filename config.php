@@ -47,9 +47,21 @@ return array(
     ),
 
     /*
-     * Base path of the API (eg. http://webservice.com/api/)
+     * Base path
+     * --------------
+     * Base path of the API (eg. https://webservice.com/api/). This parameter
+     * should only contain the path of the API, excluding host and protocol.
      */
     'application.path' => '/api/',
+
+    /*
+     * Response format
+     * ---------------------
+     * The content type of the API can be either 'json' or 'xml'. Note that
+     * the console program can't communicate with Rocker servers responding
+     * with an XML content type.
+     */
+    'application.output' => 'json',
 
     /*
      * API operations
@@ -175,7 +187,7 @@ return array(
      * Application install
      * -----------------------
      * Classes implementing Rocker\Utils\InstallableInterface that should
-     * run the install procedure when the application gets installed
+     * run the install procedure when the application gets installed or updated
      */
     'application.install' => array(
         '\\Rocker\\Object\\User\\UserFactory'

@@ -28,7 +28,7 @@ class OperationResponse {
     private $headers= array();
 
     /**
-     * @var array
+     * @var array|\Traversable|\DOMDocument
      */
     private $body = array();
 
@@ -68,7 +68,7 @@ class OperationResponse {
     }
 
     /**
-     * @param $body
+     * @param array|\Traversable|\DOMDocument $body
      */
     public function setBody($body)
     {
@@ -76,7 +76,7 @@ class OperationResponse {
     }
 
     /**
-     * @return array
+     * @return array|\Traversable|\DOMDocument
      */
     public function getBody()
     {

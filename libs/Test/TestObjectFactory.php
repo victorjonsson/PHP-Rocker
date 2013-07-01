@@ -302,10 +302,12 @@ class TestObjectFactory extends CommonTestCase {
 
     public function testSimpleMetaSearch()
     {
-        $user = self::$f->createUser('user@user.com', 'Axl', '');
+        $this->truncateDB();
+
+        $user = self::$f->createUser('dauser@user.com', 'Axl', '');
         $user->meta()->set('country', 'Sweden');
         self::$f->update($user);
-        $user = self::$f->createUser('user2@user.com', 'Svein', '');
+        $user = self::$f->createUser('dauser2@user.com', 'Svein', '');
         $user->meta()->set('country', 'Russia');
         self::$f->update($user);
 

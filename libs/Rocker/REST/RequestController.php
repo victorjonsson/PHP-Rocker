@@ -4,6 +4,8 @@ namespace Rocker\REST;
 use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Server;
+use Rocker\Utils\XML\ArrayConverter;
+use Rocker\Utils\XML\ArrayConverterInterface;
 use Slim\Slim;
 
 
@@ -32,15 +34,22 @@ class RequestController {
     protected $cache;
 
     /**
+     * @var ArrayConverterInterface
+     */
+    protected $arrayConverter;
+
+    /**
      * @param \Rocker\Server $server
      * @param \Fridge\DBAL\Connection\ConnectionInterface $db
      * @param \Rocker\Cache\CacheInterface $cache
+     * @param \Rocker\Utils\XML\ArrayConverterInterface $converter
      */
-    public function __construct(Server $server, ConnectionInterface $db=null, CacheInterface $cache=null)
+    public function __construct(Server $server, ConnectionInterface $db=null, CacheInterface $cache=null, ArrayConverterInterface $converter=null)
     {
         $this->server = $server;
         $this->db = $db;
         $this->cache = $cache;
+        $this->arrayConverter = $converter;
     }
 
     /**
@@ -57,18 +66,31 @@ class RequestController {
      */
     public function handleResponse(OperationResponse $response)
     {
-        $this->server->response()->header('Content-Type', 'application/json');
-        $this->server->response()->header('Access-Control-Allow-Origin', '*');
         $this->server->response()->status($response->getStatus());
+        $this->server->response()->header('Access-Control-Allow-Origin', '*');
 
         foreach($response->getHeaders() as $name => $val) {
             $this->server->response()->header($name, $val);
         }
 
-        $this->server->triggerEvent('output', null, null);
+        $output = $response->getBody();
 
-        // todo: support other formats
-        echo json_encode($response->getBody());
+        if( $this->server->config('application.output') === 'xml' ) {
+            // Send response as XML
+            $this->server->response()->header('Content-Type', 'application/xml');
+            if( $output instanceof \DOMDocument ) {
+                echo $output->saveXML();
+            } else {
+                if( $this->arrayConverter === null ) {
+                    $this->arrayConverter = new ArrayConverter();
+                }
+                echo $this->arrayConverter->convert($output)->saveXML();
+            }
+        } else {
+            // defaults to JSON format
+            $this->server->response()->header('Content-Type', 'application/json');
+            echo json_encode($output);
+        }
     }
 
     /**

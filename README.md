@@ -160,7 +160,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Write the authentication method as a Slim middleware
 - ~~Make it possible to store blob data using PUT~~
 - Look into using another data model for stored objects (maybe support noSQL)
-- Add support for XML formatted responses
+- ~~Add support for XML formatted responses~~
 - Rewrite the console program as a phar and move the source code to a separate project
 
 
@@ -171,8 +171,9 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Abstract object factories now implements InstallableInterface
 - Improved install script, all classes that should run install when app is installed is now declared in config.php
 - Added configuration options for user management and file storage
-- Access-Allow-Headers is now only sent request method is OPTIONS
+- Access-Allow-Headers is now only sent when request method is OPTIONS
 - Improved some database queries made when calling AbstractObjectFactory::metaSearch()
+- XML content type is now supported
 
 #### 1.1.7
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory

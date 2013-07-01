@@ -106,4 +106,9 @@ class TestMeta extends CommonTestCase {
         $this->assertFalse($obj->meta()->has('key'));
     }
 
+    public function testArrayToXML()
+    {
+
+    }
+
 }
