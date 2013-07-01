@@ -130,6 +130,7 @@ class RequestController {
         $op = $this->loadOperation($path);
         $method = $this->server->request()->getMethod();
 
+        // Could not resolve any operation, return 404
         if( $op === null ) {
             $response = new OperationResponse(404);
             $response->setBody(array('error'=>'Operation not found'));

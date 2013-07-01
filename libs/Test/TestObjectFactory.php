@@ -59,10 +59,7 @@ class TestObjectFactory extends CommonTestCase {
     }
 
     function testDeleteUser() {
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'user');
-        self::$db->exec('TRUNCATE '.self::$db->getParameter('prefix').'meta_user');
-        // empty out cache
-        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
+        $this->truncateDB();
 
         $user = self::$f->createUser('testing@test.se', 'Nick', '123456');
         $userId = $user->getId();
@@ -254,7 +251,6 @@ class TestObjectFactory extends CommonTestCase {
         $user->meta()->set('country', 'Russia');
         $user->meta()->set('family', 'Sergei,Vladimir,Natja');
         self::$f->update($user);
-        self::$f->update($user);
         $user = self::$f->createUser('user3@user.com', 'Thomas', '');
         $user->meta()->set('type', 'judge');
         $user->meta()->set('country', 'Belgium');
@@ -304,8 +300,82 @@ class TestObjectFactory extends CommonTestCase {
         $this->assertEquals(2, self::$f->metaSearch(array('country'=> array('Sweden', '*Belg*')))->getNumMatching());
     }
 
+    public function testSimpleMetaSearch()
+    {
+        $user = self::$f->createUser('user@user.com', 'Axl', '');
+        $user->meta()->set('country', 'Sweden');
+        self::$f->update($user);
+        $user = self::$f->createUser('user2@user.com', 'Svein', '');
+        $user->meta()->set('country', 'Russia');
+        self::$f->update($user);
+
+        $this->assertEquals(1, self::$f->metaSearch(array('country'=>array('Sweden', 'Finland', '*Urugu*')))->getNumMatching());
+    }
+
+    public function testMoreAdvancedSearch()
+    {
+        $this->truncateDB();
+
+        $john = self::$f->createUser('user1@site.com', 'John', '');
+        $john->meta()->setByArray(array(
+            'gender' => 'Male',
+            'school' => 'Kenna',
+            'grade' => 19
+        ));
+        self::$f->update($john);
+
+        $jenny = self::$f->createUser('user2@site.com', 'jenny', '');
+        $jenny->meta()->setByArray(array(
+            'gender' => 'Female',
+            'school' => 'Jenna',
+            'grade' => 18
+        ));
+        self::$f->update($jenny);
+
+        $axel = self::$f->createUser('user3@site.com', 'jenny', '');
+        $axel->meta()->setByArray(array(
+            'gender' => 'Male',
+            'school' => 'Kenna',
+            'grade' => 18
+        ));
+        self::$f->update($axel);
+
+        $sven = self::$f->createUser('user4@site.com', 'jenny', '');
+        $sven->meta()->setByArray(array(
+            'gender' => 'Male',
+            'school' => 'Benna',
+            'grade' => 12
+        ));
+        self::$f->update($sven);
+
+        $this->assertEquals(4, self::$f->metaSearch(array())->getNumMatching());
+        $this->assertEquals(1, self::$f->metaSearch(array('grade<'=>18))->getNumMatching());
+
+        $query = array(
+            'school' => '*enn*',
+            array('AND' => array('gender'=>array('Male', 'Female'))),
+            array('AND' => array('grade>' => 17))
+        );
+        $this->assertEquals(3, self::$f->metaSearch($query)->getNumMatching());
+
+        $query = array(
+            'school' => '*enn*',
+            array('AND' => array('gender'=>'Female')),
+            array('AND' => array('grade>' => 17))
+        );
+        $this->assertEquals(1, self::$f->metaSearch($query)->getNumMatching());
+    }
+
     public static function tearDownAfterClass() {
         self::$db->exec('DROP TABLE '.self::$db->getParameter('prefix').'user');
         self::$db->exec('DROP TABLE '.self::$db->getParameter('prefix').'meta_user');
+    }
+
+    protected function truncateDB()
+    {
+        self::$db->exec('TRUNCATE ' . self::$db->getParameter('prefix') . 'user');
+        self::$db->exec('TRUNCATE ' . self::$db->getParameter('prefix') . 'meta_user');
+        // empty out cache
+        self::$f = new \Rocker\Object\User\UserFactory(self::$db, new \Rocker\Cache\TempMemoryCache());
     }
 }

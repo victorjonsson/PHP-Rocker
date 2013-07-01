@@ -146,17 +146,93 @@ abstract class AbstractObjectFactory implements FactoryInterface, InstallableInt
      */
     public function metaSearch(array $where, $offset=0, $limit=50, $idOrder='DESC')
     {
-        if(empty($where))
-            throw new \InvalidArgumentException('Empty search is not allowed, use AbstractObjectFactory::search');
+        if( empty($where) ) {
+            return $this->search(null, $offset, $limit, 'id', $idOrder);
+        }
 
         $result = new SearchResult($offset, $limit);
+
+        if( $this->isSimpleMetaQuery($where) ) {
+            $order = 'object';
+            list($sql, $args) = $this->buildSimpleMetaQuery($where);
+        } else {
+            $order = 't.object';
+            list($sql, $args) = $this->buildComplexMetaQuery($where);
+        }
+        
+        $sort = ' ORDER BY '.$order.'  '.($idOrder == 'DESC' ? 'DESC':'ASC').
+                ' LIMIT '.intval($offset).','.intval($limit);
+
+        $this->executeSearchQuery($sql, $args, $result, $sort, 'object');
+        return $result;
+    }
+
+    /**
+     * Remove chars that modifies the query from column name
+     * @param string $col
+     * @return string
+     */
+    private function normalizeColumnName($col)
+    {
+        return str_replace(array('>','<', '!'), '', $col);
+    }
+
+    /**
+     * @param array $where
+     * @return string
+     */
+    private function buildSimpleMetaQuery($where)
+    {
+        $sql = 'SELECT object FROM '.$this->metaTableName.' WHERE ';
+        $args = array();
+        foreach($where as $key => $val) {
+
+            $col = $key;
+            $key = $this->normalizeColumnName($key);
+
+            if( empty($begun) ) {
+                if( is_array($val) ) {
+                    $midQuery = '';
+                    foreach($val as $midVal) {
+                        $eq = $this->getEqualOperator($midVal, $col);
+                        $args[] = $key;
+                        if( $eq == ' > ? ' || $eq == ' < ? ') {
+                            $midQuery .= ' (name=? AND value'.str_replace('?', intval($midVal), $eq).') OR ';
+                        } else {
+                            $midQuery .= ' (name=? AND value'.$eq.') OR ';
+                            $args[] = str_replace('*', '%', $midVal);
+                        }
+                    }
+                    $sql .= rtrim($midQuery, 'OR ');
+                } else {
+                    $eq = $this->getEqualOperator($val, $col);
+                    $args[] = $key;
+                    if( $eq == ' > ? ' || $eq == ' < ? ') {
+                        $sql .= " name=? AND value ".str_replace('?', intval($val), $eq);
+                    } else {
+                        $sql .= " name=? AND value$eq ";
+                        $args[] = str_replace('*', '%', $val);
+                    }
+
+                }
+            }
+        }
+        return array($sql, $args);
+    }
+
+    /**
+     * @param array $where
+     * @return array
+     */
+    private function buildComplexMetaQuery($where)
+    {
         $sql = 'SELECT object FROM '.$this->metaTableName.' AS t WHERE ';
         $args = array();
         $index = 0;
         foreach($where as $key => $val) {
 
             $col = $key;
-            $key = str_replace(array('>','<', '!'), '', $col); // remove chars that modifies the query
+            $key = $this->normalizeColumnName($key);
 
             if( $index == 0 ) {
                 if( is_array($val) ) {
@@ -187,8 +263,8 @@ abstract class AbstractObjectFactory implements FactoryInterface, InstallableInt
 
                 $key = str_replace('!', '', key($val));
                 $sql .= (strtoupper($key) == 'AND' ? ' AND ':' OR ').
-                        ( substr(key($val), -1) == '!' ? ' NOT ':'').
-                        "EXISTS(SELECT $index FROM ".$this->metaTableName." t$index
+                    ( substr(key($val), -1) == '!' ? ' NOT ':'').
+                    "EXISTS(SELECT $index FROM ".$this->metaTableName." t$index
                             WHERE t$index.object=t.object
                         AND (
         	                t$index.name=?
@@ -196,7 +272,7 @@ abstract class AbstractObjectFactory implements FactoryInterface, InstallableInt
 
                 $val = current($val);
                 $col = key($val);
-                $args[] = str_replace(array('>','<'), '', $col); // remove chars that modifies the query
+                $args[] = $this->normalizeColumnName($col);
                 $val = current($val);
 
                 if(is_array($val)) {
@@ -227,12 +303,25 @@ abstract class AbstractObjectFactory implements FactoryInterface, InstallableInt
 
             $index++;
         }
+        return array($sql, $args);
+    }
 
-        $sort = ' ORDER BY t.object  '.($idOrder == 'DESC' ? 'DESC':'ASC').
-                ' LIMIT '.intval($offset).','.intval($limit);
-
-        $this->executeSearchQuery($sql, $args, $result, $sort, 'object');
-        return $result;
+    /**
+     * @param array $search
+     * @return bool
+     */
+    private function isSimpleMetaQuery($search)
+    {
+        $col = $this->normalizeColumnName(key($search));
+        foreach($search as $searches) {
+            if( isset($begun) ) {
+                if( $this->normalizeColumnName(key($searches)) != $col ) {
+                    return false;
+                }
+            }
+            $begun = true;
+        }
+        return true;
     }
 
     /**
@@ -285,9 +374,9 @@ abstract class AbstractObjectFactory implements FactoryInterface, InstallableInt
      */
     private function executeSearchQuery($sql, $args, $result, $orderAndLimitQuery, $idColumn='id')
     {
-        $numStatement = $this->db->prepare($sql);
+        $numStatement = $this->db->prepare(str_replace('SELECT '.$idColumn.' FROM', 'SELECT COUNT(*) FROM', $sql));
         $numStatement->execute($args);
-        $result->setNumMatching($numStatement->rowCount());
+        $result->setNumMatching(intval($numStatement->fetchColumn()));
 
         $sql .= $orderAndLimitQuery;
 

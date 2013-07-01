@@ -30,7 +30,7 @@ class MetaData extends \stdClass implements \Countable  {
     /**
      * @param array $meta_data
      */
-    function __construct(array $meta_data)
+    public function __construct(array $meta_data)
     {
         $this->meta = $meta_data;
     }
@@ -40,7 +40,7 @@ class MetaData extends \stdClass implements \Countable  {
      * @param mixed $default
      * @return mixed
      */
-    function get($name, $default=null)
+    public function get($name, $default=null)
     {
         return isset($this->meta[$name]) ? $this->meta[$name] : $default;
     }
@@ -49,7 +49,7 @@ class MetaData extends \stdClass implements \Countable  {
      * @param string $name
      * @return bool
      */
-    function has($name)
+    public function has($name)
     {
         return isset($this->meta[$name]);
     }
@@ -58,7 +58,7 @@ class MetaData extends \stdClass implements \Countable  {
      * @param string $name
      * @param mixed $val
      */
-    function set($name, $val)
+    public function set($name, $val)
     {
         if( $this->get($name) !== $val ) {
             if( $val === null ) {
@@ -73,9 +73,20 @@ class MetaData extends \stdClass implements \Countable  {
     }
 
     /**
+     * @see MetaData:merge()
+     * @param array $arr
+     */
+    public function setByArray($arr)
+    {
+        foreach($arr as $key => $val) {
+            $this->set($key, $val);
+        }
+    }
+
+    /**
      * @param string $name
      */
-    function delete($name)
+    public function delete($name)
     {
         $this->set($name, null);
     }
@@ -83,7 +94,7 @@ class MetaData extends \stdClass implements \Countable  {
     /**
      * @return array
      */
-    function getUpdatedValues()
+    public function getUpdatedValues()
     {
         return $this->updated;
     }
@@ -91,7 +102,7 @@ class MetaData extends \stdClass implements \Countable  {
     /**
      * @param array $values
      */
-    function setUpdatedValues(array $values)
+    public function setUpdatedValues(array $values)
     {
         $this->updated = $values;
     }
@@ -99,7 +110,7 @@ class MetaData extends \stdClass implements \Countable  {
     /**
      * @return array
      */
-    function getDeletedValues()
+    public function getDeletedValues()
     {
         return $this->deleted;
     }
@@ -107,7 +118,7 @@ class MetaData extends \stdClass implements \Countable  {
     /**
      * @param array $values
      */
-    function setDeletedValues(array $values)
+    public function setDeletedValues(array $values)
     {
         $this->deleted = $values;
     }
@@ -116,7 +127,7 @@ class MetaData extends \stdClass implements \Countable  {
      * Get an array copy of the meta values
      * @return array
      */
-    function toArray()
+    public function toArray()
     {
         return $this->meta;
     }
@@ -142,7 +153,7 @@ class MetaData extends \stdClass implements \Countable  {
     /**
      * @throws \Exception
      */
-    function __sleep()
+    public function __sleep()
     {
         throw new \Exception('Can not be serialized');
     }
