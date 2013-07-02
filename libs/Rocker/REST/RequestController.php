@@ -73,28 +73,64 @@ class RequestController {
             $this->server->response()->header($name, $val);
         }
 
-        $output = $response->getBody();
-
         if( $this->server->config('application.output') === 'xml' ) {
-            // Send response as XML
-            $this->server->response()->header('Content-Type', 'application/xml');
-            if( $output instanceof \DOMDocument ) {
-                echo $output->saveXML();
-            } else {
-                if( $this->arrayConverter === null ) {
-                    $this->arrayConverter = new ArrayConverter();
-                }
-                echo $this->arrayConverter->convert($output)->saveXML();
-            }
+            $this->outputXML( $response->getBody() );
         } else {
-            // defaults to JSON format
-            $this->server->response()->header('Content-Type', 'application/json');
+            $this->outputJSON( $response->getBody() );
+        }
+    }
+
+    /**
+     * @param string $output
+     * @throws \Exception
+     */
+    private function outputJSON($output)
+    {
+        $this->server->response()->header('Content-Type', 'application/json');
+        try {
             echo json_encode($output);
+        } catch(\Exception $e) {
+            if( $output instanceof \DOMDocument ) {
+                // The operation generating the response has ignored to check application.output
+                // in the server config.
+                error_log($this->server->request()->getPath().' executes an operation that returns a '.
+                            ' DOMDocument even though the config variable "application.output" declares '.
+                            'that the API should turn a JSON formatted response. Please fix the '.
+                            'operation so it sets the body of the response to an array or an ' .
+                            'object implementing Traversable', E_USER_ERROR);
+
+                echo $this->loadArrayConverter()->convertXMLToJSON($output);
+
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * @return ArrayConverterInterface
+     */
+    private function loadArrayConverter()
+    {
+        return $this->arrayConverter === null ? new ArrayConverter() : $this->arrayConverter;
+    }
+
+    /**
+     * @param string $output
+     */
+    private function outputXML($output)
+    {
+        $this->server->response()->header('Content-Type', 'application/xml');
+        if( $output instanceof \DOMDocument ) {
+            echo $output->saveXML();
+        } else {
+            echo $this->loadArrayConverter()->convert($output)->saveXML();
         }
     }
 
     /**
      * @param array $path
+     * @throws \Exception
      * @return OperationInterface|null
      */
     private function loadOperation(array $path)

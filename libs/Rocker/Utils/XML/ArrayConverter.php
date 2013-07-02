@@ -3,14 +3,14 @@ namespace Rocker\Utils\XML;
 
 
 /**
- * Class that can take an traversable object
- * and turn it into a DOMDocument
+ * Class that can take an array or traversable object
+ * and turn it into a DOMDocument, and vice versa
  *
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class ArrayConverter {
+class ArrayConverter implements ArrayConverterInterface {
 
     /**
      * @var string
@@ -114,5 +114,14 @@ class ArrayConverter {
                 $element->appendChild($doc->createCDATASection($value));
             }
         }
+    }
+
+    /**
+     * @param \DOMDocument $xml
+     * @return string JSON formatted
+     */
+    public function convertXMLToJSON($xml)
+    {
+        return json_encode((array)simplexml_load_string($xml->saveXML()));
     }
 }

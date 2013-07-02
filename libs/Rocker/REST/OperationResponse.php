@@ -68,6 +68,31 @@ class OperationResponse {
     }
 
     /**
+     * Setting this variable to an array or object implementing \Traversable
+     * will always be safe. If you on the other hand want to return a \DOMDocument
+     * you should first check the configuration parameter "application.output"
+     *
+     * @example
+     * <code>
+     *  <?php
+     *  class MyOperation extends AbstractOperation {
+     *
+     *      function exec(Server $server, ConnectionInterface $db, CacheInterface $cache) {
+     *          // do some computations...
+     *          if( $server->config('application.output') == 'xml' ) {
+     *              // Return DOMDocument
+     *              $body = new DOMDocument();
+     *              ...
+     *          } else {
+     *              $body = array();
+     *              ...
+     *          }
+     *
+     *          return new OperationResponse(200, $body);
+     *      }
+     *  }
+     * </code>
+     *
      * @param array|\Traversable|\DOMDocument $body
      */
     public function setBody($body)

@@ -51,6 +51,8 @@ return array(
      * --------------
      * Base path of the API (eg. https://webservice.com/api/). This parameter
      * should only contain the path of the API, excluding host and protocol.
+     * If the URI of your API should be for example https://api.myservice.com/
+     * you set this parameter to '/'
      */
     'application.path' => '/api/',
 

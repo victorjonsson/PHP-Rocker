@@ -4,7 +4,7 @@ namespace Rocker\Utils\XML;
 
 /**
  * Interface for a class that can take an traversable object
- * and turn it into a DOMDocument
+ * and turn it into a DOMDocument, and vice versa
  *
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
@@ -18,4 +18,9 @@ interface ArrayConverterInterface {
      */
     public function convert($arr);
 
+    /**
+     * @param \DOMDocument $xml
+     * @return string JSON formatted
+     */
+    public function convertXMLToJSON($xml);
 }
