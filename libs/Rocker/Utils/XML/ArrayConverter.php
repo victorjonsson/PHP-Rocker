@@ -98,10 +98,12 @@ class ArrayConverter implements ArrayConverterInterface {
      */
     private function appendData($key, $value, $parentElement, $doc)
     {
-        $element = new \DOMElement('node');
+        if( is_numeric($key) ) {
+            $element = new \DOMElement('node');
+        } else {
+            $element = new \DOMElement($key);
+        }
         $parentElement->appendChild($element);
-        if( !is_numeric($key) )
-            $element->setAttribute('name', $key);
 
         if( is_array($value) || $value instanceof \Traversable ) {
             foreach($value as $childKey => $childValue) {

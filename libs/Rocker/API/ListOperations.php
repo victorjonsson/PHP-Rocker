@@ -27,9 +27,10 @@ class ListOperations extends AbstractOperation {
             /* @var \Rocker\REST\OperationInterface $operation */
             $operation = new $op(null);
 
-            $operations[$path] = array(
+            $operations[] = array(
                 'class' => $op,
-                'methods' => implode(',', $operation->allowedMethods())
+                'methods' => implode(',', $operation->allowedMethods()),
+                'path' => $path
             );
         }
 

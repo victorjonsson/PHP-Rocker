@@ -12,19 +12,19 @@ class TestArrayToXMLConverter extends CommonTestCase {
         $converter->setRootElementName('root');
 
         $this->assertEquals(
-            $this->generate('<node name="a">1</node>', 'root', '2.0', 'latin1'),
+            $this->generate('<a>1</a>', 'root', '2.0', 'latin1'),
             trim($converter->convert(array('a'=>1))->saveXML())
         );
 
 
         $converter = new \Rocker\Utils\XML\ArrayConverter();
         $this->assertEquals(
-                $this->generate('<node name="a">1</node>'),
+                $this->generate('<a>1</a>'),
                 trim($converter->convert(array('a'=>1))->saveXML())
             );
 
         $this->assertEquals(
-            $this->generate('<node name="a">1</node><node name="b"><node name="c"><![CDATA[obj]]></node></node>'),
+            $this->generate('<a>1</a><b><c><![CDATA[obj]]></c></b>'),
             trim($converter->convert(array('a'=>1, 'b' => array('c'=>'obj')))->saveXML())
         );
 
