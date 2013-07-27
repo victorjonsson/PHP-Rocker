@@ -166,6 +166,9 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Changelog
 
+#### 1.1.9
+- Improved console method displaying available servers
+
 #### 1.1.8
 - Trying to update a user with an already registered e-mail address now results in http status 409 instead of 400
 - Abstract object factories now implements InstallableInterface

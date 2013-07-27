@@ -51,12 +51,19 @@ class Server implements MethodInterface {
     {
         $default = '';
         if( isset($servers['__default']) ) {
-            $default = "\nDefault server: ".$servers['__default'];
+            $default = $servers['__default'];
             unset($servers['__default']);
         }
-        $names = array_keys($servers);
-        \cli\line('Available servers:');
-        \cli\out(implode(PHP_EOL, $names).$default.PHP_EOL);
+        $table = new \cli\Table();
+        $table->setHeaders(array('Name', 'Host', 'Auth mechanism'));
+        foreach($servers as $name => $data) {
+            if( $default == $name ) {
+                $name .= ' (default)';
+            }
+            $table->addRow(array($name, $data['address'], current( explode(' ', $data['auth']))));
+        }
+        $table->display();
+        \cli\out($default);
     }
 
     /**
