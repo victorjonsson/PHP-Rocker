@@ -120,7 +120,7 @@ class RequestController {
      */
     private function outputXML($output)
     {
-        $this->server->response()->header('Content-Type', 'application/xml');
+        $this->server->response()->header('Content-Type', 'application/xml; charset=utf-8');
         if( $output instanceof \DOMDocument ) {
             echo $output->saveXML();
         } else {
