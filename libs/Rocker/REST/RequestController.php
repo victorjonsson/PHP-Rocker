@@ -73,10 +73,12 @@ class RequestController {
             $this->server->response()->header($name, $val);
         }
 
+        $body = $this->server->applyFilter('body', $response->getBody(), $this->db, $this->cache);
+
         if( $this->server->config('application.output') === 'xml' ) {
-            $this->outputXML( $response->getBody() );
+            $this->outputXML( $body );
         } else {
-            $this->outputJSON( $response->getBody() );
+            $this->outputJSON( $body );
         }
     }
 
