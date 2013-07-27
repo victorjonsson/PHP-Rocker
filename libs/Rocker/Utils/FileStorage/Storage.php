@@ -2,7 +2,7 @@
 namespace Rocker\Utils\FileStorage;
 
 use Rocker\Utils\ErrorHandler;
-use Rocker\Utils\FileStorage\Image\ImageModifier;
+use Rocker\Utils\FileStorage\Image\ImageManipulator;
 
 
 /**
@@ -132,9 +132,9 @@ class Storage implements StorageInterface {
             } else {
                 if( $newName ) {
                     copy($filePath, dirname($filePath).'/'.$newName);
-                    $versionGenerator = new ImageModifier(dirname($filePath).'/'.$newName);
+                    $versionGenerator = new ImageManipulator(dirname($filePath).'/'.$newName);
                 } else {
-                    $versionGenerator = new ImageModifier($filePath);
+                    $versionGenerator = new ImageManipulator($filePath);
                 }
                 $generatedVersions = array();
                 foreach ($versions as $name => $sizeName) {
@@ -216,7 +216,7 @@ class Storage implements StorageInterface {
         $file = $this->path . $name;
         $extension = pathinfo($file, PATHINFO_EXTENSION);
         if( self::isImage($extension) && filesize($file) < $this->maxImageSize && $this->hasAllowedDimension($file) ) {
-            $versionGenerator = new ImageModifier($file);
+            $versionGenerator = new ImageManipulator($file);
             $version = $versionGenerator->create($sizeName,  $this->versionQuality);
             return basename($version);
         }

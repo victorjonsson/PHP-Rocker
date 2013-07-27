@@ -11,7 +11,7 @@ use Gregwar\Image\Image;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class ImageModifier implements ImageModifierInterface
+class ImageManipulator implements ImageManipulatorInterface
 {
     /**
      * @var string

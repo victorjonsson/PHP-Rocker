@@ -9,7 +9,7 @@ namespace Rocker\Utils\FileStorage\Image;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-interface ImageModifierInterface {
+interface ImageManipulatorInterface {
 
     /**
      * Resize image keeping its proportions.

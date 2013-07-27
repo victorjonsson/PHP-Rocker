@@ -4,7 +4,7 @@ namespace Rocker\Utils\FileStorage;
 use Aws\S3\S3Client;
 use Guzzle\Http\Client as HttpClient;
 use Rocker\Utils\ErrorHandler;
-use Rocker\Utils\FileStorage\Image\ImageModifier;
+use Rocker\Utils\FileStorage\Image\ImageManipulator;
 
 
 /**
@@ -180,7 +180,7 @@ class S3 extends Storage {
             $tmpFile = tempnam(sys_get_temp_dir(), (string)time());
             file_put_contents($tmpFile, file_get_contents($remoteFile));
             if( filesize($tmpFile) < $this->maxImageSize && $this->hasAllowedDimension($tmpFile) ) {
-                $versionGenerator = new ImageModifier($tmpFile);
+                $versionGenerator = new ImageManipulator($tmpFile);
                 $version = $versionGenerator->create($sizeName,  $this->versionQuality);
                 return basename($version);
             }
