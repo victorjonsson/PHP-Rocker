@@ -166,10 +166,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Changelog
 
-#### 1.1.9
-- Improved console method displaying available servers
-
-#### 1.1.8
+#### 1.1.8 (dev-master)
 - Trying to update a user with an already registered e-mail address now results in http status 409 instead of 400
 - Abstract object factories now implements InstallableInterface
 - Improved install script, all classes that should run install when app is installed is now declared in config.php
@@ -177,6 +174,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Access-Allow-Headers is now only sent when request method is OPTIONS
 - Improved some database queries made when calling AbstractObjectFactory::metaSearch()
 - XML content type is now supported
+- Improved console method displaying available servers
 
 #### 1.1.7
 - General improvements in PHP-Rocker\Object\ObjectMetaFactory
