@@ -29,6 +29,11 @@ class TestArrayToXMLConverter extends CommonTestCase {
         );
 
         $this->assertEquals(
+            $this->generate('<a><node>1</node><node>2</node><node>3</node></a>'),
+            trim($converter->convert(array('a'=>array(1,2,3)))->saveXML())
+        );
+
+        $this->assertEquals(
             $this->generate('<node><![CDATA[a]]></node><node>2</node><node>1</node>'),
             trim($converter->convert(array('a', 2, 1))->saveXML())
         );
