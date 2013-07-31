@@ -131,12 +131,11 @@ server using a shared secret. If wanting to run RC4 encrypted requests you'll ne
 )
 ```
 
-The *secret* has then to be given to the client communicating with your Rocker server. Pseudo code:
+The *secret* also has to be given to the client communicating with your Rocker server. Pseudo code:
 
 ```java
 String crypted = RC4.encrypt("the-hard-to-guess-secret", "som.user@gmail.com:some-password");
-crypted = Base64.encode(crypted);
-request.addHeader("Authorization", "RC4 "+crypted);
+request.addHeader("Authorization", "RC4 " + Base64.encode(crypted));
 ```
 
 #### Other authentication packages
