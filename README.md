@@ -165,7 +165,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Changelog
 
-#### 1.1.8 
+#### 1.1.8
 - Trying to update a user with an already registered e-mail address now results in http status<br /> 409 instead of 400
 - Abstract object factories now implements InstallableInterface
 - Improved install script, all classes that should run install when app is installed is now declared in config.php
