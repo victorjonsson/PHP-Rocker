@@ -40,6 +40,7 @@ class Server implements MethodInterface {
         $_('  -l    List available servers');
         $_('  -r    Remove a server (eg. $ rocker -r my-server)');
         $_('  -d    Set one of the added servers as default (eg. $ rocker -d my-server)');
+        $_('  -c    Check version of PHP-Rocker on remote server and available API operations');
         $_('Default:');
         $_('  Add or edit a remote server connection');
     }
@@ -71,8 +72,22 @@ class Server implements MethodInterface {
      */
     public function call($args, $flags)
     {
+        // Check version and operations on remote server
+        if( in_array( '-c', $flags) )  {
+            $client = self::loadClient($args);
+            \cli\line('%_Base URI:%n '.$client->getBaseURI());
+            \cli\line('%_Version:%n '.$client->serverVersion());
+            \cli\line('%_Operations:%n');
+            $table = new \cli\Table();
+            $table->setHeaders(array('Class', 'Methods', 'Path'));
+            foreach($client->request('GET', 'operations')->body as $data) {
+                $table->addRow(array_values( (array)$data ));
+            }
+            $table->display();
+        }
+
         // Remove
-        if( isset($args['-r']) ) {
+        elseif( isset($args['-r']) ) {
             $servers = $this->loadStoredServerInfo();
             if( isset($servers[$args['-r']]) ) {
                 unset($servers[$args['-r']]);
@@ -98,11 +113,6 @@ class Server implements MethodInterface {
                 file_put_contents($this->infoFile, serialize($servers));
                 \cli\line('%gServer "'.$args['-d'].'" set as default %n');
             }
-        }
-
-        elseif( in_array('-rv', $flags) ) {
-            $client = self::loadClient($flags);
-            \cli\line($client->serverVersion());
         }
 
         // Add
