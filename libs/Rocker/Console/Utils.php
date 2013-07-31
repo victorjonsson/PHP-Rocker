@@ -113,13 +113,13 @@ class Utils {
     /**
      * @param array $config
      */
-    public static function outputAvailableMethods($config, $methodClassPath)
+    public static function outputAvailableMethods($config)
     {
         /* @var MethodInterface[] $methods */
         $methods = array();
 
         /* @var \SplFileInfo $f */
-        foreach(new \FilesystemIterator($methodClassPath) as $f) {
+        foreach(new \FilesystemIterator(__DIR__.'/Method') as $f) {
             $class = '\\Rocker\\Console\\Method\\'.pathinfo($f->getFilename(), PATHINFO_FILENAME);
             if( strpos($class, 'Interface') === false) {
                 try {

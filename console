@@ -53,7 +53,7 @@ try {
     }
     else {
         _('PHP Rocker (client v'.\Rocker\Server::VERSION.')');
-        \Rocker\Console\Utils::outputAvailableMethods($config, __DIR__.'/libs/Rocker/Console/Method/');
+        \Rocker\Console\Utils::outputAvailableMethods($config);
     }
 } catch(\Exception $e) {
     _('%r%_Exception ('.get_class($e).')%n');
