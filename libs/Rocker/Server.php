@@ -1,7 +1,6 @@
 <?php
 namespace Rocker;
 
-use Fridge\DBAL\Adapter\ConnectionInterface;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\DB;
 use Rocker\REST\OperationResponse;
@@ -192,8 +191,8 @@ class Server extends \Slim\Slim  {
 
     /**
      * @param string $event
-     * @param ConnectionInterface $db
-     * @param CacheInterface $cache
+     * @param \Fridge\DBAL\Connection\ConnectionInterface $db
+     * @param \Rocker\Cache\CacheInterface $cache
      */
     public function triggerEvent($event, $db, $cache)
     {
