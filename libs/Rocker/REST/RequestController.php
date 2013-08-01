@@ -66,15 +66,20 @@ class RequestController {
      */
     public function handleResponse(OperationResponse $response)
     {
+        // Add headers declared by the operation response
         $this->server->response()->status($response->getStatus());
         $this->server->response()->header('Access-Control-Allow-Origin', '*');
-
         foreach($response->getHeaders() as $name => $val) {
             $this->server->response()->header($name, $val);
         }
 
+        // Call output event
+        $this->server->triggerEvent('output', $this->db, $this->cache);
+
+        // Filter body content
         $body = $this->server->applyFilter('body', $response->getBody(), $this->db, $this->cache);
 
+        // Output body
         if( $this->server->config('application.output') === 'xml' ) {
             $this->outputXML( $body );
         } else {
