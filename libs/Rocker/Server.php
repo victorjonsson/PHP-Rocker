@@ -1,6 +1,7 @@
 <?php
 namespace Rocker;
 
+use Rocker\Cache\Cache;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\DB;
 use Rocker\REST\OperationResponse;
@@ -52,24 +53,19 @@ class Server extends \Slim\Slim  {
         }
 
         // Setup dynamic routing
-        $this->map($basePath.':args+', array($this, 'handleAPIRequest'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'OPTIONS');
-
+        $this->map($basePath.':args+', array($this, 'dispatch'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'OPTIONS');
 
         // Bind events defined in config
         if( !empty($config['application.events']) ) {
             foreach($config['application.events'] as $arr) {
-                $event = key($arr);
-                $func = current($arr);
-                $this->bind($event, $func);
+                $this->bind(key($arr), current($arr));
             }
         }
 
         // Add filters defined in config
         if( !empty($config['application.filters']) ) {
             foreach( $config['application.filters'] as $arr) {
-                $filter = key($arr);
-                $func = current($arr);
-                $this->bind($filter, $func, 'filter');
+                $this->bind(key($arr), current($arr), 'filter');
             }
         }
     }
@@ -98,15 +94,15 @@ class Server extends \Slim\Slim  {
      * @param array $path
      * @param null|RequestController $controller
      */
-    public function handleAPIRequest($path, $controller=null)
+    public function dispatch($path, $controller=null)
     {
         try {
 
-            $db = \Rocker\Object\DB::instance($this->config('application.db'));
-            $cache = \Rocker\Cache\Cache::instance($this->config('application.cache'));
+            $db = DB::instance($this->config('application.db'));
+            $cache = Cache::instance($this->config('application.cache'));
 
             if( $controller === null ) {
-                $controller = new \Rocker\REST\RequestController($this, $db, $cache);
+                $controller = new RequestController($this, $db, $cache);
             } else {
                 $controller->setDatabase($db);
                 $controller->setCache($cache);
@@ -150,33 +146,21 @@ class Server extends \Slim\Slim  {
 
         //Send headers
         if (headers_sent() === false) {
+
             //Send status
-            if (strpos(PHP_SAPI, 'cgi') === 0) {
-                header(sprintf('Status: %s', \Slim\Http\Response::getMessageForCode($status)));
-            } else {
-                header(sprintf('HTTP/%s %s', $this->config('http.version'), \Slim\Http\Response::getMessageForCode($status)));
-            }
+            header(sprintf('HTTP/%s %s', $this->config('http.version'), \Slim\Http\Response::getMessageForCode($status)));
 
             //Send headers
             foreach ($header as $name => $value) {
                 $hValues = explode("\n", $value);
                 foreach ($hValues as $hVal) {
-                    header("$name: $hVal", false);
+                    header("$name: $hVal", true);
                 }
             }
         }
 
         // Send body
         echo $body;
-    }
-
-    /**
-     * Redirects client to current page
-     */
-    public function reload()
-    {
-        $this->redirect($this->request()->getPath());
-        die;
     }
 
     /**

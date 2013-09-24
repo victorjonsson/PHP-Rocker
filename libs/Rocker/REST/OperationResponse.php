@@ -109,22 +109,6 @@ class OperationResponse {
     }
 
     /**
-     * @param array $methods
-     */
-    public function setMethods(array $methods)
-    {
-        $this->methods = $methods;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMethods()
-    {
-        return $this->methods;
-    }
-
-    /**
      * @param $status
      */
     public function setStatus($status)

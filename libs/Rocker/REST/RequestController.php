@@ -222,7 +222,7 @@ class RequestController {
         // Wrong method!
         if( !in_array($method, $op->allowedMethods()) ) {
             $response = new OperationResponse(405);
-            $response->setMethods($op->allowedMethods());
+            $response->addHeader('Access-Control-Allow-Methods', implode(',', $op->allowedMethods()));
             $response->setBody(array(
                     'error'=>'Wrong request method, only '.implode(', ', $op->allowedMethods()).' is allowed'
                 ));
@@ -238,7 +238,7 @@ class RequestController {
                 $authConfig = $this->server->config('application.auth');
                 $response->setHeaders(array('WWW-Authenticate'=> $authConfig['mechanism']));
             }
-            $response->setMethods($op->allowedMethods());
+            $response->addHeader('Access-Control-Allow-Methods', implode(',', $op->allowedMethods()));
         }
 
         // Missing arguments!
