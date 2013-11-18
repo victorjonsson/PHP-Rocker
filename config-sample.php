@@ -19,10 +19,10 @@ return array(
      * are pdo_mysql, postgrsql, mssql, oracle (see Fridge DBAL)
      */
     'application.db' => array(
-        'host' => 'localhost',
-        'dbname' => 'rocker',
-        'username' => 'root',
-        'password' => 'root',
+        'host' => '',
+        'dbname' => '',
+        'username' => '',
+        'password' => '',
         'prefix' => 'rocker_',
         'collate' => 'utf8_swedish_ci',
         'engine' => 'InnoDB',
