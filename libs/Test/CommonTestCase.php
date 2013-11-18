@@ -19,15 +19,12 @@ class CommonTestCase extends PHPUnit_Framework_TestCase {
 
         require __DIR__.'/../../vendor/autoload.php';
         $config = require __DIR__.'/../../config.php';
+        $config['application.db']['prefix'] = 'test__';
+
         if( file_exists(__DIR__.'/config-local.php') ) {
             require __DIR__.'/config-local.php';
-        } else {
-            $config['application.db']['host'] = 'localhost';
-            $config['application.db']['dbname'] = 'rocker';
-            $config['application.db']['username'] = 'root';
-            $config['application.db']['password'] = 'root';
-            $config['application.db']['prefix'] = 'test__';
         }
+
         self::$db = \Rocker\Object\DB::instance($config['application.db']);
     }
 

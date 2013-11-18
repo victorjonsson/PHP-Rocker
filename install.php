@@ -18,19 +18,25 @@ $app_path = getcwd().'/';
 $rocker_path = __DIR__.'/';
 
 // Copy files into place
-$files = array('index.php file'=>'index.php', 'config file'=>'config.php', 'console file'=>'console');
+$files = array('index.php file'=>'index.php', 'config file'=>array('config-sample.php', 'config.php'), 'console file'=>'console');
 foreach($files as $desc => $file) {
-    if( file_exists($app_path . $file) ) {
-        fwrite(STDOUT, '* '.$desc.' file already exist in app path, you may want to copy vendor/rocker/server/'.$file.' manually to your application'.PHP_EOL);
+    if( is_array($file) ) {
+        list($from_file, $to_file) = list($file);
     } else {
-        copy($rocker_path.$file, $app_path.$file) or die('Unable to copy vendor/rocker/server/'.$file.' to '.$app_path.$file);
+        $from_file = $file;
+        $to_file = $file;
+    }
+    if( file_exists($app_path . $to_file) ) {
+        fwrite(STDOUT, '* '.$desc.' file already exist in app path, you may want to copy vendor/rocker/server/'.$from_file.' manually to your application'.PHP_EOL);
+    } else {
+        copy($rocker_path.$from_file, $app_path.$to_file) or die('Unable to copy vendor/rocker/server/'.$from_file.' to '.$app_path.$to_file);
     }
 }
 
 // Load and validate config
 $config = require $app_path.'config.php';
 if( !is_array($config) ) {
-    fwrite(STDOUT, 'config.php seems corrupt, Rocker expects the file to return an array, but it does not'.PHP_EOL);
+    fwrite(STDOUT, '\033[31m! config.php seems corrupt, Rocker expects the file to return an array, but it does not\033[0m'.PHP_EOL);
     die;
 }
 else {
