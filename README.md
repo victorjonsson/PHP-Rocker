@@ -42,7 +42,7 @@ take care of things like routing and data storage.
 
 ## Installation
 
-**1) Add a file composer.json** in your application directory with the following
+**1) Add file composer.json** to your application directory with the following
 json configuration (notice that you must allow dev packages):
 
 ```
