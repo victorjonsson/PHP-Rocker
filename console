@@ -24,14 +24,16 @@ elseif( !is_writable($_SERVER['HOME']) )
 require __DIR__.'/vendor/autoload.php';
 \cli\register_autoload();
 
+// Shorthand for \cli\line()
+if( !function_exists('_') ) {
+    function _($str) { \cli\line($str); }
+}
+
 // Setup error handler
 \Rocker\Utils\ErrorHandler::init(array('mode'=>'production'));
 
 // Load config
 $config = require __DIR__.'/config.php';
-
-// Shorthand for \cli\line()
-function _($str) { \cli\line($str); }
 
 // Parse flags and args
 list($flags, $args, $method) = \Rocker\Console\Utils::parseInput($argv, $config);
