@@ -42,14 +42,14 @@ take care of things like routing and data storage.
 
 ## Installation
 
-**1) Add a file composer.json** in your application directory with the following
+**1) Add file composer.json** to your application directory with the following
 json configuration (notice that you must allow dev packages):
 
 ```
 {
     "minimum-stability": "dev",
     "require" : {
-        "rocker/server": "1.2.0"
+        "rocker/server": "1.2.1"
     }
 }
 ```
@@ -60,7 +60,7 @@ json configuration (notice that you must allow dev packages):
 $ composer install
 ```
 
-**3) Run *vendor/rocker/server/install.php* ** in your application directory
+**3) Run vendor/rocker/server/install.php** in your application directory
 
 ```
 $ php -f vendor/rocker/server/install.php
