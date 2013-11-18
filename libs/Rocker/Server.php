@@ -21,7 +21,7 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '1.1.8';
+    const VERSION = '1.1.10';
 
     /**
      * @var array
@@ -32,6 +32,11 @@ class Server extends \Slim\Slim  {
      * @var bool
      */
     private $closeDBConnOnDestruct = true;
+
+    /**
+     * @var null
+     */
+    private $authenticatedUser = null;
 
     /**
      * @param array $config
@@ -79,6 +84,22 @@ class Server extends \Slim\Slim  {
         if( $this->closeDBConnOnDestruct && DB::isInitiated() ) {
             DB::instance()->close();
         }
+    }
+
+    /**
+     * @param \Rocker\Object\User\UserInterface $authenticatedUser
+     */
+    public function setAuthenticatedUser($authenticatedUser)
+    {
+        $this->authenticatedUser = $authenticatedUser;
+    }
+
+    /**
+     * @return \Rocker\Object\User\UserInterface
+     */
+    public function getAuthenticatedUser()
+    {
+        return $this->authenticatedUser;
     }
 
     /**

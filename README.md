@@ -42,31 +42,28 @@ take care of things like routing and data storage.
 
 ## Installation
 
-**1) Download and unzip** PHP-Rocker into your web folder. Running the following command in the terminal will download the
-latest version of PHP-Rocker and unzip it to a directory named rocker.
+**1) Install PHP-Rocker using composer. Add a file named composer.json in your application directory with the following
+json configuration (notice that you must allow dev packages):
 
 ```
-$ wget https://github.com/victorjonsson/PHP-Rocker/archive/master.zip && unzip master.zip -d . && mv PHP-Rocker-master rocker
+{
+    "minimum-stability": "dev",
+    "require" : {
+        "rocker/server": "1.2.0"
+    }
+}
 ```
 
-**2) Run composer install** in the rocker directory. Navigate to the directory "rocker" (created on step 1) in the terminal
-and run the following command (here's how to [install composer](http://getcomposer.org/doc/00-intro.md#installation-nix) if
-you haven't already done so).
+**2) Run composer install in your application directory. This will install Slim and all other packages that PHP-Rocker is dependent on.
 
 ```
 $ composer install
 ```
 
-**3) Edit config.php**. There's a lot of things you can configure if you want to but the database parameters is
-the only thing you probably must edit. If you want to support file storage you also need to 
-edit 'application.files' => 'base' to the URL of your static files directory
-
-
-**4) Run install.php** in your console which will setup the database tables and create an admin user. You will be
-prompted about what credentials you want to give the admin user.
+**3) Run `vendor/rocker/server/install.php` in your application directory
 
 ```
-$ php -f install.php
+$ php -f vendor/rocker/server/install.php
 ```
 
 **- You're done!**
@@ -164,6 +161,10 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 
 ## Changelog
+
+#### 1.2.0
+- General improvements and minor bug fixes
+- Simplified install procedure
 
 #### 1.1.8
 - Trying to update a user with an already registered e-mail address now results in http status<br /> 409 instead of 400

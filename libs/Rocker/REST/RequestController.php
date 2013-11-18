@@ -203,7 +203,7 @@ class RequestController {
         }
 
         $op->setRequest($server->request());
-        $isAuthenticated = $this->authenticate($op);
+        $isAuthenticated = $this->authenticate($op, $server);
 
         // Handle OPTIONS request
         if( $method == 'OPTIONS' ) {
@@ -261,7 +261,7 @@ class RequestController {
      * @param OperationInterface $op
      * @return bool
      */
-    private function authenticate( OperationInterface $op )
+    private function authenticate( OperationInterface $op, Server $server )
     {
         /* @var AuthenticatorInterface $authenticator */
         $authConfig = $this->server->config('application.auth');
@@ -271,6 +271,7 @@ class RequestController {
             return false;
         }
         $op->setAuthenticatedUser($user);
+        $server->setAuthenticatedUser($user);
         return true;
     }
 

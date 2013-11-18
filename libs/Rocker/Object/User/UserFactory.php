@@ -60,10 +60,11 @@ class UserFactory extends AbstractObjectFactory {
      * @param string $email
      * @param string $nick
      * @param string $password
+     * @param bool $add_created_timestamp
      * @throws \InvalidArgumentException
      * @return \Rocker\Object\User\UserInterface
      */
-    public function createUser($email, $nick, $password)
+    public function createUser($email, $nick, $password, $add_created_timestamp=true)
     {
         if( filter_var($email, FILTER_VALIDATE_EMAIL) === false ) {
             throw new \InvalidArgumentException('No valid e-mail given');
@@ -73,6 +74,9 @@ class UserFactory extends AbstractObjectFactory {
         $user = parent::createObject($email);
         $user->setNick($nick);
         $user->setPassword($password);
+        if( $add_created_timestamp ) {
+            $user->meta()->set('created', time());
+        }
         $this->updateObject($user);
         return $user;
     }

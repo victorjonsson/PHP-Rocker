@@ -188,9 +188,13 @@ class Users implements MethodInterface {
                 if( is_bool($val) )
                     $val = '%Wbool('.($val ? 'true':'false').')%n';
                 elseif( is_array($val) )
-                    $val = 'array('.json_encode($val).')';
+                    $val = 'ARRAY: '.json_encode($val).')';
                 elseif( $val instanceof \stdClass )
-                    $val = 'array('.json_encode( (array)$val ).')';
+                    $val = 'OBJECT: '.json_encode( (array)$val ).')';
+
+                if( strlen($val) > 70 ) {
+                    $val = substr($val, 0, 70) .'...';
+                }
 
                 $metaData[] = array($name, $val);
             }

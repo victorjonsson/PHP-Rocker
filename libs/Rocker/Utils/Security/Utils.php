@@ -92,13 +92,24 @@ class Utils {
      */
     private static function makeSalt()
     {
-        $seed = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         $algo = '$2a';
         $strength = '$08';
-        $salt = '$';
-        for ($i = 0; $i < 22; $i++)
-            $salt .= substr($seed, mt_rand(0, 63), 1);
+        $salt = '$' . self::createRandomString();
         return $algo . $strength . $salt;
+    }
+
+    /**
+     * @param int $length
+     * @return string
+     */
+    public static function createRandomString($length=22)
+    {
+        $seed = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        $seed_len = strlen($seed);
+        $salt = '';
+        for ($i = 0; $i < $length; $i++)
+            $salt .= substr($seed, mt_rand(0, $seed_len-1), 1);
+        return $salt;
     }
 
     /**

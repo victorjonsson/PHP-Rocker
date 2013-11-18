@@ -41,7 +41,7 @@ class Authenticator implements \Rocker\REST\AuthenticatorInterface {
         }
 
         $user = null;
-        $auth = $this->getAuthHeader(); // $server->request()->headers('Authorization');
+        $auth = self::getAuthHeader(); // $server->request()->headers('Authorization');
 
         if( $auth ) {
             $authData = explode(' ', $auth);
@@ -59,7 +59,7 @@ class Authenticator implements \Rocker\REST\AuthenticatorInterface {
     /**
      * @return bool
      */
-    private function getAuthHeader()
+    public static function getAuthHeader()
     {
         $headers = function_exists('getallheaders') ? getallheaders() : $_SERVER; // support both nginx and apache
         foreach ($headers as $name => $value) {

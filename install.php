@@ -14,16 +14,45 @@ if( !empty($_SERVER['REMOTE_ADDR']) ) {
     die('cli only...');
 }
 
+$app_path = getcwd().'/';
+$rocker_path = __DIR__.'/';
+
+// Copy files into place
+$files = array('index.php file'=>'index.php', 'config file'=>'config.php', 'console file'=>'console');
+foreach($files as $desc => $file) {
+    if( file_exists($app_path . $file) ) {
+        fwrite(STDOUT, '* '.$desc.' file already exist in app path, you may want to copy vendor/rocker/server/'.$file.' manually to your application'.PHP_EOL);
+    } else {
+        copy($rocker_path.$file, $app_path.$file) or die('Unable to copy vendor/rocker/server/'.$file.' to '.$app_path.$file);
+    }
+}
+
+// Load and validate config
+$config = require $app_path.'config.php';
+if( !is_array($config) ) {
+    fwrite(STDOUT, 'config.php seems corrupt, Rocker expects the file to return an array, but it does not'.PHP_EOL);
+    die;
+}
+else {
+    // Check that we have edited the config
+    $db_params = array('host', 'dbname', 'username');
+    foreach($db_params as $param) {
+        if( empty($config['application.db'][$param]) ) {
+            fwrite(STDOUT, "\033[31m! Config paramater [application.db][".$param.'] is empty.'.PHP_EOL.'Have you updated '.$app_path."config.php with your own database settings?\033[0m".PHP_EOL);
+            die;
+        }
+    }
+}
+
 // Load cli utilities and vendor libraries
-require __DIR__.'/vendor/autoload.php';
-require __DIR__.'/vendor/jlogsdon/cli/lib/cli/cli.php';
+require $app_path.'vendor/autoload.php';
+//require $app_path.'vendor/jlogsdon/cli/lib/cli/cli.php';
 \cli\register_autoload();
 
 // Shorthand for \cli\line()
-function _($str) { \cli\line($str); }
-
-// Load config
-$config = require __DIR__.'/config.php';
+if( !function_exists('_') ) {
+    function _($str) { \cli\line($str); }
+}
 
 // Check that we can connect
 $db = \Rocker\Object\DB::instance($config['application.db']);

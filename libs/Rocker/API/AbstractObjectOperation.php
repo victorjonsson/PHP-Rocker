@@ -114,8 +114,8 @@ abstract class AbstractObjectOperation extends AbstractOperation {
      */
     protected function searchObjects($factory, $db, $cache, $server)
     {
-        $offset = !empty($_REQUEST['offset']) ? $_REQUEST['offset'] : 0;
-        $limit = !empty($_REQUEST['limit']) ? $_REQUEST['limit'] : 50;
+        $offset = !empty($_REQUEST['offset']) ? abs((int)$_REQUEST['offset']) : 0;
+        $limit = !empty($_REQUEST['limit']) ? abs((int)$_REQUEST['limit']) : 50;
         $order = !empty($_REQUEST['order']) && $_REQUEST['order'] == 'ASC' ? 'ASC' : 'DESC';
         $query = array();
         if ( is_array($_REQUEST[self::SEARCH_QUERY_ARG]) ) {
