@@ -42,7 +42,7 @@ take care of things like routing and data storage.
 
 ## Installation
 
-**1) Install PHP-Rocker using composer. Add a file named composer.json in your application directory with the following
+**1) Add a file composer.json** in your application directory with the following
 json configuration (notice that you must allow dev packages):
 
 ```
@@ -54,13 +54,13 @@ json configuration (notice that you must allow dev packages):
 }
 ```
 
-**2) Run composer install in your application directory. This will install Slim and all other packages that PHP-Rocker is dependent on.
+**2) Run composer install** in your application directory. This will install Slim and all other packages that PHP-Rocker is dependent on.
 
 ```
 $ composer install
 ```
 
-**3) Run `vendor/rocker/server/install.php` in your application directory
+**3) Run *vendor/rocker/server/install.php* ** in your application directory
 
 ```
 $ php -f vendor/rocker/server/install.php

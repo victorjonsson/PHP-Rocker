@@ -21,7 +21,7 @@ $rocker_path = __DIR__.'/';
 $files = array('index.php file'=>'index.php', 'config file'=>array('config-sample.php', 'config.php'), 'console file'=>'console');
 foreach($files as $desc => $file) {
     if( is_array($file) ) {
-        list($from_file, $to_file) = list($file);
+        list($from_file, $to_file) = $file;
     } else {
         $from_file = $file;
         $to_file = $file;
