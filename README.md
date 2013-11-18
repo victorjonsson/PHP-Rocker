@@ -60,7 +60,7 @@ json configuration (notice that you must allow dev packages):
 $ composer install
 ```
 
-**3) Run *vendor/rocker/server/install.php* ** in your application directory
+**3) Run vendor/rocker/server/install.php** in your application directory
 
 ```
 $ php -f vendor/rocker/server/install.php
