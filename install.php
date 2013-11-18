@@ -18,7 +18,7 @@ $app_path = getcwd().'/';
 $rocker_path = __DIR__.'/';
 
 // Copy files into place
-$files = array('index.php file'=>'index.php', 'config file'=>array('config-sample.php', 'config.php'), 'console file'=>'console');
+$files = array('index.php file'=>'index.php', 'htaccess file'=>'.htaccess', 'config file'=>array('config-sample.php', 'config.php'), 'console file'=>'console');
 foreach($files as $desc => $file) {
     if( is_array($file) ) {
         list($from_file, $to_file) = $file;
