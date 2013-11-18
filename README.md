@@ -49,7 +49,7 @@ json configuration (notice that you must allow dev packages):
 {
     "minimum-stability": "dev",
     "require" : {
-        "rocker/server": "1.2.0"
+        "rocker/server": "1.2.1"
     }
 }
 ```
