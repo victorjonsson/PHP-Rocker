@@ -5,6 +5,7 @@ node_modules*
 .idea*
 vendor*
 cache*
+config.php
 composer.lock
 phpunit.phar
 static/*
