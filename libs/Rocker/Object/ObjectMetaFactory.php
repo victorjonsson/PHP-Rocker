@@ -145,14 +145,20 @@ class ObjectMetaFactory {
             $sql->execute(array($obj->getId()));
 
             while ($row = $sql->fetch()) {
-                if( is_numeric($row['value']) )
-                    $meta_values[$row['name']] = (int)$row['value'];
-                if( $this->isSerialized($row['value']) )
+                if( is_numeric($row['value']) ) {
+                    $int = intval($row['value']);
+                    if( strlen((string)$int) === strlen($row['value']) )
+                        $meta_values[$row['name']] = $int;
+                    elseif( is_float( $float = (float)$row['value'] ))
+                        $meta_values[$row['name']] = $float;
+                    else
+                        $meta_values[$row['name']] = $row['value'];
+                }
+                elseif( $this->isSerialized($row['value']) )
                     $meta_values[$row['name']] = unserialize($row['value']);
                 else
                     $meta_values[$row['name']] = $row['value'];
             }
-
             $this->cache->store($this->cachePrefix . $obj->getId(), $meta_values);
         }
 

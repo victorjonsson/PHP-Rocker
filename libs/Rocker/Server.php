@@ -4,6 +4,7 @@ namespace Rocker;
 use Rocker\Cache\Cache;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\DB;
+use Rocker\Object\DuplicationException;
 use Rocker\REST\OperationResponse;
 use Rocker\REST\RequestController;
 use Rocker\Utils\ErrorHandler;
@@ -130,6 +131,13 @@ class Server extends \Slim\Slim  {
             }
 
             $controller->handle($path);
+
+        }
+        catch(DuplicationException $e) {
+
+            $response = new OperationResponse(409, array('error'=>'An action causing data duplication was found: '.$e->getMessage()));
+            $controller = new RequestController($this, null, null);
+            $controller->handleResponse( $response );
 
         } catch(\InvalidArgumentException $e) {
 

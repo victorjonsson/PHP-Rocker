@@ -60,13 +60,13 @@ class MetaData extends \stdClass implements \Countable  {
      */
     public function set($name, $val)
     {
-        if( $this->get($name) !== $val ) {
+        if( $this->get($name) != $val ) {
             if( $val === null ) {
                 unset($this->meta[$name]);
                 $this->deleted[] = $name;
             }
             else {
-                $this->meta[$name] = is_numeric($val) ? (int)$val:$val;
+                $this->meta[$name] = $val;
                 $this->updated[$name] = $this->meta[$name];
             }
         }
