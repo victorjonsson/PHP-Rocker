@@ -26,7 +26,7 @@ class AdminPrivilegeOperation extends AbstractOperation {
     public function exec(Server $server, ConnectionInterface $db, CacheInterface $cache)
     {
         $userFactory = new UserFactory($db, $cache);
-        $user = $userFactory->loadUser($_REQUEST['user']);
+        $user = $userFactory->load($_REQUEST['user']);
         $response = new OperationResponse();
 
         if( !$user ) {
