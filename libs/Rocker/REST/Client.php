@@ -1,6 +1,7 @@
 <?php
 namespace Rocker\REST;
 
+use Guzzle\Common\Collection;
 use Guzzle\Http\Client as HttpClient;
 use Guzzle\Http\EntityBody;
 use Guzzle\Http\Message\Response;
@@ -84,8 +85,22 @@ class Client extends HttpClient implements ClientInterface {
 
         return (object)array(
             'status' => $this->lastResponse->getStatusCode(),
+            'headers' => $this->headerCollectionToArray($this->lastResponse->getHeaders()),
             'body' => $body
         );
+    }
+
+    /**
+     * @param Collection $headers
+     * @return array
+     */
+    private function headerCollectionToArray(Collection $headers)
+    {
+        $headers_arr = array();
+        foreach($headers->toArray() as $name => $val ) {
+            $headers_arr[$name] = current($val);
+        }
+        return $headers_arr;
     }
 
     /**
