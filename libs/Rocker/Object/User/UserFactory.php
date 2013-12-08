@@ -109,24 +109,24 @@ class UserFactory extends AbstractObjectFactory {
     }
 
     /**
-     * @param UserInterface $user
+     * @param UserInterface $obj
      * @throws \InvalidArgumentException
      */
-    public function update($user)
+    public function update($obj)
     {
-        if( filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
+        if( filter_var($obj->getEmail(), FILTER_VALIDATE_EMAIL) === false) {
             throw new \InvalidArgumentException('Not a valid e-mail');
         }
 
         if( !self::$changeAdminPrivByCode ) {
-            foreach($user->meta()->getUpdatedValues() as $name => $val) {
+            foreach($obj->meta()->getUpdatedValues() as $name => $val) {
                 if( $name == 'admin' ) {
                     throw new \InvalidArgumentException('Admin privileges can only be set by calling UserFactory::setAdminPrivileges');
                 }
             }
         }
 
-        $this->updateObject($user);
+        $this->updateObject($obj);
     }
 
     /**
