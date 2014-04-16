@@ -66,6 +66,11 @@ class MetaData extends \stdClass implements \Countable  {
                 $this->deleted[] = $name;
             }
             else {
+                
+                if( $index = array_search($name, $this->deleted) ) {
+                    array_splice($this->deleted, $index, 1);
+                }
+                
                 $this->meta[$name] = $val;
                 $this->updated[$name] = $this->meta[$name];
             }
