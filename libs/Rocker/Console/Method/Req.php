@@ -51,7 +51,7 @@ class Req implements MethodInterface {
                 \cli\line("   $name: $val ");
             }
         }
-        \cli\line('%_Body:%n '.PHP_EOL.print_r($response->body,true));
+        \cli\line('%_Body:%n '.PHP_EOL.str_replace('stdClass ', '', print_r($response->body,true)));
         //var_dump($response);
     }
 }
