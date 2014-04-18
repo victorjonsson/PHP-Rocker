@@ -52,8 +52,11 @@ else {
 
 // Load cli utilities and vendor libraries
 require $app_path.'vendor/autoload.php';
-//require $app_path.'vendor/jlogsdon/cli/lib/cli/cli.php';
-\cli\register_autoload();
+
+if( function_exists('\cli\register_autoload') ) {
+    // old cli must be autoladed using this function
+    \cli\register_autoload();
+}
 
 // Shorthand for \cli\line()
 if( !function_exists('_') ) {
