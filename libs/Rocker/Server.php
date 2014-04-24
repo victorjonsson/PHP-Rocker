@@ -22,7 +22,7 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '1.2.1';
+    const VERSION = '1.2.6';
 
     /**
      * @var array
@@ -128,6 +128,15 @@ class Server extends \Slim\Slim  {
             } else {
                 $controller->setDatabase($db);
                 $controller->setCache($cache);
+            }
+
+            // override output content-type in runtime using file extension
+            if( $this->config('application.allow_output_extensions') !== false ) {
+                $path_last_index = count($path)-1;
+                if( $ext = pathinfo($path[$path_last_index], PATHINFO_EXTENSION) ) {
+                    $this->config('application.output', $ext);
+                    $path[$path_last_index] = pathinfo($path[$path_last_index], PATHINFO_FILENAME);
+                }
             }
 
             $controller->handle($path);
