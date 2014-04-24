@@ -49,7 +49,7 @@ json configuration (notice that you must allow dev packages):
 {
     "minimum-stability": "dev",
     "require" : {
-        "rocker/server": "1.2.2"
+        "rocker/server": "1.2.6"
     }
 }
 ```
@@ -161,6 +161,9 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 
 ## Changelog
+
+#### 1.2.6
+— Client can now possible to determine the content type of the response by adding .json or .xml to the URI
 
 #### 1.2.0
 - General improvements and minor bug fixes

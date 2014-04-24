@@ -57,13 +57,23 @@ return array(
     'application.path' => '/api/',
 
     /*
-     * Response format
+     * Default response format
      * ---------------------
-     * The content type of the API can be either 'json' or 'xml'. Note that
-     * the console program can't communicate with Rocker servers responding
-     * with an XML content type.
+     * The default content type of the server response. Can be either 'json' or 'xml'.
+     *
+     * You can always add the extension .json or .xml to the URI of an API operation
+     * to override the default content type.
+     *
+     * ! Note that the console program can't communicate with Rocker servers responding
+     * with an XML content type by default.
      */
     'application.output' => 'json',
+
+    /**
+     * Set this parameter to false if the client should'nt be able to determine
+     * the content type or the response by adding extensions .xml or .json to the URI.
+     */
+    'application.allow_output_extensions' => true,
 
     /*
      * API operations
