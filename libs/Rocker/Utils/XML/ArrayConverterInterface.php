@@ -3,7 +3,7 @@ namespace Rocker\Utils\XML;
 
 
 /**
- * Interface for a class that can take an traversable object
+ * Interface for a class that can take a traversable object
  * and turn it into a DOMDocument, and vice versa
  *
  * @package rocker/server
