@@ -100,10 +100,17 @@ class ArrayConverter implements ArrayConverterInterface {
     {
         if( is_numeric($key) ) {
             $element = new \DOMElement('node');
+            $parentElement->appendChild($element);
         } else {
-            $element = new \DOMElement($key);
+            try {
+                $element = new \DOMElement($key);
+                $parentElement->appendChild($element);
+            } catch(\DOMException $e) {
+                $element = new \DOMElement('node');
+                $parentElement->appendChild($element);
+                $element->appendChild(new \DOMAttr('attr', $key));
+            }
         }
-        $parentElement->appendChild($element);
 
         if( is_array($value) || $value instanceof \Traversable ) {
             foreach($value as $childKey => $childValue) {
