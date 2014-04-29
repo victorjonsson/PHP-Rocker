@@ -57,11 +57,14 @@ class FileCache implements CacheInterface {
     {
         $file = $this->cacheDir . $id . '.cache';
         if( stream_resolve_include_path($file) !== false ) {
-            $data = unserialize(file_get_contents($file));
-            if( $data['ttl'] !== 0 && $data['ttl'] > time() ) {
-                unlink($file);
-            } else {
-                return $data['content'];
+            $data = @file_get_contents($file);
+            if( $data ) {
+                $data = unserialize($data);
+                if( $data['ttl'] !== 0 && $data['ttl'] < time() ) {
+                    @unlink($file);
+                } else {
+                    return $data['content'];
+                }
             }
         }
         return null;
@@ -78,7 +81,7 @@ class FileCache implements CacheInterface {
                 $file,
                 serialize(array(
                         'content' => $data,
-                        'ttl' => (int)$ttl
+                        'ttl' => $ttl===0 ? 0 : ((int)$ttl + time())
                     ))
             );
         } catch(\Exception $e) {
