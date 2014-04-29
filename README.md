@@ -24,6 +24,7 @@ take care of things like routing and data storage.
 - [Installation](#installation)
 - [API reference](#api-reference)
 - [Extending the API with more operations](#extending-the-api-with-more-operations)
+- [Adding your own objects](#Adding-your-own-objects)
 - [Manage remote servers via command line](#manage-remote-servers-via-command-line)
 - [A note on security](#a-note-on-security)
 - [Auto-generated documentation](#auto-generated-documentation)
@@ -78,6 +79,10 @@ The API reference has moved to its own [wiki page](https://github.com/victorjons
 ## Extending the API with more operations
 
 Here you can [read more about how to create custom operations](https://github.com/victorjonsson/PHP-Rocker/wiki/Creating-a-custom-operation)
+
+## Adding your own objects
+
+Here you can [read more about how to add your own objects](https://github.com/victorjonsson/PHP-Rocker/wiki/Creating-custom-objects)
 
 ## Manage remote servers via command line
 
@@ -187,7 +192,7 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 - Auto-generated documentation
 
 #### 1.2.6
-- Client can now possible to determine the content type of the response by adding .json or .xml to the URI
+- Client can now determine the content type of the server response by adding .json or .xml to the URI
 
 #### 1.2.0
 - General improvements and minor bug fixes
