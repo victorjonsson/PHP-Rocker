@@ -21,6 +21,7 @@ use Rocker\Utils\FileStorage\Storage;
  *  - Remove image versions
  *  - Create image versions
  *
+ * @link https://github.com/victorjonsson/PHP-Rocker/wiki/API-reference#put-file
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)

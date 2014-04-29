@@ -9,8 +9,11 @@ use Rocker\Server;
 use Slim\Slim;
 
 /**
- * Returns the user data of the user that authenticates the request
+ * Returns the data of the user that authenticates the request
  *
+ * <code>curl -u admin@website.com http://api.website.com/api/%path%</code>
+ *
+ * @link https://github.com/victorjonsson/PHP-Rocker/wiki/API-reference#get-user
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)

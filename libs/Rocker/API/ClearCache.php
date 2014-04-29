@@ -11,8 +11,12 @@ use Slim\Http\Request;
 use Slim\Slim;
 
 /**
- * Makes it possible for administrators to clear application cache
+ * Makes it possible for administrators to clear application cache. This operation requires that the
+ * client authenticates as a user with admin privileges
  *
+ * <code>curl -X POST -u admin@service.com http://service.com/api/%path%</code>
+ *
+ * @link https://github.com/victorjonsson/PHP-Rocker/wiki/API-reference#clear-object-cache
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)

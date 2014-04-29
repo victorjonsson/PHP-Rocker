@@ -126,11 +126,71 @@ class ArrayConverter implements ArrayConverterInterface {
     }
 
     /**
-     * @param \DOMDocument $xml
+     * @param \DOMDocument|string $xml
      * @return string JSON formatted
      */
     public function convertXMLToJSON($xml)
     {
-        return json_encode((array)simplexml_load_string($xml->saveXML()));
+        return json_encode(self::convertXMLToArray($xml));
     }
+
+    /**
+     * @param \DOMDocument|string $xml $xml
+     * @return array
+     */
+    public function convertXMLToArray($xml)
+    {
+        $result = array();
+
+        if ($xml->hasAttributes()) {
+            $attrs = $xml->attributes;
+            foreach ($attrs as $attr) {
+                $result['@attributes'][$attr->name] = $attr->value;
+            }
+        }
+
+        if ($xml->hasChildNodes()) {
+            $children = $xml->childNodes;
+            if ($children->length == 1) {
+                $child = $children->item(0);
+                if ($child->nodeType == XML_TEXT_NODE || $child->nodeType == XML_CDATA_SECTION_NODE) {
+                    $result['_value'] = $child->nodeValue;
+                    return count($result) == 1
+                        ? $result['_value']
+                        : $result;
+                }
+            }
+            $groups = array();
+            foreach ($children as $child) {
+                if (!isset($result[$child->nodeName])) {
+                    $result[$child->nodeName] = $this->convertXMLToArray($child);
+                } else {
+                    if (!isset($groups[$child->nodeName])) {
+                        $result[$child->nodeName] = array($result[$child->nodeName]);
+                        $groups[$child->nodeName] = 1;
+                    }
+                    $result[$child->nodeName][] = $this->convertXMLToArray($child);
+                }
+
+                if( empty($result[$child->nodeName]) ) {
+                    unset($result[$child->nodeName]);
+                } elseif( is_array($result[$child->nodeName]) ) {
+                    $values = array();
+                    foreach($result[$child->nodeName] as $key => $val) {
+                        if( !empty($result[$child->nodeName][$key]) ) {
+                            $values[] = $result[$child->nodeName][$key];
+                            if( count($values) > 1 )
+                                break;
+                        }
+                    }
+                    if( empty($values) ) {
+                        unset($result[$child->nodeName]);
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
 }

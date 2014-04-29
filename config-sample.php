@@ -46,6 +46,11 @@ return array(
         'class' => '\\Rocker\\Cache\\TempMemoryCache'
     ),
 
+    /**
+     * Name of the application in the generated documentation
+     */
+    'application.name' => 'PHP Rocker - REST Server',
+
     /*
      * Base path
      * --------------

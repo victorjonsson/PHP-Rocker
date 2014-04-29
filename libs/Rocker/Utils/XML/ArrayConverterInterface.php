@@ -3,7 +3,7 @@ namespace Rocker\Utils\XML;
 
 
 /**
- * Interface for a class that can take a traversable object
+ * Interface for a class that can take an traversable object
  * and turn it into a DOMDocument, and vice versa
  *
  * @package rocker/server
@@ -19,8 +19,14 @@ interface ArrayConverterInterface {
     public function convert($arr);
 
     /**
-     * @param \DOMDocument $xml
+     * @param \DOMDocument|string $xml
      * @return string JSON formatted
      */
     public function convertXMLToJSON($xml);
+
+    /**
+     * @param \DOMDocument|string $xml $xml
+     * @return array
+     */
+    public function convertXMLToArray($xml);
 }

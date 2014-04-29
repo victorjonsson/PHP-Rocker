@@ -5,7 +5,6 @@ use Fridge\DBAL\Connection\ConnectionInterface;
 use Rocker\Server;
 use Rocker\Cache\CacheInterface;
 use Rocker\Object\User\UserFactory;
-use Rocker\Object\User\UserInterface;
 use Rocker\Utils\Security\RC4Cipher;
 
 
@@ -16,7 +15,7 @@ use Rocker\Utils\Security\RC4Cipher;
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
  */
-class Authenticator implements \Rocker\REST\AuthenticatorInterface {
+class Authenticator implements AuthenticatorInterface {
 
     /**
      * @var \Rocker\Object\User\UserFactory

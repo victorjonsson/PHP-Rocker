@@ -15,15 +15,18 @@ take care of things like routing and data storage.
 - **Built in object cache** *With support for APC and file based caching*
 - **Interface based** *Easy to extend and to customize*
 - **Administer your remote Rocker server from the console**
+- **Automatically generated documentation** *Extracts all info from class files, meaning that you only have to write your documentation once*
 
 
 #### Read more
+
 - [System requirements](#system-requirements)
 - [Installation](#installation)
 - [API reference](#api-reference)
 - [Extending the API with more operations](#extending-the-api-with-more-operations)
 - [Manage remote servers via command line](#manage-remote-servers-via-command-line)
 - [A note on security](#a-note-on-security)
+- [Auto-generated documentation](#auto-generated-documentation)
 - [Unit and acceptance testing](#unit-and-acceptance-testing)
 - [License](#license)
 - [Road map](#road-map)
@@ -141,6 +144,24 @@ request.addHeader("Authorization", "RC4 " + Base64.encode(crypted));
 - [Google login](https://github.com/victorjonsson/PHP-Rocker-google-login) Enable authenticated request with user credentials from Google
 
 
+## Auto-generated documentation
+
+The documentation is automatically generated from the operation classes defined in `config.php`. The class documentation, URI of the
+operation and the allowed request methods will added to the generated documentation.
+
+![Auto-generated documentation](https://raw.githubusercontent.com/wiki/victorjonsson/PHP-Rocker/php-rocker-doc.png)
+
+```
+<?php
+
+/**
+ * This text will extracted to the documentation, as well as @link declarations
+ *
+ * @link http://...
+ */
+class MyOperation extends \Rocker\REST\AbstractOperation {
+```
+
 ## Unit and acceptance testing
 
 To run the unit tests of Rocker navigate to libs/Test and run [phpunit](http://www.phpunit.de/manual/current/en/installation.html#installation.phar). You can
@@ -162,8 +183,11 @@ also run acceptance tests on your entire infrastructure using the [dokimon tests
 
 ## Changelog
 
+### 1.3.0 (unreleased)
+- Auto-generated documentation
+
 #### 1.2.6
-— Client can now possible to determine the content type of the response by adding .json or .xml to the URI
+- Client can now possible to determine the content type of the response by adding .json or .xml to the URI
 
 #### 1.2.0
 - General improvements and minor bug fixes

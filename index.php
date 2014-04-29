@@ -18,24 +18,22 @@ $config = require __DIR__.'/config.php';
 // Initiate server
 $server = new \Rocker\Server($config);
 
-// Welcome page
-if( $config['application.path'] != '/' ) {
-    $server->get('/', function() use($config, $server) {
+// Output the auto-generated documentation
+$docsURI = $config['application.path'] == '/' ? '/docs':'/';
+$server->get($docsURI, function() use($config, $server) {
 
-        $apiURL = $server->request()->getHost() .
-            $server->request()->getPath() .
-            trim($config['application.path'],'/').
-            '/operations';
+    $converter = new \Rocker\Utils\XML\ArrayConverter();
+    $generator = new \Rocker\REST\Documentation\Generator();
 
-        printf('<h1>Rocker Rest Server v%s</h1>
-        <p>Take a look at available operations at <a href="http://%s">http://%s</a></p>',
-            \Rocker\Server::VERSION,
-            $apiURL,
-            $apiURL
-        );
+    // Generate documentation and convert it to an array
+    $documentationXML = $generator->generateDocumentation($config['application.operations']);
+    $documentation = $converter->convertXMLToArray($documentationXML);
 
-    });
-}
+    // Generate the documentation website
+    $template = $generator->getExampleTemplatePath();
+    require $template;
+});
+
 
 // Run forrest run
 $server->run();

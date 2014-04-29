@@ -9,9 +9,11 @@ use Rocker\REST\OperationResponse;
 use Rocker\Server;
 use Slim\Http\Request;
 
+
 /**
- * API Operation used to manage user objects
+ * CRUD operations for user objects
  *
+ * @link https://github.com/victorjonsson/PHP-Rocker/wiki/API-reference#user-management-1
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)

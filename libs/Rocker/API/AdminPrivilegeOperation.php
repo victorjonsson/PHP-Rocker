@@ -7,13 +7,23 @@ use Rocker\Object\User\UserFactory;
 use Rocker\REST\AbstractOperation;
 use Rocker\REST\OperationResponse;
 use Rocker\Server;
-use Slim\Http\Request;
-use Slim\Slim;
+
 
 /**
- * Operation that can be used to add or remove admin privileges
- * from a user account
+ * Operation that can be used to add or remove admin privileges from a user account.
  *
+ * Turn admin privileges on:
+ * <code>curl -X POST -u admin@service.com http://service.com/api/%path% -d 'user=12&admin=1'</code>
+ *
+ * Turn admin privileges on:
+ * <code>curl -X POST -u admin@service.com http://service.com/api/%path% -d 'user=12&admin=0'</code>
+ *
+ * Both of these requests requires that the client authenticates as a user that has
+ * admin privileges. The user can not remove admin privileges from his/hers own account.
+ *
+ * This operation returns http status <em>204</em> upon success.
+ *
+ * @link https://github.com/victorjonsson/PHP-Rocker/wiki/API-reference#granting-admin-privileges
  * @package rocker/server
  * @author Victor Jonsson (http://victorjonsson.se)
  * @license MIT license (http://opensource.org/licenses/MIT)
