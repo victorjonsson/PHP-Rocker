@@ -10,7 +10,7 @@ use Rocker\Server;
 
 
 /**
- * Operation that can be used to add or remove admin privileges from a user account.
+ * Operation that is used to add or remove admin privileges from a user account.
  *
  * Turn admin privileges on:
  * <code>curl -X POST -u admin@service.com http://service.com/api/%path% -d 'user=12&admin=1'</code>

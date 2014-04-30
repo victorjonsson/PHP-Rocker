@@ -7,6 +7,8 @@
 $appName = empty($config['application.name']) ? $_SERVER['HTTP_HOST']:$config['application.name'];
 $version = empty($config['application.version']) ? '':$config['application.version'];
 
+#var_dump($documentation); die;
+
 
 /**
  * @param array $data
@@ -36,7 +38,7 @@ function outputOperationsInPath($data, $parent) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <?php echo ($parent=='root' ? '':$parent) .'/'. ($key==$parent ? '*':$key) ?>
+                            <?php echo $content['data']['path'] ?>
                             <small>[<?php echo $content['data']['methods'] ?>]</small>
                         </h3>
                     </div>
@@ -60,7 +62,6 @@ function outputOperationsInPath($data, $parent) {
                     </div>
                 </div>
             <?php else: ?>
-                <h2><?php echo $parent .'/'. $key ?></h2>
                 <?php outputOperationsInPath($content, $parent .'/'. $key) ?>
             <?php endif; ?>
         <?php endforeach; ?>
@@ -100,6 +101,10 @@ function outputOperationsInPath($data, $parent) {
             .main h1 a {
                 text-decoration: none;
                 display: block;
+            }
+
+            .main h1 a.active {
+                color: #777;
             }
 
             .main .panel-title small {
@@ -171,7 +176,10 @@ function outputOperationsInPath($data, $parent) {
                 <h1 style="background: #F9F9F9">
                     <a href="#" class="toggler">
                         /<?php if( $path !== 'root' ) echo $path ?>
-                        <small>(<?php echo findOperationsInPath($data); ?> operations)</small>
+                        <small>(<?php
+                            $numOps = findOperationsInPath($data);
+                            echo $numOps.' '.($numOps==1 ? 'operation':'operations')
+                        ?>)</small>
                         <span>+</span>
                     </a>
                 </h1>
@@ -228,9 +236,17 @@ function outputOperationsInPath($data, $parent) {
         $('a.toggler').click(function() {
             var $link = $(this),
                 $container = $link.parent().next();
+
             $container.slideToggle(function() {
-                $link.find('span').text( $container.is(':visible') ? '-':'+' );
+                var visible = $container.is(':visible');
+                $link.find('span').text( visible ? '-':'+' );
+                if( visible ) {
+                    $link.addClass('active');
+                } else {
+                    $link.removeClass('active');
+                }
             });
+
             return false;
         });
     </script>

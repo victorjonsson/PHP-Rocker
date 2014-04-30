@@ -90,23 +90,23 @@ return array(
      */
     'application.operations' => array(
 
-        // List all available operations (does not require authentication)
-        'operations' => '\\Rocker\\API\\ListOperations',
-
-        // Get current version of PHP-Rocker (does not require authentication)
-        'system/version' => '\\Rocker\\API\\Version',
-
-        // Add/remove admin privileges from users
-        'admin' => '\\Rocker\\API\\AdminPrivilegeOperation',
+        // Get user data of the authenticated user
+        'me' => '\\Rocker\\API\\Me',
 
         // CRUD operations for users
         'user/*' => '\\Rocker\\API\\UserOperation',
 
-        // Get user data of the authenticated user
-        'me' => '\\Rocker\\API\\Me',
+        // Add/remove admin privileges from users
+        'admin' => '\\Rocker\\API\\AdminPrivilegeOperation',
+
+        // List all available operations (does not require authentication)
+        'system/operations' => '\\Rocker\\API\\ListOperations',
+
+        // Get current version of PHP-Rocker (does not require authentication)
+        'system/version' => '\\Rocker\\API\\Version',
 
         // Clear cache
-        'cache/clear' => '\\Rocker\\API\\ClearCache',
+        'system/cache/clear' => '\\Rocker\\API\\ClearCache',
 
         // CRUD operations for files (file storage)
         'file/*' => '\\Rocker\\API\\FileOperation'

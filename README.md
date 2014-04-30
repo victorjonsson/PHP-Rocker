@@ -153,7 +153,7 @@ request.addHeader("Authorization", "RC4 " + Base64.encode(crypted));
 
 The documentation is automatically generated from the operation classes defined in `config.php`. The class documentation, URI of the operation and the allowed request methods will be added to the generated documentation. Take a look at index.php to see how the documentation is added to Slim's routing-system, you can also change to a template of your own.
 
-![Auto-generated documentation](https://raw.githubusercontent.com/wiki/victorjonsson/PHP-Rocker/php-rocker-doc.png)
+![Auto-generated documentation](https://raw.githubusercontent.com/wiki/victorjonsson/PHP-Rocker/php-rocker-doc.png?v=2)
 
 ```
 <?php

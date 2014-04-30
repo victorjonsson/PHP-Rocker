@@ -13,7 +13,7 @@ var checkVersion = new dokimon.Test(
 var checkOperations = new dokimon.Test(
     'checkOperations',
     {
-        url : '/operations'
+        url : '/system/operations'
     },
     function(res, body) {
         assert.equal(res.statusCode, 200, 'Invalid status code...');
