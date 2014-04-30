@@ -49,7 +49,7 @@ return array(
     /**
      * Name of the application in the generated documentation
      */
-    'application.name' => 'PHP Rocker - REST Server',
+    'application.name' => 'PHP Rocker',
 
     /*
      * Base path
