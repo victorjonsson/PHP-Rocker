@@ -22,7 +22,7 @@ class Server extends \Slim\Slim  {
     /**
      * @const Current version of Rocker
      */
-    const VERSION = '1.2.11';
+    const VERSION = '1.2.12';
 
     /**
      * @var array
@@ -51,15 +51,6 @@ class Server extends \Slim\Slim  {
         }
 
         parent::__construct($config);
-
-        // Base path of the API requests
-        $basePath = trim($this->settings['application.path']);
-        if( $basePath != '/' ){
-            $basePath = '/'.trim($basePath, '/').'/';
-        }
-
-        // Setup dynamic routing
-        $this->map($basePath.':args+', array($this, 'dispatch'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'OPTIONS');
 
         // Bind events defined in config
         if( !empty($config['application.events']) ) {
@@ -176,6 +167,16 @@ class Server extends \Slim\Slim  {
      */
     public function run()
     {
+
+        // Base path of the API requests
+        $basePath = trim($this->settings['application.path']);
+        if( $basePath != '/' ){
+            $basePath = '/'.trim($basePath, '/').'/';
+        }
+
+        // Setup dynamic routing
+        $this->map($basePath.':args+', array($this, 'dispatch'))->via('GET', 'POST', 'HEAD', 'PUT', 'DELETE', 'OPTIONS');
+
         //Invoke middleware and application stack
         $this->middleware[0]->call();
 

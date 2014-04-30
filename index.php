@@ -27,6 +27,8 @@ $server->get($docsURI, function() use($config, $server) {
 
     // Generate documentation and convert it to an array
     $documentationXML = $generator->generateDocumentation($config['application.operations']);
+
+    // Add $documentation to current scope, later used in the template
     $documentation = $converter->convertXMLToArray($documentationXML);
 
     // Generate the documentation website

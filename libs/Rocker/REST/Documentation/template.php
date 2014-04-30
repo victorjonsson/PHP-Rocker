@@ -126,6 +126,31 @@ function outputOperationsInPath($data, $parent) {
             background: #F9F9f9;
         }
 
+        .general-info {
+            line-height: 200%;
+            padding-top: 20px;
+        }
+
+        .general-info table {
+            width: 100%;
+        }
+
+        .general-info thead td {
+            background: #EEE !important;
+            font-weight: bold;
+        }
+
+        .general-info td {
+            border:solid 1px #EEE;
+            padding: 5px 10px;
+        }
+
+        .general-info td:first-child {
+            background: #F9F9F9;
+            padding-right: 20px;
+            max-width:100px;
+        }
+
     </style>
 
 </head>
@@ -141,6 +166,7 @@ function outputOperationsInPath($data, $parent) {
         </div>
 
         <div class="main">
+
             <?php foreach($documentation['operations'] as $path => $data): ?>
                 <h1 style="background: #F9F9F9">
                     <a href="#" class="toggler">
@@ -152,6 +178,48 @@ function outputOperationsInPath($data, $parent) {
                 <?php outputOperationsInPath($data, $path) ?>
             <?php endforeach; ?>
         </div>
+
+        <div class="general-info">
+
+            <h2>General server info</h2>
+
+            <table>
+                <tr>
+                    <td>Base path:</td>
+                    <td><?php printf(
+                            'http%s://%s%s%s',
+                            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 's':''),
+                            $_SERVER['HTTP_HOST'],
+                            $_SERVER['REQUEST_URI'],
+                            ltrim($config['application.path'], '/')
+                        )?></td>
+                </tr>
+                <tr>
+                    <td>Default content type:</td>
+                    <td><?php echo strtoupper($config['application.output']) ?></td>
+                </tr>
+                <tr>
+                    <td>Alternative content type:</td>
+                    <td>
+                        <?php if( !isset($config['application.allow_output_extensions']) || $config['application.allow_output_extensions']): ?>
+                            <?php echo $config['application.output']=='json' ? 'XML':'JSON' ?>
+                            (by adding .<?php echo $config['application.output']=='json' ? 'xml':'json' ?> to operation URI:s)
+                        <?php else: ?>
+                            none
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>PHP-Rocker version:</td>
+                    <td><?php echo \Rocker\Server::VERSION ?></td>
+                </tr>
+                <tr>
+                    <td>Cache class:</td>
+                    <td><?php echo $config['application.cache']['class'] ?></td>
+                </tr>
+            </table>
+        </div>
+
 
     </div>
 
