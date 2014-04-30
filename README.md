@@ -14,7 +14,7 @@ take care of things like routing and data storage.
 - **Static file storage** *With support for image manipulation and storage on [Amazon S3](https://github.com/victorjonsson/PHP-Rocker/wiki/File-storage-on-Amazon-S3)*
 - **Built in object cache** *With support for APC and file based caching*
 - **Interface based** *Easy to extend and to customize*
-- **Administer your remote Rocker server from the console**
+- **Administer remote servers from the console**
 - **Automatically generated documentation** *Extracts all info from class files, meaning that you only have to write your documentation once*
 
 
