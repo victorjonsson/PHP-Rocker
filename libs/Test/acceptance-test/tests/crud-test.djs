@@ -95,7 +95,6 @@ var tooLargeMetaEntry = new dokimon.TestFormPost(
     },
     function (res, body) {
         assert.equal(res.statusCode, 413);
-        console.log(body);
     },
     true
 );
@@ -194,7 +193,6 @@ var checkFilesAvailable = new dokimon.Test(
     },
     function(res, body) {
         var user = JSON.parse(body);
-        console.log(userID);
         assert.equal(true, 'files' in user.meta, 'No files?');
         assert.equal(true, 'myfile.txt' in user.meta.files, 'File missing');
         var f = user.meta.files;

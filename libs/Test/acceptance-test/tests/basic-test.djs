@@ -16,8 +16,20 @@ var checkOperations = new dokimon.Test(
         url : '/system/operations'
     },
     function(res, body) {
+        assert.equal(res.headers['content-type'].indexOf('/json') > -1, true);
         assert.equal(res.statusCode, 200, 'Invalid status code...');
     }
 );
 
-module.exports = [checkVersion, checkOperations];
+var checkOperationsXML = new dokimon.Test(
+    'checkOperationsXML',
+    {
+        url : '/system/operations.xml'
+    },
+    function(res, body) {
+        assert.equal(res.headers['content-type'].indexOf('/xml') > -1, true);
+        assert.equal(res.statusCode, 200, 'Invalid status code...');
+    }
+);
+
+module.exports = [checkVersion, checkOperations, checkOperationsXML];
