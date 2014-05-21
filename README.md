@@ -24,7 +24,7 @@ take care of things like routing and data storage.
 - [Installation](#installation)
 - [API reference](#api-reference)
 - [Extending the API with more operations](#extending-the-api-with-more-operations)
-- [Adding your own objects](#Adding-your-own-objects)
+- [Adding your own objects](#adding-your-own-objects)
 - [Manage remote servers via command line](#manage-remote-servers-via-command-line)
 - [A note on security](#a-note-on-security)
 - [Auto-generated documentation](#auto-generated-documentation)
