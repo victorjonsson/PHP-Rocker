@@ -14,7 +14,7 @@
         "php" : ">=5.3.2",
         "fridge/dbal": "dev-master",
         "slim/slim": "2.*",
-        "jlogsdon/cli": "dev-master",
+        "jlogsdon/cli": "0.9.4-patch46",
         "guzzle/http": "3.3.1.0",
         "gregwar/image": "dev-master"
     },
